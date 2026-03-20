@@ -10,7 +10,7 @@
 html,body{width:100%;height:100%;overflow:hidden;background:#07080f}
 :root{--gold:#c8a84b;--blue:#1E88E5;--red:#E53935;--green:#22c55e;--purple:#8E24AA}
 
-#stage{position:fixed;inset:0;background:#07080f;cursor:pointer}
+#stage{position:fixed;inset:0;background:#07080f;cursor:pointer;z-index:0}
 
 /* BG */
 .bg{position:absolute;inset:0;opacity:0;transition:opacity 1s ease;pointer-events:none}
@@ -315,7 +315,7 @@ function restart(){
   setTimeout(()=>play(0),300);
 }
 
-document.getElementById('stage').addEventListener('click', advance);
+document.addEventListener('click', function(e){ if(e.target.closest('#back-a')||e.target.closest('#ctrl')) return; advance(); });
 window.addEventListener('load', ()=>play(0));
 </script>
 </div>
