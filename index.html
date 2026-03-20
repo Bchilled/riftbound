@@ -115,6 +115,9 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--txt);ove
 #card-overlay .co-close{position:absolute;top:16px;right:16px;font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.15em;color:rgba(255,255,255,.5);text-transform:uppercase}
 @keyframes slideDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.csec{}
+.chdr{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;cursor:pointer;transition:background .2s}
+.chdr:hover{background:rgba(255,255,255,.03)}
 footer{text-align:center;padding:28px;font-family:'Rajdhani',sans-serif;font-size:.73rem;color:var(--txt3);letter-spacing:.1em;border-top:1px solid rgba(200,168,75,.08);margin-top:30px}
 @media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}.d-hdr{grid-template-columns:1fr}.d-img{display:none}.abc-grid,.abcd-grid{grid-template-columns:1fr}.card-list{grid-template-columns:1fr 1fr}.bf-list,.zone-row{grid-template-columns:1fr}}
 @media(max-width:480px){.grid{gap:2px}.d-tab{padding:11px 12px;font-size:.75rem}.card-list{grid-template-columns:1fr}}
@@ -241,61 +244,16 @@ function renderDetail(key){
   const d=DECKS.find(x=>x.key===key);
   const det=document.getElementById('detail');
   det.classList.add('open');
-  det.innerHTML=`
-  <div class="d-wrap" style="--dac:${d.accent}44;--dac-c:${d.accent}">
-    <div class="d-hdr">
-      <img class="d-img${d.right_crop?' rc':''}" src="${IMGS[d.champion_key]}" alt="${d.name}" onerror="this.style.display='none'">
-      <div class="d-hdr-r">
-        <h2>${d.name}</h2>
-        <div class="d-sub">${d.style} &nbsp;·&nbsp; ${d.colors}</div>
+  const C='https://cdn.piltoverarchive.com/cards/';
+  const RI={Fury:'OGN-007',Body:'OGN-126',Calm:'OGN-042',Order:'OGN-214',Mind:'OGN-089',Chaos:'OGN-166'};
 
-      </div>
-    </div>
-    <div class="d-tabs">
-      <button class="d-tab${atab==='abc'?' on':''}" onclick="switchTab('${key}','abc')">A·B·C·D·E·F·G</button>
-      <button class="d-tab${atab==='strat'?' on':''}" onclick="switchTab('${key}','strat')">Strategy</button>
-      <button class="d-tab${atab==='deck'?' on':''}" onclick="switchTab('${key}','deck')">Full Decklist</button>
-    </div>
-    ${pnlABC(d)}${pnlStrat(d)}${pnlDeck(d)}
-  </div>`;
-}
-
-function pnlABC(d){
-  const rows=d.abcdefg.map((s,i)=>`
+  const abcHTML=d.abcdefg.map((s,i)=>`
     <div class="abc-row">
       <div class="abc-ltr" style="color:${CLRS[i]}">${s.letter}</div>
       <div class="abc-bd"><h4>${s.phase}</h4><p>${s.desc}</p></div>
     </div>`).join('');
-  return`<div class="d-pnl${atab==='abc'?' on':''}" id="pa-${d.key}">
-    <div class="abc-grid">${rows}</div>
-    <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06)">
-      <button onclick="switchTab('${d.key}','strat')"
-        style="font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
-        color:var(--dac-c,var(--gold));background:rgba(0,0,0,.3);border:1px solid var(--dac-c,rgba(200,168,75,.3));
-        padding:10px 20px;cursor:pointer;transition:all .2s;width:100%">
-        Deep Strategy — How This Deck Wins →
-      </button>
-    </div>
-  </div>`;
-}
 
-function pnlStrat(d){
-  return`<div class="d-pnl${atab==='strat'?' on':''}" id="ps-${d.key}">
-    <div class="s-blk"><p style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;color:var(--txt);line-height:1.7;font-style:italic;border-left:3px solid var(--dac-c,var(--gold));padding-left:14px">${d.how_it_plays}</p></div>
-    <div class="s-blk"><h4>The Game Plan</h4><p style="white-space:pre-line;font-family:'Rajdhani',sans-serif;font-size:.98rem;color:var(--txt);line-height:1.72">${d.turn_order}</p></div>
-  </div>`;
-}
-
-function pnlDeck(d){
-  const RUNE_IDS={Fury:'OGN-007',Body:'OGN-126',Calm:'OGN-042',Order:'OGN-214',Mind:'OGN-089',Chaos:'OGN-166'};
-  const bfR=d.battlefields.map(bf=>`
-    <div style="padding:10px 12px;border:1px solid rgba(255,255,255,.06);margin-bottom:4px;cursor:pointer;background:rgba(255,255,255,.02)"
-      onclick="showCard('${bf.cid}')">
-      <div style="font-family:'Cinzel',serif;font-size:.8rem;color:var(--txt)">${bf.name}</div>
-      <div style="font-family:'Rajdhani',sans-serif;font-size:.75rem;color:var(--txt2);margin-top:3px">${bf.ability}</div>
-    </div>`).join('');
-
-  const mR=d.main_cards.map(c=>`
+  const cardsHTML=d.main_cards.map(c=>`
     <div class="crow" onclick="showCard('${c.cid}')">
       <span class="c-qty">x${c.qty}</span>
       <span class="c-rar r${c.rarity}">${RSYM[c.rarity]||'·'}</span>
@@ -303,7 +261,7 @@ function pnlDeck(d){
       <span class="c-cost">${c.cost}/${c.might}</span>
     </div>`).join('');
 
-  const sR=d.sb_cards.map(c=>`
+  const sbHTML=d.sb_cards.map(c=>`
     <div class="crow" onclick="showCard('${c.cid}')">
       <span class="c-qty">x${c.qty}</span>
       <span class="c-rar r${c.rarity}">${RSYM[c.rarity]||'·'}</span>
@@ -311,43 +269,83 @@ function pnlDeck(d){
       <span class="c-cost">${c.cost}/${c.might}</span>
     </div>`).join('');
 
-  const runeR=d.runes.map(r=>{
-    const domain=r.replace(/\d+x |\(.*?\)/g,'').trim();
-    const rid=RUNE_IDS[domain]||'';
-    return`<div class="rune-pill" style="cursor:pointer" onclick="showCard('${rid}')">${r}</div>`;
+  const bfHTML=d.battlefields.map(bf=>`
+    <div class="crow" onclick="showCard('${bf.cid}')">
+      <span class="c-name">${bf.name}</span>
+    </div>`).join('');
+
+  const runeHTML=d.runes.map(r=>{
+    const dom=r.replace(/\d+x |\(.*?\)/g,'').trim();
+    return`<div class="rune-pill" style="cursor:pointer" onclick="showCard('${RI[dom]||''}')">${r}</div>`;
   }).join('');
 
-  return`<div class="d-pnl${atab==='deck'?' on':''}" id="pd-${d.key}">
+  det.innerHTML=`
+  <div class="d-wrap" style="--dac:${d.accent}44;--dac-c:${d.accent}">
 
-    <div class="dl-sec">
-      <div class="dl-hdr">Main Deck — 40 Cards</div>
-      <div class="dl-sub">✦ Signature &nbsp;◈ Epic &nbsp;★ Rare &nbsp;◆ Uncommon &nbsp;○ Common — tap any card to view it</div>
-      <div class="card-list">${mR}</div>
+    <!-- HERO: NAME + TAGLINE + CARDS — the 5 second sell -->
+    <div style="padding:20px 20px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+        <h2 style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.2rem,3.5vw,2rem);color:var(--dac-c,var(--gold));line-height:1">${d.name}</h2>
+        <span style="font-family:'Rajdhani',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--dac-c,var(--gold));opacity:.7">${d.style}</span>
+      </div>
+      <p style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:600;color:var(--txt);margin-bottom:16px">${d.tagline}</p>
+      <div style="display:flex;gap:10px">
+        <div style="flex:1;cursor:pointer" onclick="showCard('${d.legend_cid}')">
+          <img src="${C}${d.legend_cid}.webp" style="width:100%;border-radius:4px;border:2px solid var(--dac-c,var(--gold));display:block" onerror="this.style.display='none'">
+          <div style="font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.1em;color:var(--dac-c,var(--gold));text-transform:uppercase;margin-top:4px;opacity:.7">Legend</div>
+        </div>
+        <div style="flex:1;cursor:pointer" onclick="showCard('${d.champion_cid}')">
+          <img src="${C}${d.champion_cid}.webp" style="width:100%;border-radius:4px;border:2px solid rgba(11,196,227,.5);display:block" onerror="this.style.display='none'">
+          <div style="font-family:'Cinzel',serif;font-size:.52rem;letter-spacing:.1em;color:rgba(11,196,227,.7);text-transform:uppercase;margin-top:4px;opacity:.7">Champion · ${d.champion_cost} cost · ${d.champion_might}M</div>
+        </div>
+      </div>
     </div>
 
-    <div class="dl-sec">
-      <div class="dl-hdr">Sideboard — 8 Cards (Game 2)</div>
-      <div class="card-list">${sR}</div>
+    <!-- STRATEGY — collapsed -->
+    <div class="csec" style="border-top:1px solid rgba(255,255,255,.06)">
+      <div class="chdr" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.carr').textContent=this.nextElementSibling.style.display==='none'?'▼':'▲'">
+        <span style="font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt2)">Strategy</span>
+        <span class="carr" style="color:var(--txt3);font-size:.7rem">▼</span>
+      </div>
+      <div style="display:none;padding:0 20px 20px">
+        <p style="font-family:'Rajdhani',sans-serif;font-size:1rem;color:var(--txt);line-height:1.7;border-left:3px solid var(--dac-c,var(--gold));padding-left:14px;margin-bottom:18px">${d.how_it_plays}</p>
+        <div style="font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin-bottom:10px">Early · Mid · Late</div>
+        <p style="white-space:pre-line;font-family:'Rajdhani',sans-serif;font-size:.96rem;color:var(--txt);line-height:1.7">${d.turn_order}</p>
+      </div>
     </div>
 
-    <div class="dl-sec">
-      <div class="dl-hdr" style="cursor:pointer" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
-        Rune Deck — 12 Cards &nbsp;<span style="opacity:.5;font-size:.7em">▼</span>
+    <!-- ABCDEFG — collapsed -->
+    <div class="csec" style="border-top:1px solid rgba(255,255,255,.06)">
+      <div class="chdr" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.carr').textContent=this.nextElementSibling.style.display==='none'?'▼':'▲'">
+        <span style="font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt2)">A · B · C · D · E · F · G</span>
+        <span class="carr" style="color:var(--txt3);font-size:.7rem">▼</span>
       </div>
-      <div style="display:none">
-        <div class="rune-row" style="margin-top:8px">${runeR}</div>
+      <div style="display:none;padding:0 20px 20px">
+        <div class="abc-grid">${abcHTML}</div>
       </div>
     </div>
 
-    <div class="dl-sec">
-      <div class="dl-hdr" style="cursor:pointer" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
-        Battlefields — 3 in Deck &nbsp;<span style="opacity:.5;font-size:.7em">▼</span>
+    <!-- FULL DECKLIST — collapsed -->
+    <div class="csec" style="border-top:1px solid rgba(255,255,255,.06)">
+      <div class="chdr" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.carr').textContent=this.nextElementSibling.style.display==='none'?'▼':'▲'">
+        <span style="font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt2)">Full Decklist</span>
+        <span class="carr" style="color:var(--txt3);font-size:.7rem">▼</span>
       </div>
-      <div style="display:none;margin-top:8px">${bfR}</div>
+      <div style="display:none;padding:0 20px 20px">
+        <div style="font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin-bottom:8px">Main — 40 Cards</div>
+        <div class="card-list">${cardsHTML}</div>
+        <div style="font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin:14px 0 8px">Sideboard — 8 Cards</div>
+        <div class="card-list">${sbHTML}</div>
+        <div style="font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin:14px 0 8px">Rune Deck</div>
+        <div class="rune-row">${runeHTML}</div>
+        <div style="font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin:14px 0 8px">Battlefields</div>
+        <div class="card-list">${bfHTML}</div>
+      </div>
     </div>
 
   </div>`;
 }
+
 
 function switchTab(key,tab){atab=tab;renderDetail(key)}
 
