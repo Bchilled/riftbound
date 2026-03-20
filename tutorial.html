@@ -255,12 +255,22 @@ function showAbcd(l,n,c){
 function hideAbcd(){ document.getElementById('abcd').classList.remove('on'); }
 
 function scoreAnimate(){
-  // Light up 1-8 sequentially
   const ids=['s1','s2','s3','s4','s5','s6','s7','s8'];
+  // Reset all first
+  ids.forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.remove('hi','scored');
+    el.style.borderColor='';el.style.color='';el.style.background='';el.style.boxShadow='';
+  });
+  // Light up one by one
   ids.forEach((id,i)=>{
     setTimeout(()=>{
-      document.getElementById(id).classList.add('hi');
-    }, i*180);
+      const el=document.getElementById(id);
+      el.style.borderColor='#c8a84b';
+      el.style.color='#c8a84b';
+      el.style.background='rgba(200,168,75,.15)';
+      el.style.boxShadow='0 0 10px rgba(200,168,75,.4)';
+    }, i*200);
   });
 }
 
