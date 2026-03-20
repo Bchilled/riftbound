@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Riftbound — Choose Your Champion</title>
+<title>Riftbound — Choose Your Legend</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -118,6 +118,30 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--txt);ove
 footer{text-align:center;padding:28px;font-family:'Rajdhani',sans-serif;font-size:.73rem;color:var(--txt3);letter-spacing:.1em;border-top:1px solid rgba(200,168,75,.08);margin-top:30px}
 @media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}.d-hdr{grid-template-columns:1fr}.d-img{display:none}.abc-grid,.abcd-grid{grid-template-columns:1fr}.card-list{grid-template-columns:1fr 1fr}.bf-list,.zone-row{grid-template-columns:1fr}}
 @media(max-width:480px){.grid{gap:2px}.d-tab{padding:11px 12px;font-size:.75rem}.card-list{grid-template-columns:1fr}}
+
+/* RUNE SYMBOLS */
+.rune-symbols {
+  position:absolute;
+  bottom:36px;
+  left:10px;
+  display:flex;
+  gap:5px;
+  z-index:6;
+}
+.rune-sym {
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  backdrop-filter:blur(4px);
+  border:1px solid rgba(255,255,255,.2);
+  box-shadow:0 0 10px currentColor, 0 2px 8px rgba(0,0,0,.6);
+  transition:transform .3s;
+}
+.dcard:hover .rune-sym { transform:scale(1.15); }
+.rune-sym svg { width:16px; height:16px; }
 </style>
 </head>
 <body>
@@ -126,7 +150,7 @@ footer{text-align:center;padding:28px;font-family:'Rajdhani',sans-serif;font-siz
   <h1>RIFTBOUND</h1>
   <div class="div-line"></div>
   <p class="hd-sub">War Table &nbsp;·&nbsp; Origins &amp; Spiritforged</p>
-  <p class="choose-txt" style="margin-top:18px">Choose Your Champion</p>
+  <p class="choose-txt" style="margin-top:18px">Choose Your Legend</p>
 </div>
 <div class="grid" id="grid"></div>
 <div class="htp-wrap">
@@ -160,11 +184,43 @@ const RSYM={C:'○',U:'◆',R:'★',E:'◈',S:'✦'};
 let active=null,atab='abc';
 function esc(s){return(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/[\r\n]+/g,' ')}
 
+
+const RUNE_INFO = {
+  Fury:  { color:'#E53935', bg:'rgba(229,57,53,.25)',  svg:'<path d="M8 2 L5 8 L8 7 L5 14 L11 6 L8 7 Z" fill="currentColor"/>' },
+  Body:  { color:'#F57C00', bg:'rgba(245,124,0,.25)',  svg:'<path d="M8 3 C5 3 3 5.5 3 8 C3 10.5 5 12 8 13 C11 12 13 10.5 13 8 C13 5.5 11 3 8 3 Z M6 7 L8 5 L10 7 L9 9 L7 9 Z" fill="currentColor"/>' },
+  Calm:  { color:'#43A047', bg:'rgba(67,160,71,.25)',  svg:'<path d="M8 3 Q12 5 12 8 Q12 12 8 13 Q5 11 4 8 Q4 5 8 3 Z M6 8 Q8 6 10 8 Q8 11 6 8 Z" fill="currentColor"/>' },
+  Order: { color:'#F9A825', bg:'rgba(249,168,37,.25)', svg:'<path d="M8 2 L9.5 6 L14 6 L10.5 9 L12 13 L8 10.5 L4 13 L5.5 9 L2 6 L6.5 6 Z" fill="currentColor"/>' },
+  Mind:  { color:'#1E88E5', bg:'rgba(30,136,229,.25)', svg:'<ellipse cx="8" cy="8" rx="5" ry="3" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><line x1="8" y1="2" x2="8" y2="14" stroke="currentColor" stroke-width="1"/>' },
+  Chaos: { color:'#8E24AA', bg:'rgba(142,36,170,.25)', svg:'<path d="M8 3 Q11 5 13 8 Q11 12 8 13 Q7 10 9 8 Q7 6 5 7 Q5 4 8 3 Z M5 9 Q6 12 8 13 Q6 12 5 9 Z" fill="currentColor"/>' },
+};
+
+const DECK_RUNES = {
+  azir:   ['Calm','Order'],
+  voli:   ['Fury','Body'],
+  mf:     ['Body','Chaos'],
+  draven: ['Fury','Chaos'],
+  lucian: ['Fury','Body'],
+  sett:   ['Body','Order'],
+  ahri:   ['Calm','Mind'],
+  teemo:  ['Mind','Chaos'],
+};
+
+function runeSymbols(key) {
+  const runes = DECK_RUNES[key] || [];
+  return '<div class="rune-symbols">' + runes.map(r => {
+    const ri = RUNE_INFO[r];
+    return `<div class="rune-sym" style="color:${ri.color};background:${ri.bg}">
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">${ri.svg}</svg>
+    </div>`;
+  }).join('') + '</div>';
+}
+
 function renderGrid(){
   document.getElementById('grid').innerHTML=DECKS.map(d=>`
     <div class="dcard${d.right_crop?' rc':''}" id="dc-${d.key}" style="--ac:${d.accent}" onclick="pick('${d.key}')">
       <div class="dcard-bar"></div>
       <img class="dcard-img" src="${IMGS[d.champion_key]}" alt="${d.name}" onerror="this.style.display='none'" loading="lazy">
+      ${runeSymbols(d.key)}
       <div class="dcard-body">
         <div class="dcard-tag" style="background:${d.accent}22;color:${d.accent};border:1px solid ${d.accent}44">${d.style}</div>
         <div class="dcard-name">${d.name}</div>
