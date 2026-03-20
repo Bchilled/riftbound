@@ -62,10 +62,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#07080f}
 .rtok.lit{background:rgba(200,168,75,.42);box-shadow:0 0 5px rgba(200,168,75,.4)}
 
 /* TEXT */
-#txt-wrap{position:absolute;bottom:clamp(16px,4vw,44px);left:50%;transform:translateX(-50%);width:min(680px,90vw);text-align:center;z-index:50}
-#txt-head{font-family:'Cinzel Decorative',serif;font-size:clamp(1.3rem,3.5vw,2.6rem);font-weight:700;color:var(--gold);letter-spacing:.1em;margin-bottom:10px;opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s;text-shadow:0 0 24px rgba(200,168,75,.25)}
+#txt-wrap{position:absolute;top:clamp(16px,4vw,40px);left:50%;transform:translateX(-50%);width:min(680px,90vw);text-align:center;z-index:50}
+#txt-head{font-family:'Cinzel Decorative',serif;font-size:clamp(1.8rem,5vw,3.8rem);font-weight:900;color:var(--gold);letter-spacing:.1em;margin-bottom:12px;opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s;text-shadow:0 0 30px rgba(200,168,75,.3)}
 #txt-head.on{opacity:1;transform:translateY(0)}
-#txt-body{font-family:'Rajdhani',sans-serif;font-size:clamp(.92rem,2.1vw,1.18rem);color:#e8e4d8;line-height:1.75;opacity:0;transform:translateY(6px);transition:opacity .5s .15s,transform .5s .15s;white-space:pre-line}
+#txt-body{font-family:'Rajdhani',sans-serif;font-size:clamp(1.1rem,2.8vw,1.6rem);font-weight:600;color:#e8e4d8;line-height:1.65;opacity:0;transform:translateY(6px);transition:opacity .5s .15s,transform .5s .15s;white-space:pre-line}
 #txt-body.on{opacity:1;transform:translateY(0)}
 
 /* ABCD FLASH */
@@ -150,7 +150,7 @@ const BEATS=[
   {t:'title',dur:3000},
 
   // GOAL
-  {t:'text',head:'How to Play',body:'Get to 8 points before your opponent.',dur:4500,bg:'dark',hi:['s8']},
+  {t:'text',head:'How to Play',body:'First to 8 points wins.',dur:4500,bg:'dark',hi:['s8']},
   {t:'text',head:'Scoring',body:'You get a point by conquering a battlefield with a unit.\n\nYou get another point for holding it during upkeep.',dur:6000,bg:'dark',hi:['z-bf','s1','s2']},
 
   // A
@@ -167,7 +167,7 @@ const BEATS=[
 
   // D
   {t:'abcd',letter:'D',name:'Draw',color:AC.D,dur:2800},
-  {t:'text',head:'D — Draw',body:'Draw 1 card from your main deck.',dur:3500,bg:'dark',hi:['z-deck','z-hand']},
+  {t:'text',head:'D — Draw',body:'Draw 1 card.',dur:3500,bg:'dark',hi:['z-deck','z-hand']},
 
   // PLAY
   {t:'text',head:'Play a Unit',body:'Spend runes to play a unit card from your hand.\n\nUnits enter your base exhausted.\nThey cannot move the same turn they are played.',dur:6500,bg:'dark',hi:['z-hand','z-base']},
