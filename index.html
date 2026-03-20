@@ -122,26 +122,23 @@ footer{text-align:center;padding:28px;font-family:'Rajdhani',sans-serif;font-siz
 /* RUNE SYMBOLS */
 .rune-symbols {
   position:absolute;
-  bottom:36px;
-  left:10px;
+  bottom:10px;
+  right:10px;
   display:flex;
-  gap:5px;
+  gap:4px;
   z-index:6;
 }
 .rune-sym {
-  width:28px;
-  height:28px;
-  border-radius:50%;
+  width:24px;
+  height:24px;
   display:flex;
   align-items:center;
   justify-content:center;
-  backdrop-filter:blur(4px);
-  border:1px solid rgba(255,255,255,.2);
-  box-shadow:0 0 10px currentColor, 0 2px 8px rgba(0,0,0,.6);
-  transition:transform .3s;
+  opacity:0.35;
+  transition:opacity .3s;
 }
-.dcard:hover .rune-sym { transform:scale(1.15); }
-.rune-sym svg { width:16px; height:16px; }
+.dcard:hover .rune-sym { opacity:0.6; }
+.rune-sym svg { width:18px; height:18px; filter:drop-shadow(0 1px 3px rgba(0,0,0,.8)); }
 </style>
 </head>
 <body>
@@ -151,6 +148,7 @@ footer{text-align:center;padding:28px;font-family:'Rajdhani',sans-serif;font-siz
   <div class="div-line"></div>
   <p class="hd-sub">War Table &nbsp;·&nbsp; Origins &amp; Spiritforged</p>
   <p class="choose-txt" style="margin-top:18px">Choose Your Legend</p>
+<p style="font-family:'Cinzel',serif;font-size:clamp(.55rem,1.2vw,.75rem);color:rgba(255,255,255,.25);letter-spacing:.35em;text-transform:uppercase;margin-top:6px;margin-bottom:0">Snow's Premade Decks</p>
 </div>
 <div class="grid" id="grid"></div>
 <div class="htp-wrap">
