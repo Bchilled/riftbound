@@ -131,6 +131,26 @@ html,body{width:100%;height:100%;overflow:hidden;background:#07080f}
 #back-a:hover{color:var(--gold)}
 #tap-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(200,168,75,.3);z-index:200;animation:pulse 2s ease-in-out infinite;pointer-events:none}
 @keyframes pulse{0%,100%{opacity:.2}50%{opacity:.6}}
+
+/* WIN FLASH */
+#win-flash{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85);z-index:70;opacity:0;pointer-events:none;transition:opacity .3s}
+#win-flash.on{opacity:1}
+#win-txt{font-family:'Cinzel Decorative',serif;font-size:clamp(4rem,15vw,10rem);font-weight:900;color:#c8a84b;text-shadow:0 0 60px rgba(200,168,75,.6),0 0 120px rgba(200,168,75,.3);animation:winpop .5s cubic-bezier(.36,.07,.19,.97) both}
+@keyframes winpop{0%{transform:scale(0);opacity:0}65%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+
+/* DICE */
+#dice-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.82);z-index:65;opacity:0;pointer-events:none;transition:opacity .3s}
+#dice-wrap.on{opacity:1}
+#dice-row{display:flex;gap:40px;align-items:center;margin-bottom:20px}
+.die{width:clamp(60px,14vw,100px);height:clamp(60px,14vw,100px);background:linear-gradient(135deg,#1a1a2e,#0d1020);border:2px solid rgba(200,168,75,.4);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Cinzel Decorative',serif;font-size:clamp(1.8rem,6vw,3.5rem);font-weight:900;transition:all .15s;position:relative}
+.die.you{border-color:var(--gold);box-shadow:0 0 20px rgba(200,168,75,.3)}
+.die.them{border-color:rgba(255,255,255,.2)}
+.die.winner{border-color:#c8a84b;box-shadow:0 0 30px rgba(200,168,75,.5);animation:diewin .4s ease}
+@keyframes diewin{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+#dice-vs{font-family:'Cinzel',serif;font-size:clamp(.8rem,2vw,1.2rem);color:rgba(255,255,255,.3);letter-spacing:.2em}
+#dice-result{font-family:'Cinzel',serif;font-size:clamp(.9rem,2.5vw,1.4rem);letter-spacing:.15em;color:var(--gold);text-transform:uppercase;opacity:0;transition:opacity .4s}
+#dice-you-lbl,#dice-them-lbl{font-family:'Cinzel',serif;font-size:clamp(.5rem,.9vw,.7rem);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);text-align:center;margin-top:6px}
+.die-col{display:flex;flex-direction:column;align-items:center}
 </style>
 </head>
 <body>
@@ -181,6 +201,21 @@ html,body{width:100%;height:100%;overflow:hidden;background:#07080f}
 <!-- ABCD -->
 <div id="abcd"><div id="abcd-L"></div><div id="abcd-N"></div></div>
 
+<div id="win-flash"><div id="win-txt">YOU WIN</div></div>
+<div id="dice-wrap">
+  <div id="dice-row">
+    <div class="die-col">
+      <div class="die you" id="die-you">?</div>
+      <div id="dice-you-lbl">You</div>
+    </div>
+    <div id="dice-vs">VS</div>
+    <div class="die-col">
+      <div class="die them" id="die-them">?</div>
+      <div id="dice-them-lbl">Them</div>
+    </div>
+  </div>
+  <div id="dice-result"></div>
+</div>
 <div id="prog"><div id="prog-bar"></div></div>
 <div id="ctrl"><button class="cb2" onclick="restart();event.stopPropagation()">↺</button></div>
 <a href="index.html" id="back-a" onclick="event.stopPropagation()">← Decks</a>
@@ -189,8 +224,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#07080f}
 <script>
 const BEATS = [
   // INTRO
-  { h:'How to Play', b:'', hi:[], bg:'dark' },
-  { h:'First to 8 points wins.', b:'', hi:['s1','s2','s3','s4','s5','s6','s7','s8'], bg:'dark', score:true },
+  { h:'How to Play', b:'First to 8 points wins.', hi:[], bg:'dark', score:true },
+  { h:'YOU WIN', b:'', hi:['s1','s2','s3','s4','s5','s6','s7','s8'], bg:'score', win:true },
+  { h:'Roll for First', b:'Highest roll goes first.', hi:[], bg:'dark', dice:true },
 
   // BOARD ZONES
   { h:'The Legend', b:'Defines your deck.\nSits in the Champion Legend zone.\nActive from turn one.', hi:['z-legend'], bg:'dark' },
@@ -326,6 +362,45 @@ function scoreAnimate(){
   });
 }
 
+function showWin(){
+  document.getElementById('win-flash').classList.add('on');
+  setTimeout(()=>document.getElementById('win-flash').classList.remove('on'),2200);
+}
+
+function rollDice(){
+  const diceWrap=document.getElementById('dice-wrap');
+  const dyEl=document.getElementById('die-you');
+  const dtEl=document.getElementById('die-them');
+  const res=document.getElementById('dice-result');
+  diceWrap.classList.add('on');
+  dyEl.textContent='?'; dtEl.textContent='?';
+  res.style.opacity='0'; res.textContent='';
+  dyEl.classList.remove('winner'); dtEl.classList.remove('winner');
+
+  const FACES=['⚀','⚁','⚂','⚃','⚄','⚅'];
+  let rolls=0;
+  const shake=setInterval(()=>{
+    dyEl.textContent=FACES[Math.floor(Math.random()*6)];
+    dtEl.textContent=FACES[Math.floor(Math.random()*6)];
+    rolls++;
+    if(rolls>14){
+      clearInterval(shake);
+      // We win: our roll is higher
+      const ourRoll=Math.floor(Math.random()*3)+4; // 4,5,6
+      const theirRoll=Math.floor(Math.random()*(ourRoll-1))+1; // always less
+      dyEl.textContent=FACES[ourRoll-1];
+      dtEl.textContent=FACES[theirRoll-1];
+      setTimeout(()=>{
+        dyEl.classList.add('winner');
+        res.textContent='You go first!';
+        res.style.opacity='1';
+      },300);
+    }
+  },80);
+}
+
+function hideDice(){ document.getElementById('dice-wrap').classList.remove('on'); }
+
 function play(i){
   if(i>=BEATS.length){ end(); return; }
   idx=i;
@@ -334,18 +409,20 @@ function play(i){
   document.getElementById('board-wrap').classList.add('on');
 
   if(b.abcd){
-    hideAbcd();
+    hideDice();hideAbcd();
     clearHi();
     setBg('dark');
     setTimeout(()=>showAbcd(b.abcd,b.name,b.color),50);
     return;
   }
 
-  hideAbcd();
+  hideDice();hideAbcd();
   setBg(b.bg||'dark');
   applyHi(b.hi||[]);
   setText(b.h||'',b.b||'');
   if(b.score) setTimeout(scoreAnimate,400);
+  if(b.win) setTimeout(showWin,100);
+  if(b.dice) setTimeout(rollDice,300);
 }
 
 function advance(){
