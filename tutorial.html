@@ -223,53 +223,68 @@ html,body{width:100%;height:100%;overflow:hidden;background:#07080f}
 
 <script>
 const BEATS = [
-  // INTRO
+  // GOAL
   { h:'How to Play', b:'First to 8 points wins.', hi:[], bg:'dark', score:true },
   { h:'YOU WIN', b:'', hi:['s1','s2','s3','s4','s5','s6','s7','s8'], bg:'score', win:true },
-  { h:'Roll for First', b:'Highest roll goes first.', hi:[], bg:'dark', dice:true },
-
-  // BOARD ZONES
-  { h:'The Legend', b:'Defines your deck.\nSits in the Champion Legend zone.\nActive from turn one.', hi:['z-legend'], bg:'dark' },
-  { h:'The Champion', b:'Your chosen unit.\nPlayed from hand like any card.', hi:['z-champ'], bg:'dark' },
-  { h:'Runes', b:'Your resource.\nDrawn from your 12-card Rune Deck each turn.', hi:['z-rdeck','z-runes'], bg:'dark' },
-  { h:'Discard Pile', b:'Cards go here after being played or destroyed.', hi:['z-trash'], bg:'dark' },
-  { h:'Your Base', b:'Where your units start.\nCards are played here first.', hi:['z-base'], bg:'dark' },
-  { h:'The Battlefield', b:'Where points are won.\nConquer it. Hold it.', hi:['z-bf'], bg:'dark' },
 
   // SETUP
-  { h:'Roll for First', b:'Winner chooses who goes first.\nMost take first.', hi:[], bg:'dark' },
-  { h:'Going Second?', b:'You conjure 3 runes on your first turn\ninstead of 2.', hi:['z-rdeck','z-runes'], bg:'dark' },
-  { h:"Let's Learn by Playing", b:'', hi:[], bg:'dark' },
-  { h:'Draw 4', b:'Each player draws 4 cards to start.', hi:['z-hand','z-deck'], bg:'dark' },
-  { h:'Mulligan', b:'Not happy?\nPut up to 2 cards randomly at the bottom of your deck.\nDraw that many back. Once.', hi:['z-hand','z-deck'], bg:'dark' },
+  { h:'Roll for First', b:'Both players roll 2 dice.\nHighest total goes first.', hi:[], bg:'dark', dice:true },
+  { h:'Going Second?', b:'You draw 3 runes on your very first turn\ninstead of 2.\nSmall advantage to balance it out.', hi:['z-rdeck','z-runes'], bg:'dark' },
+
+  // DRAW
+  { h:'Draw 4', b:'Each player draws 4 cards.\nThis is your opening hand.', hi:['z-hand','z-deck'], bg:'dark' },
+  { h:'Mulligan', b:'Not feeling it?\nPut up to 2 cards face down at the bottom of your deck.\nDraw that many back.\nYou get one shot at this.', hi:['z-hand','z-deck'], bg:'dark' },
 
   // ABCD
   { abcd:'A', name:'Awaken', color:'#c8a84b' },
-  { h:'A — Awaken', b:'Untap everything.\nUnits. Runes. Legend.\nAll ready to use again.', hi:['z-legend','z-runes','z-base'], bg:'dark' },
+  { h:'A — Awaken', b:'Untap everything.\nEvery exhausted unit, rune, and legend stands back up.\nYou start fresh.', hi:['z-legend','z-runes','z-base'], bg:'dark' },
 
   { abcd:'B', name:'Board State', color:'#1E88E5' },
-  { h:'B — Board State', b:'Score points for any battlefield you held.\nRead the board. Plan your turn.', hi:['z-bf','s1','s2'], bg:'dark' },
+  { h:'B — Board State', b:'Score any battlefield you held since last turn.\n1 point each. Right now. Free.\nThen read the board.', hi:['z-bf','z-bf2'], bg:'dark' },
 
   { abcd:'C', name:'Conjure', color:'#E53935' },
-  { h:'C — Conjure', b:'Draw 2 runes from your Rune Deck.\nSpend them to play cards.\nUnused runes disappear end of turn.', hi:['z-rdeck','z-runes'], bg:'dark' },
+  { h:'C — Conjure', b:'Draw 2 runes from your Rune Deck.\nThese are your resources for the turn.', hi:['z-rdeck','z-runes'], bg:'dark' },
+  { h:'Rune Cost', b:'Every card has a cost in the top corner.\nExhaust (turn sideways) that many runes to pay it.\nThey ready back up next Awaken.\nUnspent runes disappear end of turn.', hi:['z-runes'], bg:'dark' },
 
   { abcd:'D', name:'Draw', color:'#43A047' },
-  { h:'D — Draw', b:'Draw 1 card.\nNow play your turn.', hi:['z-deck','z-hand'], bg:'dark' },
+  { h:'D — Draw', b:'Draw 1 card from your Main Deck.\nNow you play your turn.', hi:['z-deck','z-hand'], bg:'dark' },
 
-  // GAMEPLAY
-  { h:'Conquering', b:'Move a ready unit from your base to the battlefield.\nNobody there — you conquer it.\n1 point.', hi:['z-base','z-bf'], bg:'dark' },
-  { h:'Combat', b:'Enemy units there — Showdown.\nBoth sides add Might.\nAssign damage. Surviving side conquers.\nUnits fully heal after.', hi:['z-bf'], bg:'combat' },
-  { h:'Spells & Reactions', b:'Play spells from your hand at any time.\nReactions trigger on your opponent\'s turn too.\nUse them to swing combat.', hi:['z-hand'], bg:'spell' },
-  { h:'Holding', b:'Unit still on the battlefield at your next B step?\nThat\'s another point. Free.\nHolding wins games.', hi:['z-bf'], bg:'dark' },
-  { h:'Equipment', b:'Gear cards attach to units.\nThey boost Might and add abilities.\nEquipped units are harder to kill.', hi:['z-base','z-bf'], bg:'dark' },
-  { h:'Ganking', b:'Units with GANKING can move between battlefields freely.\nChase down enemies. Reinforce allies.\nControl both fields at once.', hi:['z-bf'], bg:'dark' },
-  { h:'Counterspells', b:'Some reactions cancel your opponent\'s spells entirely.\nTiming matters. Hold them until they commit.', hi:['z-hand'], bg:'spell' },
+  // UNIT CARD
+  { h:'A Unit Card', b:'Units are your fighters.\nTwo numbers on every unit:\n\nCost — runes to play it.\nMight — how hard it hits in combat.', hi:['z-hand'], bg:'dark' },
+  { h:'Playing a Unit', b:'Pay its rune cost.\nThe unit enters your Base exhausted.\nIt cannot move the same turn it arrives.\nNext turn it is ready.', hi:['z-base','z-hand'], bg:'dark' },
+
+  // MOVING
+  { h:'Moving to the Battlefield', b:'Exhaust a ready unit to move it\nfrom your Base to a Battlefield.\nThis is how you fight for points.', hi:['z-base','z-bf','z-bf2'], bg:'dark' },
+  { h:'Nobody There?', b:'Easy.\nYou conquer it.\n1 point.\nYou now control that battlefield.', hi:['z-bf','z-bf2','s1'], bg:'dark' },
+
+  // COMBAT
+  { h:'Someone Is There', b:'Showdown.\nBoth sides count total Might.\nAssign that damage to enemy units.\nUnits at 0 Might die.', hi:['z-bf','z-bf2'], bg:'combat' },
+  { h:'Surviving Side Conquers', b:'Your units survive, theirs don\'t —\nyou conquer the battlefield.\n1 point.\nAll surviving units fully heal.', hi:['z-bf','z-bf2','s2'], bg:'combat' },
+
+  // SPELLS
+  { h:'Spells', b:'Played from your hand.\nOne-time effects — damage, buffs, removal.\nGoes to the discard pile after resolving.', hi:['z-hand','z-trash'], bg:'spell' },
+  { h:'Reactions', b:'Special spells you can play\non your opponent\'s turn.\nCounter their moves. Protect your units.\nTiming is everything.', hi:['z-hand'], bg:'spell' },
+
+  // HOLDING
+  { h:'Holding', b:'Unit still on a battlefield\nat the start of your next turn?\nScore 1 point during B. Every turn.\nHolding wins most games.', hi:['z-bf','z-bf2'], bg:'dark' },
+
+  // EQUIPMENT
+  { h:'Equipment', b:'Gear cards attach to your units.\nBoost their Might. Add abilities.\nGear stays until the unit dies.', hi:['z-base'], bg:'dark' },
+
+  // GANKING
+  { h:'Ganking', b:'Units with GANKING\ncan move battlefield to battlefield directly.\nFlank. Chase. Reinforce.', hi:['z-bf','z-bf2'], bg:'dark' },
+
+  // COUNTERSPELLS
+  { h:'Counterspells', b:'Some reactions cancel spells entirely.\nHold them. Wait.\nPlay them the moment your opponent commits.', hi:['z-hand'], bg:'spell' },
 
   // WINNING
-  { h:'Winning at 7', b:'Holding a battlefield at 7 points?\nScore it during B — that\'s 8. You win.', hi:['s7','s8','z-bf'], bg:'score' },
-  { h:'Winning at 6', b:'Capture both battlefields in one turn.\n6 becomes 7 becomes 8. You win.', hi:['s6','s7','s8','z-bf'], bg:'score' },
-  { h:'The Final Point Rule', b:'Your 8th point must come from holding\nor conquering both fields same turn.\n\nOne conquest alone for point 8 = draw a card instead.', hi:['s8'], bg:'score' },
-  { h:'Shuffle Up.', b:'That\'s Riftbound.\nA  B  C  D\nGood luck.', hi:[], bg:'dark' },
+  { h:'Winning', b:'Get to 8 points.\nBut your final point has one rule.', hi:['s8'], bg:'score' },
+  { h:'At 7 Points', b:'Hold a battlefield into your next B step.\nThat\'s point 8. You win.', hi:['s7','s8','z-bf','z-bf2'], bg:'score' },
+  { h:'At 6 Points', b:'Conquer both battlefields in one turn.\n6 → 7 → 8. You win.', hi:['s6','s7','s8','z-bf','z-bf2'], bg:'score' },
+  { h:'The Rule', b:'Your 8th point must come from holding\nor conquering both fields same turn.\n\nConquer just one for point 8?\nDraw a card. Game continues.', hi:['s8'], bg:'score' },
+
+  // END
+  { h:'Shuffle Up.', b:'A — Awaken\nB — Board State\nC — Conjure\nD — Draw\n\nGood luck.', hi:[], bg:'dark' },
 ];
 
 let idx = 0;
