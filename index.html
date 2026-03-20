@@ -267,29 +267,24 @@ function pnlABC(d){
 }
 
 function pnlStrat(d){
+  const CARD='https://cdn.piltoverarchive.com/cards/';
   return`<div class="d-pnl${atab==='strat'?' on':''}" id="ps-${d.key}">
     <div class="s-blk">
       <h4>Legend &amp; Champion</h4>
-      <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap">
-        <div style="display:flex;flex-direction:column;gap:8px;flex:1;min-width:200px">
-          <div style="position:relative;overflow:hidden;border:2px solid var(--dac-c,var(--gold));height:120px">
-            <img src="${TILES[d.champion_key]}" style="width:100%;height:100%;object-fit:cover;object-position:center top" onerror="this.style.display='none'">
-            <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.7);padding:6px 8px">
-              <div style="font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.1em;color:var(--dac-c,var(--gold));text-transform:uppercase">Legend</div>
-              <div style="font-family:'Cinzel',serif;font-size:.78rem;color:#fff">${d.legend_name}</div>
-            </div>
-          </div>
-          <div style="font-family:'Rajdhani',sans-serif;font-size:.82rem;color:var(--txt2);line-height:1.5">${d.legend_ability.substring(0,160)}${d.legend_ability.length>160?'…':''}</div>
+      <div style="display:flex;gap:12px;margin-bottom:16px">
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+          <img src="${CARD}${d.legend_cid}.webp" alt="${d.legend_name}"
+            style="width:100%;border-radius:4px;border:2px solid var(--dac-c,var(--gold));display:block"
+            onerror="this.style.display='none'">
+          <div style="font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.1em;color:var(--dac-c,var(--gold));text-transform:uppercase">Legend</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:.82rem;color:var(--txt2);line-height:1.5">${d.legend_ability.substring(0,180)}${d.legend_ability.length>180?'…':''}</div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:8px;flex:1;min-width:200px">
-          <div style="position:relative;overflow:hidden;border:2px solid rgba(11,196,227,.5);height:120px">
-            <img src="${TILES[d.champion_key]}" style="width:100%;height:100%;object-fit:cover;object-position:center 20%" onerror="this.style.display='none'">
-            <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.7);padding:6px 8px">
-              <div style="font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.1em;color:rgba(11,196,227,.8);text-transform:uppercase">Champion · ${d.champion_cost} cost · ${d.champion_might}M</div>
-              <div style="font-family:'Cinzel',serif;font-size:.78rem;color:#fff">${d.champion_name}</div>
-            </div>
-          </div>
-          <div style="font-family:'Rajdhani',sans-serif;font-size:.82rem;color:var(--txt2);line-height:1.5">${d.champion_ability.substring(0,160)}${d.champion_ability.length>160?'…':''}</div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+          <img src="${CARD}${d.champion_cid}.webp" alt="${d.champion_name}"
+            style="width:100%;border-radius:4px;border:2px solid rgba(11,196,227,.6);display:block"
+            onerror="this.style.display='none'">
+          <div style="font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.1em;color:rgba(11,196,227,.8);text-transform:uppercase">Champion · ${d.champion_cost} cost · ${d.champion_might}M</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:.82rem;color:var(--txt2);line-height:1.5">${d.champion_ability.substring(0,180)}${d.champion_ability.length>180?'…':''}</div>
         </div>
       </div>
     </div>
