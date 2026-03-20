@@ -3,219 +3,215 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Riftbound — How to Play with John</title>
+<title>Riftbound — How to Play</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Rajdhani',sans-serif}
+html,body{width:100%;height:100%;overflow:hidden;background:#07080f}
 :root{--gold:#c8a84b;--bg:#07080f}
 
-#stage{position:fixed;inset:0;background:var(--bg);overflow:hidden}
+#stage{position:fixed;inset:0;background:var(--bg)}
 
-/* SCENE BACKGROUNDS */
-.scene-layer{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease;background-size:cover;background-position:center}
-.scene-layer.on{opacity:1}
-#bg-lol{
-  background-image:url('https://images.weserv.nl/?url=static.wikia.nocookie.net/leagueoflegends/images/0/01/Summoner%27s_Rift_Map.png&w=1200');
-  filter:saturate(.35) brightness(.28);
+/* ── BACKGROUND ── */
+.bg{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease;background-size:cover;background-position:center}
+.bg.on{opacity:1}
+#bg-dark{background:radial-gradient(ellipse at 50% 30%,rgba(200,168,75,.06) 0%,transparent 60%),#07080f}
+#bg-combat{background:radial-gradient(ellipse at 50% 50%,rgba(239,68,68,.12) 0%,transparent 55%),#07080f}
+#bg-score{background:radial-gradient(ellipse at 50% 50%,rgba(34,197,94,.1) 0%,transparent 55%),#07080f}
+
+/* ── PLAYMAT ── */
+#mat-wrap{
+  position:absolute;
+  left:50%;top:50%;
+  transform:translate(-50%,-54%);
+  width:min(700px,92vw);
+  opacity:0;transition:opacity 1s ease;
 }
-#bg-dark{background:radial-gradient(ellipse at 50% 30%,rgba(200,168,75,.07) 0%,transparent 65%),#07080f}
-#bg-combat{background:radial-gradient(ellipse at 50% 50%,rgba(239,68,68,.18) 0%,transparent 60%),#07080f}
-#bg-win{background:radial-gradient(ellipse at 50% 50%,rgba(34,197,94,.12) 0%,transparent 60%),#07080f}
+#mat-wrap.on{opacity:1}
+#mat{
+  display:flex;flex-direction:row;gap:5px;
+  background:linear-gradient(160deg,#070a10,#0a0d1a);
+  border:1px solid rgba(200,168,75,.18);
+  border-radius:6px;padding:8px;
+  height:clamp(210px,33vw,320px);
+}
 
-/* BOARD */
-#board{
-  position:absolute;left:50%;top:50%;
-  transform:translate(-50%,-60%);
+/* Score track */
+#stk{display:flex;flex-direction:column;justify-content:space-between;width:22px;flex-shrink:0}
+.stc{
+  width:20px;height:20px;border-radius:50%;
+  border:1.5px solid rgba(200,168,75,.18);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:.44rem;
+  color:rgba(200,168,75,.22);transition:all .5s;flex-shrink:0;
+}
+.stc.active{border-color:var(--gold);color:var(--gold);background:rgba(200,168,75,.1);box-shadow:0 0 6px rgba(200,168,75,.2)}
+.stc.scored{border-color:#22c55e;color:#22c55e;background:rgba(34,197,94,.1)}
+
+/* Center zones */
+#zones{display:flex;flex-direction:column;flex:1;gap:4px}
+.mz-bf{flex:1}
+.mz-base{flex:1.2;overflow:hidden;position:relative}
+#bot{display:flex;gap:4px;height:clamp(42px,8vw,68px);flex-shrink:0}
+.mz-rdeck{width:clamp(34px,6vw,52px);flex-shrink:0}
+.mz-hand{flex:1}
+.mz-runes{flex:0 0 auto;padding:4px 6px}
+.mz-trash{width:clamp(34px,6vw,52px);flex-shrink:0}
+
+/* Right column */
+#rcol{display:flex;flex-direction:column;gap:4px;width:clamp(48px,8.5vw,70px);flex-shrink:0}
+.mz-rc{flex:1}
+
+/* Zone base style */
+.mz{
+  border:1px solid rgba(200,168,75,.16);
+  background:rgba(200,168,75,.02);
+  display:flex;flex-direction:column;align-items:center;
+  padding:5px 4px;transition:all .5s;border-radius:2px;
+}
+.mz.hi{border-color:rgba(200,168,75,.65);background:rgba(200,168,75,.07);box-shadow:0 0 10px rgba(200,168,75,.1)}
+.mz.won{border-color:#22c55e;background:rgba(34,197,94,.06);box-shadow:0 0 10px rgba(34,197,94,.1)}
+.mz-lbl{
+  font-family:'Cinzel',serif;font-size:clamp(.28rem,.46vw,.42rem);
+  letter-spacing:.07em;text-transform:uppercase;
+  color:rgba(200,168,75,.38);text-align:center;line-height:1.3;flex-shrink:0;
+}
+#base-swirl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(2rem,4.5vw,3.5rem);opacity:.05;color:var(--gold);pointer-events:none}
+#base-units{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:5px}
+#hand-cards{display:flex;gap:3px;justify-content:center;align-items:center;height:100%}
+#rune-row{display:flex;gap:3px;margin-top:4px;justify-content:center}
+
+/* Card backs */
+.cb{
+  width:clamp(17px,2.8vw,25px);height:clamp(24px,4vw,36px);
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+  border:1px solid rgba(200,168,75,.28);border-radius:2px;
+  display:inline-block;flex-shrink:0;position:relative;overflow:hidden;
+}
+.cb::before{content:'';position:absolute;inset:2px;border:1px solid rgba(200,168,75,.12);border-radius:1px}
+.cb.unit{background:linear-gradient(135deg,#0d2b4a,#0a1a2e);border-color:rgba(11,196,227,.38)}
+.cb.rback{background:linear-gradient(135deg,#1a0a00,#281400);border-color:rgba(200,168,75,.4)}
+.lgcard{
+  width:clamp(26px,4.5vw,40px);height:clamp(36px,6.5vw,58px);
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+  border:1px solid rgba(200,168,75,.32);border-radius:2px;margin-top:4px;flex-shrink:0;
+}
+.lgcard.champ{border-color:rgba(11,196,227,.35)}
+.rtok{
+  width:clamp(9px,1.7vw,14px);height:clamp(9px,1.7vw,14px);
+  border-radius:50%;border:1.5px solid rgba(200,168,75,.32);
+  background:rgba(200,168,75,.07);display:inline-block;transition:all .4s;flex-shrink:0;
+}
+.rtok.lit{background:rgba(200,168,75,.42);box-shadow:0 0 5px rgba(200,168,75,.4)}
+
+/* ── TEXT OVERLAY ── */
+#txt-wrap{
+  position:absolute;
+  bottom:clamp(20px,5vw,50px);
+  left:50%;transform:translateX(-50%);
   width:min(680px,90vw);
-  opacity:0;transition:opacity .8s;
+  text-align:center;
+  z-index:50;
 }
-#board.on{opacity:1}
-
-
-
-.cback{width:26px;height:38px;background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(200,168,75,.35);border-radius:3px;position:relative;overflow:hidden;display:inline-block}
-.cback::before{content:'';position:absolute;inset:2px;border:1px solid rgba(200,168,75,.18);border-radius:2px}
-.cback::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(200,168,75,.04) 3px,rgba(200,168,75,.04) 4px)}
-.cback.unit{background:linear-gradient(135deg,#0d2b4a,#0a1a2e);border-color:rgba(11,196,227,.45)}
-.cback.unit::after{background:none}
-
-.rtok{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(200,168,75,.4);background:rgba(200,168,75,.1);display:inline-block}
-.rtok.lit{background:rgba(200,168,75,.5);box-shadow:0 0 7px rgba(200,168,75,.55)}
-
-.unit-tok{
-  width:18px;height:18px;border-radius:3px;
-  background:rgba(11,196,227,.5);border:1.5px solid rgba(11,196,227,.8);
-  box-shadow:0 0 7px rgba(11,196,227,.35);
-  display:inline-block;transition:all .5s;
+#txt-head{
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(1.4rem,4vw,3rem);
+  font-weight:700;color:var(--gold);
+  letter-spacing:.12em;
+  margin-bottom:10px;
+  opacity:0;transform:translateY(8px);
+  transition:opacity .6s,transform .6s;
+  text-shadow:0 0 30px rgba(200,168,75,.3);
 }
-.unit-tok.enemy{background:rgba(239,68,68,.5);border-color:rgba(239,68,68,.8);box-shadow:0 0 7px rgba(239,68,68,.35)}
+#txt-head.on{opacity:1;transform:translateY(0)}
+#txt-body{
+  font-family:'Rajdhani',sans-serif;
+  font-size:clamp(.9rem,2.2vw,1.2rem);
+  color:#e8e4d8;line-height:1.7;
+  opacity:0;transform:translateY(6px);
+  transition:opacity .6s .2s,transform .6s .2s;
+}
+#txt-body.on{opacity:1;transform:translateY(0)}
 
-.opp{opacity:.28}
-
-/* ABCD FLASH */
+/* ── ABCD FLASH ── */
 #abcd{
-  position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  background:rgba(0,0,0,.72);z-index:60;
-  opacity:0;pointer-events:none;transition:opacity .25s;
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.75);z-index:60;
+  opacity:0;pointer-events:none;transition:opacity .3s;
 }
 #abcd.on{opacity:1}
 #abcd-L{
   font-family:'Cinzel Decorative',serif;
-  font-size:clamp(7rem,22vw,15rem);
+  font-size:clamp(8rem,24vw,16rem);
   font-weight:900;line-height:1;
   text-shadow:0 0 60px currentColor,0 0 120px currentColor;
+  animation:none;
 }
-#abcd-L.pop{animation:lPop .4s cubic-bezier(.36,.07,.19,.97)}
-@keyframes lPop{0%{transform:scale(0) rotate(-8deg);opacity:0}65%{transform:scale(1.18) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
-#abcd-S{
+#abcd-L.pop{animation:lpop .4s cubic-bezier(.36,.07,.19,.97) both}
+@keyframes lpop{0%{transform:scale(0);opacity:0}65%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+#abcd-N{
   font-family:'Cinzel',serif;
-  font-size:clamp(.9rem,2.5vw,1.6rem);
-  letter-spacing:.22em;text-transform:uppercase;
-  color:rgba(255,255,255,.75);margin-top:10px;
+  font-size:clamp(1rem,3vw,1.8rem);
+  letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(255,255,255,.7);margin-top:12px;
 }
 
-/* SCORE POP */
-#score-pop{
-  position:absolute;top:40%;left:50%;transform:translateX(-50%);
+/* ── SCORE POP ── */
+#sco{
+  position:absolute;top:38%;left:50%;transform:translateX(-50%);
   font-family:'Cinzel Decorative',serif;
-  font-size:clamp(2.5rem,8vw,6rem);color:#22c55e;font-weight:900;
-  text-shadow:0 0 40px rgba(34,197,94,.6);
-  opacity:0;pointer-events:none;z-index:70;transition:opacity .25s;
+  font-size:clamp(2rem,7vw,5rem);
+  color:#22c55e;font-weight:900;
+  text-shadow:0 0 40px rgba(34,197,94,.5);
+  opacity:0;z-index:70;pointer-events:none;transition:opacity .3s;
 }
-#score-pop.on{opacity:1;animation:sPop .5s ease}
-@keyframes sPop{0%{transform:translateX(-50%) scale(.4)}65%{transform:translateX(-50%) scale(1.15)}100%{transform:translateX(-50%) scale(1)}}
+#sco.on{opacity:1;animation:spop .5s ease}
+@keyframes spop{0%{transform:translateX(-50%) scale(.4)}65%{transform:translateX(-50%) scale(1.12)}100%{transform:translateX(-50%) scale(1)}}
 
-/* EPISODE TITLE */
-#eptitle{
-  position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  z-index:80;opacity:0;transition:opacity .7s;pointer-events:none;
+/* ── EPISODE TITLE ── */
+#ep{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:80;opacity:0;transition:opacity .8s;pointer-events:none;
 }
-#eptitle.on{opacity:1}
-#eptitle h1{
+#ep.on{opacity:1}
+#ep h1{
   font-family:'Cinzel Decorative',serif;
-  font-size:clamp(1.8rem,5.5vw,4rem);
+  font-size:clamp(2rem,6vw,4.5rem);
   background:linear-gradient(180deg,#fff9e8,#c8a84b 50%,#7a5c18);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   background-clip:text;letter-spacing:.12em;margin-bottom:10px;
 }
-#eptitle p{font-family:'Cinzel',serif;font-size:clamp(.75rem,1.8vw,1.05rem);color:rgba(255,255,255,.35);letter-spacing:.3em;text-transform:uppercase}
+#ep p{font-family:'Cinzel',serif;font-size:clamp(.75rem,1.8vw,1rem);color:rgba(255,255,255,.3);letter-spacing:.3em;text-transform:uppercase}
 
-/* JOHN - FIXED BOTTOM */
-#john-wrap{
-  position:absolute;bottom:0;left:0;right:0;
-  display:flex;align-items:flex-end;z-index:100;pointer-events:none;
-}
-#john-fig{
-  flex-shrink:0;
-  width:clamp(90px,16vw,170px);
-  margin-bottom:-3px;
-  transition:transform .5s cubic-bezier(.4,0,.2,1);
-}
-#john-fig.out{transform:translateX(-110%)}
-
-/* SPEECH BUBBLE */
-#speech{
-  flex:1;max-width:580px;margin:0 18px 28px;
-  background:rgba(8,10,22,.93);
-  border:1px solid rgba(200,168,75,.28);
-  padding:14px 18px;position:relative;
-  opacity:0;transform:translateY(8px);
-  transition:opacity .4s,transform .4s;
-}
-#speech.on{opacity:1;transform:translateY(0)}
-#speech::before{content:'';position:absolute;bottom:18px;left:-7px;border:3.5px solid transparent;border-right-color:rgba(200,168,75,.28)}
-#sp-name{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
-#sp-text{font-family:'Rajdhani',sans-serif;font-size:clamp(.82rem,1.9vw,1.08rem);color:#e8e4d8;line-height:1.6;min-height:36px}
-
-/* PROGRESS */
+/* ── PROGRESS ── */
 #prog{position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,.04);z-index:200}
-#prog-bar{height:100%;background:var(--gold);width:0%;transition:width .15s linear}
+#prog-bar{height:100%;background:var(--gold);width:0%;transition:width .2s linear}
 
-/* CONTROLS */
+/* ── CONTROLS ── */
 #ctrl{position:absolute;top:14px;right:14px;display:flex;gap:8px;z-index:200}
-.cbtn{
-  font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
-  padding:6px 13px;border:1px solid rgba(200,168,75,.28);
-  background:rgba(0,0,0,.55);color:rgba(200,168,75,.65);cursor:pointer;transition:all .2s;
-}
-.cbtn:hover{border-color:rgba(200,168,75,.65);color:var(--gold)}
-#back-lnk{position:absolute;top:14px;left:14px;z-index:200;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(200,168,75,.35);text-decoration:none;transition:color .2s}
-#back-lnk:hover{color:var(--gold)}
-
-/* SCORE HUD */
-#pts-hud{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:200;font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.2em;color:rgba(200,168,75,.4);text-transform:uppercase;opacity:0;transition:opacity .5s}
-#pts-hud.on{opacity:1}
-
-/* ── PLAYMAT ── */
-#board{position:absolute;left:50%;top:50%;transform:translate(-50%,-58%);width:min(700px,92vw);opacity:0;transition:opacity .8s}
-#board.on{opacity:1}
-#mat{display:flex;flex-direction:row;gap:5px;background:linear-gradient(160deg,#07090f,#0a0d18);border:1px solid rgba(200,168,75,.2);border-radius:6px;padding:8px;height:clamp(200px,32vw,320px)}
-#stk{display:flex;flex-direction:column;justify-content:space-between;width:22px;flex-shrink:0}
-.stc{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(200,168,75,.2);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:.46rem;color:rgba(200,168,75,.25);transition:all .4s;flex-shrink:0}
-.stc.on{border-color:var(--gold);color:var(--gold);background:rgba(200,168,75,.1);box-shadow:0 0 6px rgba(200,168,75,.2)}
-.stc.done{border-color:#22c55e;color:#22c55e;background:rgba(34,197,94,.1)}
-/* ZONES COLUMN */
-#zones{display:flex;flex-direction:column;flex:1;gap:4px}
-.mz-bf{flex:1}
-.mz-base{flex:1.2;overflow:hidden;position:relative}
-#bot-strip{display:flex;gap:4px;height:clamp(44px,8vw,70px);flex-shrink:0}
-/* RIGHT COLUMN */
-#rcol{display:flex;flex-direction:column;gap:4px;width:clamp(50px,8.5vw,72px);flex-shrink:0}
-.mz-rc{flex:1}
-/* ZONE BASE */
-.mzone{border:1px solid rgba(200,168,75,.18);background:rgba(200,168,75,.02);display:flex;flex-direction:column;align-items:center;padding:5px 4px;transition:all .4s;border-radius:2px}
-.mzone.hi{border-color:rgba(200,168,75,.7);background:rgba(200,168,75,.07);box-shadow:0 0 10px rgba(200,168,75,.12)}
-.mzone.won{border-color:#22c55e;background:rgba(34,197,94,.06)}
-.mzlbl{font-family:'Cinzel',serif;font-size:clamp(.28rem,.48vw,.42rem);letter-spacing:.07em;text-transform:uppercase;color:rgba(200,168,75,.4);text-align:center;line-height:1.3;flex-shrink:0}
-.mz-rdeck{width:clamp(36px,6vw,54px);flex-shrink:0}
-.mz-hand{flex:1}
-.mz-runes{flex:0 0 auto;padding:4px 6px}
-/* Swirl watermark */
-#swirl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(1.8rem,4.5vw,3.5rem);opacity:.06;color:var(--gold);pointer-events:none}
-/* Base units */
-#base-units{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:5px}
-/* Runes */
-#rune-row{display:flex;gap:3px;margin-top:4px;justify-content:center}
-/* Hand */
-#hand-cards{display:flex;gap:4px;justify-content:center;align-items:center;height:100%}
-/* Card backs */
-.cback{width:clamp(18px,3vw,26px);height:clamp(26px,4.2vw,37px);background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(200,168,75,.3);border-radius:2px;position:relative;overflow:hidden;display:inline-block;flex-shrink:0}
-.cback::before{content:'';position:absolute;inset:2px;border:1px solid rgba(200,168,75,.14);border-radius:1px}
-.cback::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(200,168,75,.03) 3px,rgba(200,168,75,.03) 4px)}
-.rback{background:linear-gradient(135deg,#1a0a00,#2a1500);border-color:rgba(200,168,75,.42)}
-/* Legend card */
-.lgcard{width:clamp(28px,4.8vw,42px);height:clamp(40px,6.8vw,60px);background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(200,168,75,.35);border-radius:2px;margin-top:4px;flex-shrink:0}
-.lgcard.champ{border-color:rgba(11,196,227,.38)}
-/* Rune tokens */
-.rtok{width:clamp(10px,1.8vw,15px);height:clamp(10px,1.8vw,15px);border-radius:50%;border:1.5px solid rgba(200,168,75,.35);background:rgba(200,168,75,.08);display:inline-block;transition:all .3s;flex-shrink:0}
-.rtok.lit{background:rgba(200,168,75,.45);box-shadow:0 0 5px rgba(200,168,75,.45)}
-
+.cb2{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;padding:6px 12px;border:1px solid rgba(200,168,75,.25);background:rgba(0,0,0,.5);color:rgba(200,168,75,.6);cursor:pointer;transition:all .2s}
+.cb2:hover{border-color:rgba(200,168,75,.6);color:var(--gold)}
+#back-a{position:absolute;top:14px;left:14px;z-index:200;font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(200,168,75,.3);text-decoration:none;transition:color .2s}
+#back-a:hover{color:var(--gold)}
 </style>
 </head>
 <body>
 <div id="stage">
 
-<!-- BG -->
-<div id="bg-lol" class="scene-layer"></div>
-<div id="bg-dark" class="scene-layer on"></div>
-<div id="bg-combat" class="scene-layer"></div>
-<div id="bg-win" class="scene-layer"></div>
+<div class="bg on" id="bg-dark"></div>
+<div class="bg" id="bg-combat"></div>
+<div class="bg" id="bg-score"></div>
 
 <!-- EPISODE TITLE -->
-<div id="eptitle">
-  <h1>Episode 1</h1>
-  <p>How to Play Riftbound</p>
-</div>
+<div id="ep"><h1>How to Play</h1><p>Riftbound</p></div>
 
-<!-- BOARD — exact copy of playmat photo -->
-<div id="board">
+<!-- PLAYMAT -->
+<div id="mat-wrap">
 <div id="mat">
-
-  <!-- COL 1: Score circles 8 top to 1 bottom -->
+  <!-- Score track 8→1 -->
   <div id="stk">
     <div class="stc" id="s8">8</div>
     <div class="stc" id="s7">7</div>
@@ -224,356 +220,197 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ra
     <div class="stc" id="s4">4</div>
     <div class="stc" id="s3">3</div>
     <div class="stc" id="s2">2</div>
-    <div class="stc on" id="s1">1</div>
+    <div class="stc active" id="s1">1</div>
   </div>
-
-  <!-- COL 2+3: Main zones grid -->
+  <!-- Center zones -->
   <div id="zones">
-    <!-- Top half: BATTLEFIELD -->
-    <div class="mzone mz-bf" id="z-bf"><div class="mzlbl">BATTLEFIELD</div></div>
-    <!-- Bottom half: BASE with swirl watermark -->
-    <div class="mzone mz-base" id="z-base">
-      <div class="mzlbl">BASE</div>
+    <div class="mz mz-bf" id="z-bf"><div class="mz-lbl">Battlefield</div></div>
+    <div class="mz mz-base" id="z-base">
+      <div class="mz-lbl">Base</div>
       <div id="base-units"></div>
-      <div id="swirl">☯</div>
+      <div id="base-swirl">⟳</div>
     </div>
-    <!-- Bottom strip: RUNE DECK | HAND ZONE | RUNES | TRASH -->
-    <div id="bot-strip">
-      <div class="mzone mz-rdeck" id="z-rdeck"><div class="mzlbl">RUNE<br>DECK</div><div class="cback rback" style="margin-top:4px"></div></div>
-      <div class="mzone mz-hand" id="z-hand"><div id="hand-cards"><div class="cback"></div><div class="cback"></div><div class="cback"></div><div class="cback"></div></div></div>
-      <div class="mzone mz-runes" id="z-runes"><div class="mzlbl">RUNES</div><div id="rune-row"><div class="rtok" id="r1"></div><div class="rtok" id="r2"></div><div class="rtok" id="r3" style="opacity:0"></div><div class="rtok" id="r4" style="opacity:0"></div><div class="rtok" id="r5" style="opacity:0"></div><div class="rtok" id="r6" style="opacity:0"></div></div></div>
-      <div class="mzone mz-rdeck" id="z-trash"><div class="mzlbl">TRASH</div></div>
+    <div id="bot">
+      <div class="mz mz-rdeck" id="z-rdeck"><div class="mz-lbl">Rune<br>Deck</div><div class="cb rback" style="margin-top:4px"></div></div>
+      <div class="mz mz-hand" id="z-hand"><div id="hand-cards"><div class="cb"></div><div class="cb"></div><div class="cb"></div><div class="cb"></div></div></div>
+      <div class="mz mz-runes" id="z-runes"><div class="mz-lbl">Runes</div><div id="rune-row"><div class="rtok" id="r1"></div><div class="rtok" id="r2"></div><div class="rtok" id="r3" style="opacity:0"></div><div class="rtok" id="r4" style="opacity:0"></div><div class="rtok" id="r5" style="opacity:0"></div><div class="rtok" id="r6" style="opacity:0"></div></div></div>
+      <div class="mz mz-trash" id="z-trash"><div class="mz-lbl">Trash</div></div>
     </div>
   </div>
-
-  <!-- COL 4: Right column — CHAMPION LEGEND | CHOSEN CHAMPION | MAIN DECK -->
+  <!-- Right column -->
   <div id="rcol">
-    <div class="mzone mz-rc" id="z-legend"><div class="mzlbl">CHAMPION<br>LEGEND</div><div class="lgcard"></div></div>
-    <div class="mzone mz-rc" id="z-champ"><div class="mzlbl">CHOSEN<br>CHAMPION</div><div class="lgcard champ"></div></div>
-    <div class="mzone mz-rc" id="z-deck"><div class="mzlbl">MAIN<br>DECK</div><div class="cback" style="margin-top:5px"></div></div>
+    <div class="mz mz-rc" id="z-legend"><div class="mz-lbl">Champion<br>Legend</div><div class="lgcard"></div></div>
+    <div class="mz mz-rc" id="z-champ"><div class="mz-lbl">Chosen<br>Champion</div><div class="lgcard champ"></div></div>
+    <div class="mz mz-rc" id="z-deck"><div class="mz-lbl">Main<br>Deck</div><div class="cb" style="margin-top:5px"></div></div>
   </div>
-
 </div>
 </div>
 
-<!-- ABCD FLASH --><!-- ABCD FLASH -->
-<div id="abcd">
-  <div id="abcd-L"></div>
-  <div id="abcd-S"></div>
+<!-- TEXT -->
+<div id="txt-wrap">
+  <div id="txt-head"></div>
+  <div id="txt-body"></div>
 </div>
+
+<!-- ABCD -->
+<div id="abcd"><div id="abcd-L"></div><div id="abcd-N"></div></div>
 
 <!-- SCORE POP -->
-<div id="score-pop">+1 POINT</div>
-
-<!-- JOHN BOTTOM -->
-<div id="john-wrap">
-  <div id="john-fig">
-    <svg viewBox="0 0 180 230" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;filter:drop-shadow(0 -4px 18px rgba(200,168,75,.14))">
-      <rect x="38" y="158" width="104" height="72" rx="8" fill="#1a2035"/>
-      <rect x="73" y="158" width="34" height="72" fill="#141c2e"/>
-      <polygon points="90,158 73,178 90,170" fill="#fff" opacity=".85"/>
-      <polygon points="90,158 107,178 90,170" fill="#fff" opacity=".85"/>
-      <rect x="73" y="140" width="34" height="22" rx="4" fill="#d4a57a"/>
-      <rect x="36" y="68" width="108" height="94" rx="22" fill="#d4a57a"/>
-      <rect x="32" y="58" width="116" height="32" rx="10" fill="#1a1a2e"/>
-      <ellipse cx="90" cy="60" rx="57" ry="14" fill="#1a1a2e"/>
-      <rect x="18" y="78" width="54" height="11" rx="5" fill="#141428"/>
-      <text x="61" y="79" font-family="sans-serif" font-size="8" fill="#c8a84b" font-weight="bold" letter-spacing="1">JOHN</text>
-      <ellipse cx="36" cy="112" rx="10" ry="13" fill="#c89060"/>
-      <ellipse cx="144" cy="112" rx="10" ry="13" fill="#c89060"/>
-      <ellipse cx="90" cy="150" rx="40" ry="16" fill="#3a3028"/>
-      <ellipse cx="90" cy="144" rx="31" ry="9" fill="#d4a57a"/>
-      <path d="M71,132 Q81,137 90,134 Q99,137 109,132" stroke="#3a3028" stroke-width="4" fill="none" stroke-linecap="round"/>
-      <rect x="50" y="99" width="32" height="24" rx="3" fill="rgba(200,230,255,.07)" stroke="#999" stroke-width="2.5"/>
-      <rect x="98" y="99" width="32" height="24" rx="3" fill="rgba(200,230,255,.07)" stroke="#999" stroke-width="2.5"/>
-      <line x1="82" y1="111" x2="98" y2="111" stroke="#999" stroke-width="2"/>
-      <line x1="34" y1="111" x2="50" y2="111" stroke="#999" stroke-width="1.5"/>
-      <line x1="130" y1="111" x2="144" y2="111" stroke="#999" stroke-width="1.5"/>
-      <ellipse cx="66" cy="111" rx="7" ry="7" fill="#fff"/>
-      <ellipse cx="114" cy="111" rx="7" ry="7" fill="#fff"/>
-      <ellipse cx="67" cy="111" rx="4" ry="4" fill="#2a1800"/>
-      <ellipse cx="115" cy="111" rx="4" ry="4" fill="#2a1800"/>
-      <circle cx="69" cy="109" r="1.5" fill="#fff"/>
-      <circle cx="117" cy="109" r="1.5" fill="#fff"/>
-      <path d="M52,97 Q66,92 80,96" stroke="#3a3028" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <path d="M100,96 Q114,92 128,97" stroke="#3a3028" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <path d="M75,142 Q90,145 105,142" stroke="#8a6040" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <g transform="translate(145,178)">
-        <polygon points="0,18 16,-4 26,20" fill="#c8a84b" opacity=".9"/>
-        <circle cx="9" cy="12" r="2.5" fill="#e84040" opacity=".9"/>
-        <circle cx="17" cy="6" r="2" fill="#e84040"/>
-        <circle cx="19" cy="16" r="2" fill="#e84040" opacity=".8"/>
-      </g>
-      <path d="M136,174 Q158,152 172,132" stroke="#d4a57a" stroke-width="11" fill="none" stroke-linecap="round" id="arm"/>
-      <ellipse cx="173" cy="130" rx="8" ry="8" fill="#d4a57a" id="hand"/>
-      <path d="M173,130 L183,117" stroke="#d4a57a" stroke-width="7" fill="none" stroke-linecap="round" id="finger"/>
-    </svg>
-  </div>
-  <div id="speech">
-    <div id="sp-name">JOHN</div>
-    <div id="sp-text"></div>
-  </div>
-</div>
+<div id="sco">+ 1 POINT</div>
 
 <!-- PROGRESS -->
 <div id="prog"><div id="prog-bar"></div></div>
 
 <!-- CONTROLS -->
 <div id="ctrl">
-  <button class="cbtn" id="btn-pause" onclick="togglePause()">Pause</button>
-  <button class="cbtn" onclick="restart()">↺ Restart</button>
-  <button class="cbtn" id="btn-mute" onclick="toggleMute()">🔊</button>
+  <button class="cb2" id="btn-p" onclick="togglePause()">Pause</button>
+  <button class="cb2" onclick="restart()">↺</button>
 </div>
-<a href="index.html" id="back-lnk">← Decks</a>
-<div id="pts-hud">Score: <span id="pts-n">0</span> / 8</div>
+<a href="index.html" id="back-a">← Decks</a>
 
 <script>
-// ── AUDIO ──
-let AC = null, muted = false;
-function ac(){ if(!AC) AC=new(window.AudioContext||window.webkitAudioContext)(); return AC; }
-function toggleMute(){ muted=!muted; document.getElementById('btn-mute').textContent=muted?'🔇':'🔊'; }
+const AC={A:'#c8a84b',B:'#1E88E5',C:'#E53935',D:'#43A047'};
 
-function sfx(t){
-  if(muted) return;
-  const a=ac(), g=a.createGain(); g.connect(a.destination);
-  if(t==='C'){
-    const o=a.createOscillator(),g2=a.createGain();
-    o.connect(g2);g2.connect(a.destination);
-    o.type='sawtooth';
-    o.frequency.setValueAtTime(200,a.currentTime);
-    o.frequency.exponentialRampToValueAtTime(900,a.currentTime+.07);
-    o.frequency.exponentialRampToValueAtTime(400,a.currentTime+.2);
-    g2.gain.setValueAtTime(.5,a.currentTime);
-    g2.gain.exponentialRampToValueAtTime(.001,a.currentTime+.35);
-    o.start();o.stop(a.currentTime+.35);
-  } else if(t==='card'){
-    const b=a.createBuffer(1,a.sampleRate*.1,a.sampleRate),d=b.getChannelData(0);
-    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
-    const s=a.createBufferSource(),f=a.createBiquadFilter();
-    f.type='highpass';f.frequency.value=2500;
-    s.buffer=b;s.connect(f);f.connect(g);g.gain.setValueAtTime(.25,a.currentTime);s.start();
-  } else if(t==='point'){
-    [523,659,784].forEach((f,i)=>{
-      const o=a.createOscillator(),g2=a.createGain();
-      o.connect(g2);g2.connect(a.destination);
-      o.type='sine';o.frequency.value=f;
-      const T=a.currentTime+i*.1;
-      g2.gain.setValueAtTime(.28,T);g2.gain.exponentialRampToValueAtTime(.001,T+.45);
-      o.start(T);o.stop(T+.45);
-    });
-  } else if(t==='hit'){
-    const b=a.createBuffer(1,a.sampleRate*.28,a.sampleRate),d=b.getChannelData(0);
-    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3)*(i<800?1:.25);
-    const s=a.createBufferSource(),f=a.createBiquadFilter();
-    f.type='lowpass';f.frequency.value=700;
-    s.buffer=b;s.connect(f);f.connect(g);g.gain.setValueAtTime(.45,a.currentTime);s.start();
-  } else if(t==='rune'){
-    [1046,1319,1568].forEach((f,i)=>{
-      const o=a.createOscillator(),g2=a.createGain();
-      o.connect(g2);g2.connect(a.destination);
-      o.type='triangle';o.frequency.value=f;
-      const T=a.currentTime+i*.07;
-      g2.gain.setValueAtTime(.14,T);g2.gain.exponentialRampToValueAtTime(.001,T+.4);
-      o.start(T);o.stop(T+.4);
-    });
-  } else if(t==='shuffle'){
-    for(let i=0;i<5;i++){
-      const b=a.createBuffer(1,a.sampleRate*.055,a.sampleRate),d=b.getChannelData(0);
-      for(let j=0;j<d.length;j++) d[j]=(Math.random()*2-1)*Math.pow(1-j/d.length,2);
-      const s=a.createBufferSource();s.buffer=b;s.connect(g);
-      g.gain.setValueAtTime(.18,a.currentTime+i*.08);s.start(a.currentTime+i*.08);
-    }
-  } else if(t==='awaken'){
-    [261,329,392,523].forEach((f,i)=>{
-      const o=a.createOscillator(),g2=a.createGain();
-      o.connect(g2);g2.connect(a.destination);o.type='sine';o.frequency.value=f;
-      g2.gain.setValueAtTime(0,a.currentTime);
-      g2.gain.linearRampToValueAtTime(.13,a.currentTime+.22);
-      g2.gain.exponentialRampToValueAtTime(.001,a.currentTime+1.6);
-      o.start();o.stop(a.currentTime+1.6);
-    });
-  } else if(t==='win'){
-    [523,659,784,1046,1318].forEach((f,i)=>{
-      const o=a.createOscillator(),g2=a.createGain();
-      o.connect(g2);g2.connect(a.destination);o.type='square';o.frequency.value=f;
-      const T=a.currentTime+i*.13;
-      g2.gain.setValueAtTime(.18,T);g2.gain.exponentialRampToValueAtTime(.001,T+.55);
-      o.start(T);o.stop(T+.55);
-    });
-  }
-}
-
-// ── SPEECH SYNTHESIS ──
-let voices=[], johnV=null;
-function loadV(){
-  voices=window.speechSynthesis.getVoices();
-  const pref=['Google UK English Male','Microsoft David','Daniel','Alex','en-GB'];
-  for(let p of pref){ let v=voices.find(x=>x.name.includes(p)||x.lang===p); if(v){johnV=v;break;} }
-  if(!johnV) johnV=voices.find(v=>v.lang.startsWith('en'))||voices[0];
-}
-window.speechSynthesis.onvoiceschanged=loadV;
-setTimeout(loadV,400);
-
-function say(text,rate,pitch,onend){
-  if(muted){if(onend)setTimeout(onend,100);return;}
-  window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  if(johnV)u.voice=johnV;
-  u.rate=rate||0.92;u.pitch=pitch||0.82;u.volume=1;
-  if(onend)u.onend=onend;
-  window.speechSynthesis.speak(u);
-}
-
-// ── BEATS ──
 const BEATS=[
-  {type:'title',dur:2800},
-  // INTRO
-  {type:'say',text:"Good evening. My name is John and I will be providing a thorough academic overview of Riftbound, beginning with the historical context of trading card games and their cultural significance in—",dur:7200,bg:'dark',hi:[]},
-  {type:'C',sub:'EIGHT POINTS. THAT IS THE GAME.',dur:2400},
-  {type:'say',text:"...Eight points. First to eight wins. That is the entire game.",dur:3200,bg:'dark',hi:[]},
+  {t:'title',dur:3200},
+
+  // GOAL
+  {t:'text',head:'The Goal',body:'First player to 8 points wins.',dur:4000,bg:'dark',hi:['s8']},
+  {t:'text',head:'',body:'You score points by conquering and holding the battlefield.',dur:4500,bg:'dark',hi:['z-bf']},
+  {t:'text',head:'',body:'Conquer a battlefield — 1 point.\nHold it at the start of your next turn — 1 more point.',dur:5500,bg:'dark',hi:['z-bf','s1','s2']},
+
   // SETUP
-  {type:'say',text:"Setup. Roll to go first. Most choose first. But going second gets you three runes on turn one instead of two. Choose wisely.",dur:5500,bg:'dark',hi:['z-deck','z-rdeck'],sfx:'shuffle'},
-  {type:'say',text:"Shuffle. Cut. Draw four cards. You can put up to two back and draw replacements. One chance.",dur:4800,bg:'dark',hi:['z-hand','z-deck'],sfx:'card'},
-  {type:'say',text:"Reveal your battlefields. You chose three. Pick two for this game. Place them between you and your opponent.",dur:5200,bg:'dark',hi:['bfc1','bfc2']},
-  {type:'C',sub:'TWO BATTLEFIELDS. CHOOSE.',dur:1800},
+  {t:'text',head:'Setup',body:'Roll to see who goes first. Most choose first. Going second means you draw 3 runes on your very first turn instead of 2.',dur:6000,bg:'dark',hi:[]},
+  {t:'text',head:'',body:'Shuffle your deck. Draw 4 cards. You can swap up to 2 cards back and draw replacements — once.',dur:5500,bg:'dark',hi:['z-deck','z-hand']},
+  {t:'text',head:'',body:'Reveal your battlefields. You prepared 3 — choose 2 to play this game. Place them in the battlefield zone.',dur:5500,bg:'dark',hi:['z-bf']},
+
   // A
-  {type:'A',sub:'AWAKEN — Untap Everything',dur:2800,sfx:'awaken'},
-  {type:'say',text:"Every exhausted card stands back up. Units, runes, your legend — all ready to use again. This happens at the start of every single turn.",dur:5200,bg:'dark',hi:['z-runes','z-legend','z-base'],sfx:'awaken'},
+  {t:'abcd',letter:'A',name:'Awaken',color:AC.A,dur:2600},
+  {t:'text',head:'A — Awaken',body:'All exhausted cards ready up. Units, runes, your legend — everything standing sideways stands upright again. You start fresh every turn.',dur:5500,bg:'dark',hi:['z-legend','z-runes','z-rdeck']},
+
   // B
-  {type:'B',sub:'BOARD STATE — Score Your Points',dur:2800,sfx:'point'},
-  {type:'say',text:"Any battlefield your units held since last turn — that is one point each. Right now. Free. Before you do anything else.",dur:5200,bg:'dark',hi:['bfc1','bfc2'],sfx:'point'},
-  {type:'say',text:"Then look at the board. What does your opponent have. What do you have. Nod like you have a plan.",dur:4200,bg:'dark',hi:[]},
+  {t:'abcd',letter:'B',name:'Board State',color:AC.B,dur:2600},
+  {t:'text',head:'B — Board State',body:'Score any battlefield you held since last turn. That\'s a free point before you do anything.',dur:5000,bg:'dark',hi:['z-bf']},
+  {t:'text',head:'',body:'Then look at the board. Where are you winning. Where are you losing. Plan your turn.',dur:4500,bg:'dark',hi:[]},
+
   // C
-  {type:'C',sub:'CONJURE — Draw Your Runes',dur:2800,sfx:'rune'},
-  {type:'say',text:"Draw two runes from your twelve-card rune deck. These are your resources for the turn. Spend them to play cards. Unspent runes vanish at end of turn. Do not hoard.",dur:5800,bg:'dark',hi:['z-runes'],sfx:'rune'},
-  {type:'C',sub:'...That was me interrupting myself. Ignore that.',dur:2200},
+  {t:'abcd',letter:'C',name:'Conjure',color:AC.C,dur:2600},
+  {t:'text',head:'C — Conjure',body:'Draw 2 runes from your 12-card rune deck. These are your resources for the turn.',dur:5000,bg:'dark',hi:['z-rdeck','z-runes']},
+  {t:'text',head:'',body:'Spend runes to play cards. Anything unspent disappears at end of turn. Use them.',dur:4500,bg:'dark',hi:['z-runes']},
+
   // D
-  {type:'D',sub:'DRAW — Everyone Loves the D',dur:2600,sfx:'card'},
-  {type:'say',text:"Draw one card from your main deck. Now you have cards and runes. This is where you actually play. Units, spells, gear.",dur:5000,bg:'dark',hi:['z-hand','z-deck'],sfx:'card'},
-  {type:'say',text:"Units enter your base exhausted. They cannot move to a battlefield the same turn they are played. Next turn they are ready.",dur:5500,bg:'dark',hi:['z-base']},
-  // MOVE + COMBAT
-  {type:'say',text:"Move your ready units to a battlefield. Nobody there? One point. Congratulations. You are unstoppable. Scream at them.",dur:5000,bg:'dark',hi:['bf1'],sfx:'card'},
-  {type:'C',sub:'CONQUER. ONE. POINT.',dur:2200,sfx:'point'},
-  {type:'say',text:"They DO have units — Showdown. Both sides add up Might. Assign damage. Weak units die. Strong units conquer. Everyone fully heals after combat.",dur:6200,bg:'combat',hi:['bfc1','bfc2'],sfx:'hit'},
-  {type:'C',sub:'C. CONQUER. STILL ONE POINT.',dur:2000},
-  // WIN
-  {type:'say',text:"Final point rule. You need eight points. But you cannot score your last point by conquering just one battlefield alone.",dur:5500,bg:'win',hi:['bfc1','bfc2']},
-  {type:'say',text:"Either HOLD a battlefield into your next turn's B step — that's point eight, you win. Or conquer BOTH battlefields in the same turn.",dur:6200,bg:'win',hi:['bfc1','bfc2'],sfx:'point'},
-  {type:'say',text:"Try to conquer just one for your eighth? You draw a card instead. They got another chance. That is on you.",dur:5200,bg:'win',hi:[]},
-  // OUTRO
-  {type:'say',text:"Hidden cards. Reactions. Counter-spells. Equipment. Buffs. The game has layers. But remember the A B C D. Shuffle up. Play.",dur:6200,bg:'dark',hi:[]},
-  {type:'say',text:"Good luck. Do not suck.",dur:2600,bg:'dark',hi:[],sfx:'win'},
-  {type:'C',sub:'— John',dur:3000},
+  {t:'abcd',letter:'D',name:'Draw',color:AC.D,dur:2600},
+  {t:'text',head:'D — Draw',body:'Draw 1 card from your main deck. Now play your turn.',dur:4000,bg:'dark',hi:['z-deck','z-hand']},
+  {t:'text',head:'',body:'Play units to your base. Cast spells. Equip gear. Use your legend ability.',dur:4500,bg:'dark',hi:['z-base','z-legend']},
+  {t:'text',head:'',body:'Units enter your base exhausted. They cannot move to the battlefield the same turn they are played. Next turn they are ready.',dur:6000,bg:'dark',hi:['z-base']},
+
+  // COMBAT
+  {t:'text',head:'Moving & Conquering',body:'Move a ready unit from your base to the battlefield. If nobody is there — you conquer it. 1 point.',dur:5500,bg:'dark',hi:['z-base','z-bf']},
+  {t:'text',head:'',body:'If they have units there, it\'s a Showdown. Both sides add up their Might. Assign damage. The side with surviving units wins. Units fully heal after combat.',dur:7000,bg:'combat',hi:['z-bf']},
+  {t:'text',head:'',body:'You can also move units back to your base if they are not exhausted. And you can play units directly to a battlefield you already control.',dur:5500,bg:'dark',hi:['z-base','z-bf']},
+
+  // WIN CONDITION
+  {t:'text',head:'The Final Point',body:'You need 8 points. But you cannot win by conquering one battlefield alone as your last point.',dur:6000,bg:'score',hi:['s8']},
+  {t:'text',head:'',body:'To win with your 8th point you must either:\n— Hold a battlefield into your next B step, or\n— Conquer both battlefields in the same turn.',dur:7000,bg:'score',hi:['z-bf','s7','s8']},
+  {t:'text',head:'',body:'Try to conquer just one for your 8th point? You draw a card instead. The game keeps going.',dur:5000,bg:'score',hi:[]},
+
+  // WRAP
+  {t:'text',head:'That\'s Riftbound',body:'A — Awaken. B — Board State. C — Conjure. D — Draw. Play your hand. Conquer. Hold. Win.',dur:7000,bg:'dark',hi:[]},
+  {t:'text',head:'',body:'The best way to learn is to play. Shuffle up.',dur:4000,bg:'dark',hi:[]},
 ];
 
-// ── CONTROLLER ──
-let idx=0, paused=false, timer=null;
+let idx=0,paused=false,timer=null;
 const total=BEATS.reduce((a,b)=>a+b.dur,0);
 let elapsed=0;
 
-const COLORS={A:'#c8a84b',B:'#1E88E5',C:'#E53935',D:'#43A047'};
-
-function hi(ids){
-  document.querySelectorAll('.mzone').forEach(z=>z.classList.remove('hi'));
-  (ids||[]).forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hi');});
-}
-
 function setBg(t){
-  ['bg-lol','bg-dark','bg-combat','bg-win'].forEach(id=>document.getElementById(id).classList.remove('on'));
-  document.getElementById('bg-'+t).classList.add('on');
+  document.querySelectorAll('.bg').forEach(b=>b.classList.remove('on'));
+  document.getElementById('bg-'+(t||'dark')).classList.add('on');
 }
-
-function showBoard(){document.getElementById('board').classList.add('on')}
-function hideBoard(){document.getElementById('board').classList.remove('on')}
-
-function showABCD(letter,sub,color){
+function hi(ids){
+  document.querySelectorAll('.mz,.stc').forEach(z=>z.classList.remove('hi'));
+  (ids||[]).forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hi')});
+}
+function setText(head,body){
+  const H=document.getElementById('txt-head');
+  const B=document.getElementById('txt-body');
+  H.classList.remove('on');B.classList.remove('on');
+  void H.offsetWidth;
+  H.textContent=head||'';
+  B.textContent=body||'';
+  setTimeout(()=>{H.classList.add('on');B.classList.add('on')},50);
+}
+function clearText(){
+  document.getElementById('txt-head').classList.remove('on');
+  document.getElementById('txt-body').classList.remove('on');
+}
+function showAbcd(l,n,c){
   const fl=document.getElementById('abcd');
   const L=document.getElementById('abcd-L');
-  const S=document.getElementById('abcd-S');
-  L.textContent=letter;L.style.color=color||'#c8a84b';
-  S.textContent=sub||'';
+  const N=document.getElementById('abcd-N');
+  clearText();
+  L.textContent=l;L.style.color=c||'#c8a84b';
+  N.textContent=n||'';
   L.classList.remove('pop');void L.offsetWidth;L.classList.add('pop');
   fl.classList.add('on');
-  sfx('C');
-  if(!muted){
-    window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(letter+'!');
-    if(johnV)u.voice=johnV;u.rate=0.6;u.pitch=0.55;u.volume=1;
-    window.speechSynthesis.speak(u);
-  }
 }
-function hideABCD(){document.getElementById('abcd').classList.remove('on')}
-
-function setSpeech(t){
-  const sp=document.getElementById('speech');
-  document.getElementById('sp-text').textContent=t;
-  sp.classList.add('on');
-}
-function hideSpeech(){document.getElementById('speech').classList.remove('on')}
-
+function hideAbcd(){document.getElementById('abcd').classList.remove('on')}
+function showMat(){document.getElementById('mat-wrap').classList.add('on')}
 function setProgress(p){document.getElementById('prog-bar').style.width=p+'%'}
 
-function next(){
-  if(idx>=BEATS.length){done();return;}
+function play(i){
+  if(i>=BEATS.length){done();return;}
   if(paused)return;
-  const b=BEATS[idx];
+  idx=i;
+  const b=BEATS[i];
   setProgress((elapsed/total)*100);
 
-  if(b.type==='title'){
-    hideBoard();hideSpeech();hideABCD();setBg('dark');
-    const t=document.getElementById('eptitle');
-    t.classList.add('on');
-    timer=setTimeout(()=>{t.classList.remove('on');elapsed+=b.dur;idx++;next();},b.dur);
+  if(b.t==='title'){
+    hideAbcd();clearText();
+    document.getElementById('mat-wrap').classList.remove('on');
+    const ep=document.getElementById('ep');
+    ep.classList.add('on');
+    timer=setTimeout(()=>{ep.classList.remove('on');elapsed+=b.dur;play(i+1)},b.dur);
     return;
   }
-
-  if(b.type==='C'||b.type==='A'||b.type==='B'||b.type==='D'){
-    hideBoard();hideSpeech();
-    if(b.sfx)sfx(b.sfx);
-    showABCD(b.type,b.sub,COLORS[b.type]);
-    timer=setTimeout(()=>{hideABCD();showBoard();elapsed+=b.dur;idx++;next();},b.dur);
+  if(b.t==='abcd'){
+    showMat();
+    showAbcd(b.letter,b.name,b.color);
+    timer=setTimeout(()=>{hideAbcd();elapsed+=b.dur;play(i+1)},b.dur);
     return;
   }
-
-  if(b.type==='say'){
-    hideABCD();showBoard();
-    setBg(b.bg||'dark');
-    hi(b.hi||[]);
-    if(b.sfx)setTimeout(()=>sfx(b.sfx),150);
-    setSpeech(b.text);
-    say(b.text);
-    timer=setTimeout(()=>{elapsed+=b.dur;idx++;next();},b.dur);
+  if(b.t==='text'){
+    hideAbcd();showMat();
+    setBg(b.bg);
+    hi(b.hi);
+    setText(b.head,b.body);
+    timer=setTimeout(()=>{elapsed+=b.dur;play(i+1)},b.dur);
     return;
   }
 }
 
 function done(){
   setProgress(100);
-  hideSpeech();hideABCD();
-  setSpeech("That is Riftbound. A B C D. Shuffle up. Play. Good luck. Do not suck.");
-  say("That is Riftbound. A B C D. Shuffle up. Play. Good luck. Do not suck.");
+  setText('Shuffle Up','Good luck.');
 }
-
 function togglePause(){
   paused=!paused;
-  document.getElementById('btn-pause').textContent=paused?'Play':'Pause';
-  if(paused){clearTimeout(timer);window.speechSynthesis.pause();}
-  else{window.speechSynthesis.resume();next();}
+  document.getElementById('btn-p').textContent=paused?'Play':'Pause';
+  if(!paused)play(idx);
+  else clearTimeout(timer);
 }
-
 function restart(){
-  clearTimeout(timer);window.speechSynthesis.cancel();
+  clearTimeout(timer);
   idx=0;elapsed=0;paused=false;
-  document.getElementById('btn-pause').textContent='Pause';
-  hideABCD();hideSpeech();hideBoard();
-  document.querySelectorAll('.bzone,.bbf').forEach(z=>z.classList.remove('hi','won'));
-  document.getElementById('eptitle').classList.remove('on');
+  document.getElementById('btn-p').textContent='Pause';
+  hideAbcd();clearText();
+  document.getElementById('mat-wrap').classList.remove('on');
+  document.getElementById('ep').classList.remove('on');
+  document.querySelectorAll('.mz,.stc').forEach(z=>z.classList.remove('hi','won'));
   setProgress(0);
-  setTimeout(()=>next(),500);
+  setTimeout(()=>play(0),500);
 }
-
-document.addEventListener('click',()=>{try{ac();}catch(e){}loadV();},{once:true});
-window.addEventListener('load',()=>{loadV();setTimeout(()=>next(),900);});
+window.addEventListener('load',()=>setTimeout(()=>play(0),600));
 </script>
 </div>
 </body>
