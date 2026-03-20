@@ -3,412 +3,542 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Riftbound — How to Play</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<title>Riftbound — How to Play with John</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Rajdhani',sans-serif}
-#stage{position:fixed;inset:0;background:#07080f;overflow:hidden}
-.scene{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .8s ease}
-.scene.active{opacity:1;pointer-events:all}
+:root{--gold:#c8a84b;--bg:#07080f}
 
-/* JOHN */
-#jc{position:fixed;bottom:0;left:0;right:0;height:185px;z-index:100;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}
-#jw{position:relative;display:flex;align-items:flex-end;gap:14px;padding:0 24px;width:100%;max-width:1000px}
-#jsv{width:110px;height:140px;flex-shrink:0;filter:drop-shadow(0 -4px 20px rgba(200,168,75,.3));transition:transform .15s}
-#jb{position:relative;background:#1a1400;border:2px solid #c8a84b;padding:11px 16px;border-radius:12px 12px 12px 0;max-width:420px;margin-bottom:36px;opacity:0;transition:opacity .3s;flex-shrink:1}
-#jb.show{opacity:1}
-#jbt{font-family:'Caveat',cursive;font-size:1.1rem;color:#e8e4d8;line-height:1.4}
-#jbt.yell{font-family:'Cinzel Decorative',serif;font-size:clamp(1.6rem,4vw,2.6rem);color:#c8a84b;font-weight:900;letter-spacing:.1em}
+#stage{position:fixed;inset:0;background:var(--bg);overflow:hidden}
 
-/* SNOW */
-#sb{position:fixed;top:16px;left:50%;transform:translateX(-50%);max-width:720px;width:92%;background:rgba(0,18,36,.93);border:1px solid rgba(11,196,227,.4);padding:15px 20px;border-radius:12px;opacity:0;transition:opacity .4s;z-index:99;text-align:center}
-#sb.show{opacity:1}
-#st{font-family:'Rajdhani',sans-serif;font-size:clamp(.95rem,2.4vw,1.25rem);color:#e8e4d8;line-height:1.6}
-#st .b{color:#c8a84b;font-weight:700}
-#st .r{color:#ef4444;font-weight:700}
-#st .g{color:#22c55e;font-weight:700}
+/* SCENE BACKGROUNDS */
+.scene-layer{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease;background-size:cover;background-position:center}
+.scene-layer.on{opacity:1}
+#bg-lol{
+  background-image:url('https://images.weserv.nl/?url=static.wikia.nocookie.net/leagueoflegends/images/0/01/Summoner%27s_Rift_Map.png&w=1200');
+  filter:saturate(.35) brightness(.28);
+}
+#bg-dark{background:radial-gradient(ellipse at 50% 30%,rgba(200,168,75,.07) 0%,transparent 65%),#07080f}
+#bg-combat{background:radial-gradient(ellipse at 50% 50%,rgba(239,68,68,.18) 0%,transparent 60%),#07080f}
+#bg-win{background:radial-gradient(ellipse at 50% 50%,rgba(34,197,94,.12) 0%,transparent 60%),#07080f}
+
+/* BOARD */
+#board{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-60%);
+  width:min(680px,90vw);
+  opacity:0;transition:opacity .8s;
+}
+#board.on{opacity:1}
+
+.brow{display:flex;gap:8px;justify-content:center;align-items:stretch;margin-bottom:8px}
+.bzone{
+  border:1px solid rgba(200,168,75,.18);background:rgba(200,168,75,.025);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;padding:7px 5px;
+  font-family:'Cinzel',serif;font-size:clamp(.35rem,.6vw,.52rem);
+  letter-spacing:.07em;text-transform:uppercase;color:rgba(200,168,75,.4);
+  min-height:52px;min-width:58px;transition:all .4s;
+}
+.bzone.hi{border-color:rgba(200,168,75,.75);background:rgba(200,168,75,.1);color:var(--gold);box-shadow:0 0 14px rgba(200,168,75,.18)}
+.bbf{
+  border:2px solid rgba(200,168,75,.28);background:rgba(200,168,75,.035);
+  flex:1;min-height:72px;max-width:290px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:5px;padding:10px;transition:all .5s;position:relative;overflow:hidden;
+}
+.bbf.hi{border-color:rgba(200,168,75,.75);background:rgba(200,168,75,.09);box-shadow:0 0 18px rgba(200,168,75,.14)}
+.bbf.won{border-color:#22c55e;background:rgba(34,197,94,.09);box-shadow:0 0 18px rgba(34,197,94,.18)}
+.bf-lbl{font-family:'Cinzel',serif;font-size:clamp(.48rem,.85vw,.68rem);letter-spacing:.1em;color:rgba(200,168,75,.65);text-transform:uppercase}
+.bf-sub{font-family:'Rajdhani',sans-serif;font-size:clamp(.4rem,.7vw,.58rem);color:rgba(255,255,255,.28)}
+
+.cback{width:26px;height:38px;background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(200,168,75,.35);border-radius:3px;position:relative;overflow:hidden;display:inline-block}
+.cback::before{content:'';position:absolute;inset:2px;border:1px solid rgba(200,168,75,.18);border-radius:2px}
+.cback::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(200,168,75,.04) 3px,rgba(200,168,75,.04) 4px)}
+.cback.unit{background:linear-gradient(135deg,#0d2b4a,#0a1a2e);border-color:rgba(11,196,227,.45)}
+.cback.unit::after{background:none}
+
+.rtok{width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(200,168,75,.4);background:rgba(200,168,75,.1);display:inline-block}
+.rtok.lit{background:rgba(200,168,75,.5);box-shadow:0 0 7px rgba(200,168,75,.55)}
+
+.unit-tok{
+  width:18px;height:18px;border-radius:3px;
+  background:rgba(11,196,227,.5);border:1.5px solid rgba(11,196,227,.8);
+  box-shadow:0 0 7px rgba(11,196,227,.35);
+  display:inline-block;transition:all .5s;
+}
+.unit-tok.enemy{background:rgba(239,68,68,.5);border-color:rgba(239,68,68,.8);box-shadow:0 0 7px rgba(239,68,68,.35)}
+
+.opp{opacity:.28}
 
 /* ABCD FLASH */
-#af{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.88);opacity:0;pointer-events:none;transition:opacity .3s}
-#af.show{opacity:1}
-#al{font-family:'Cinzel Decorative',serif;font-size:clamp(7rem,22vw,16rem);font-weight:900;line-height:.85;text-shadow:0 0 80px currentColor;animation:boom .5s cubic-bezier(.36,.07,.19,.97) both}
-@keyframes boom{0%{transform:scale(0) rotate(-8deg)}60%{transform:scale(1.2) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
-#an{font-family:'Cinzel',serif;font-size:clamp(1.1rem,3.5vw,2.2rem);letter-spacing:.3em;text-transform:uppercase;color:#e8e4d8;margin-top:14px;opacity:.8}
+#abcd{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  background:rgba(0,0,0,.72);z-index:60;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+#abcd.on{opacity:1}
+#abcd-L{
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(7rem,22vw,15rem);
+  font-weight:900;line-height:1;
+  text-shadow:0 0 60px currentColor,0 0 120px currentColor;
+}
+#abcd-L.pop{animation:lPop .4s cubic-bezier(.36,.07,.19,.97)}
+@keyframes lPop{0%{transform:scale(0) rotate(-8deg);opacity:0}65%{transform:scale(1.18) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
+#abcd-S{
+  font-family:'Cinzel',serif;
+  font-size:clamp(.9rem,2.5vw,1.6rem);
+  letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(255,255,255,.75);margin-top:10px;
+}
 
-/* POINTS */
-#pts{position:fixed;top:14px;right:18px;display:flex;gap:10px;z-index:98}
-.ptb{background:rgba(0,0,0,.75);border:1px solid rgba(200,168,75,.2);padding:7px 14px;text-align:center}
-.ptl{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:#5a5550}
-.ptv{font-family:'Cinzel Decorative',serif;font-size:1.6rem;color:#c8a84b}
-.ptb.win .ptv{color:#22c55e;text-shadow:0 0 20px #22c55e}
-.ptf{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-family:'Cinzel Decorative',serif;font-size:clamp(2.5rem,9vw,5rem);font-weight:900;pointer-events:none;z-index:180;animation:ptA 1.4s ease both}
-@keyframes ptA{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}30%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}70%{opacity:1;transform:translate(-50%,-65%) scale(1)}100%{opacity:0;transform:translate(-50%,-85%) scale(.7)}}
+/* SCORE POP */
+#score-pop{
+  position:absolute;top:40%;left:50%;transform:translateX(-50%);
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(2.5rem,8vw,6rem);color:#22c55e;font-weight:900;
+  text-shadow:0 0 40px rgba(34,197,94,.6);
+  opacity:0;pointer-events:none;z-index:70;transition:opacity .25s;
+}
+#score-pop.on{opacity:1;animation:sPop .5s ease}
+@keyframes sPop{0%{transform:translateX(-50%) scale(.4)}65%{transform:translateX(-50%) scale(1.15)}100%{transform:translateX(-50%) scale(1)}}
+
+/* EPISODE TITLE */
+#eptitle{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  z-index:80;opacity:0;transition:opacity .7s;pointer-events:none;
+}
+#eptitle.on{opacity:1}
+#eptitle h1{
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(1.8rem,5.5vw,4rem);
+  background:linear-gradient(180deg,#fff9e8,#c8a84b 50%,#7a5c18);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;letter-spacing:.12em;margin-bottom:10px;
+}
+#eptitle p{font-family:'Cinzel',serif;font-size:clamp(.75rem,1.8vw,1.05rem);color:rgba(255,255,255,.35);letter-spacing:.3em;text-transform:uppercase}
+
+/* JOHN - FIXED BOTTOM */
+#john-wrap{
+  position:absolute;bottom:0;left:0;right:0;
+  display:flex;align-items:flex-end;z-index:100;pointer-events:none;
+}
+#john-fig{
+  flex-shrink:0;
+  width:clamp(90px,16vw,170px);
+  margin-bottom:-3px;
+  transition:transform .5s cubic-bezier(.4,0,.2,1);
+}
+#john-fig.out{transform:translateX(-110%)}
+
+/* SPEECH BUBBLE */
+#speech{
+  flex:1;max-width:580px;margin:0 18px 28px;
+  background:rgba(8,10,22,.93);
+  border:1px solid rgba(200,168,75,.28);
+  padding:14px 18px;position:relative;
+  opacity:0;transform:translateY(8px);
+  transition:opacity .4s,transform .4s;
+}
+#speech.on{opacity:1;transform:translateY(0)}
+#speech::before{content:'';position:absolute;bottom:18px;left:-7px;border:3.5px solid transparent;border-right-color:rgba(200,168,75,.28)}
+#sp-name{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+#sp-text{font-family:'Rajdhani',sans-serif;font-size:clamp(.82rem,1.9vw,1.08rem);color:#e8e4d8;line-height:1.6;min-height:36px}
 
 /* PROGRESS */
-#prog{position:fixed;bottom:188px;left:0;right:0;height:2px;background:rgba(255,255,255,.04);z-index:101}
-#pb{height:100%;background:linear-gradient(90deg,#c8a84b,#e8c96a);width:0%;transition:width .3s linear}
+#prog{position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,.04);z-index:200}
+#prog-bar{height:100%;background:var(--gold);width:0%;transition:width .15s linear}
 
 /* CONTROLS */
-#ctrl{position:fixed;bottom:193px;right:14px;display:flex;gap:7px;z-index:102}
-.cb{background:rgba(200,168,75,.1);border:1px solid rgba(200,168,75,.28);color:#c8a84b;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.1em;padding:5px 11px;cursor:pointer;transition:all .2s;border-radius:2px}
-.cb:hover{background:rgba(200,168,75,.22)}
+#ctrl{position:absolute;top:14px;right:14px;display:flex;gap:8px;z-index:200}
+.cbtn{
+  font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:6px 13px;border:1px solid rgba(200,168,75,.28);
+  background:rgba(0,0,0,.55);color:rgba(200,168,75,.65);cursor:pointer;transition:all .2s;
+}
+.cbtn:hover{border-color:rgba(200,168,75,.65);color:var(--gold)}
+#back-lnk{position:absolute;top:14px;left:14px;z-index:200;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(200,168,75,.35);text-decoration:none;transition:color .2s}
+#back-lnk:hover{color:var(--gold)}
 
-/* NAV */
-#nav{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;padding:9px 18px;background:linear-gradient(180deg,rgba(0,0,0,.75),transparent);z-index:97}
-#nav a{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:#c8a84b;text-decoration:none;opacity:.55}
-#nav a:hover{opacity:1}
-
-/* SCENE: TITLE */
-#sc0{display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,rgba(200,168,75,.09),transparent 60%),#07080f}
-#sc0 h1{font-family:'Cinzel Decorative',serif;font-size:clamp(2rem,7vw,5rem);font-weight:900;background:linear-gradient(180deg,#fff9e8,#c8a84b 50%,#7a5c18);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.15em;text-align:center;animation:tIn 1.5s ease both}
-#sc0 .ep{font-family:'Cinzel',serif;font-size:clamp(.75rem,1.8vw,1rem);color:#9a9080;letter-spacing:.4em;text-transform:uppercase;margin-top:11px;animation:tIn 1.5s .3s ease both}
-#sc0 .sh{font-family:'Rajdhani',sans-serif;font-size:.88rem;color:#5a5550;margin-top:38px;letter-spacing:.15em;text-transform:uppercase;animation:pulse 2s ease-in-out infinite}
-@keyframes tIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
-
-/* SCENE: LOL MAP */
-#sc1{display:flex;align-items:center;justify-content:center;background:#060a06}
-#lw{position:relative;width:min(560px,88vw);height:min(560px,78vh)}
-
-/* SCENE: BOARD */
-#sc2{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px 18px 195px;background:#07080f;overflow:hidden}
-.bw{width:100%;max-width:800px;display:flex;flex-direction:column;gap:5px;flex:1}
-.or{display:flex;gap:5px;justify-content:center;opacity:.28;filter:blur(1px)}
-.bfr{display:flex;gap:7px;justify-content:center;flex:1}
-.bf{flex:1;max-width:350px;min-height:110px;border:2px solid rgba(200,168,75,.38);background:rgba(200,168,75,.03);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;position:relative;transition:border-color .3s,box-shadow .3s}
-.bf.ct{border-color:#ef4444;box-shadow:0 0 18px rgba(239,68,68,.28)}
-.bf.cq{border-color:#22c55e;box-shadow:0 0 18px rgba(34,197,94,.28)}
-.bfn{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:#c8a84b}
-.pr{display:flex;gap:5px;justify-content:center}
-.zb{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.02);padding:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:62px;min-height:54px}
-.zb.lg{border-color:rgba(200,168,75,.4);background:rgba(200,168,75,.06)}
-.zb.ch{border-color:rgba(11,196,227,.28);background:rgba(11,196,227,.04)}
-.zb.ru{border-color:rgba(200,168,75,.18)}
-.zl{font-family:'Cinzel',serif;font-size:.43rem;letter-spacing:.09em;text-transform:uppercase;color:#9a9080;text-align:center}
-.zb.lg .zl{color:#c8a84b}.zb.ch .zl{color:#0bc4e3}
-.ba{flex:1;border:1px dashed rgba(255,255,255,.07);padding:9px;display:flex;flex-wrap:wrap;gap:5px;justify-content:center;align-items:center;min-height:74px;position:relative}
-.bl{position:absolute;top:-8px;left:10px;font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;background:#07080f;padding:0 5px;color:#5a5550}
-.card{width:42px;height:58px;border-radius:3px;border:1px solid rgba(200,168,75,.45);background:linear-gradient(135deg,#1a1428,#0f0d1a);display:flex;align-items:center;justify-content:center;font-size:.38rem;color:rgba(200,168,75,.35);flex-shrink:0;transition:all .3s;box-shadow:0 2px 7px rgba(0,0,0,.5);position:relative}
-.card::before{content:'';position:absolute;inset:3px;border:1px solid rgba(200,168,75,.12);border-radius:2px}
-.card.ex{transform:rotate(90deg);opacity:.65}
-.card.hi{border-color:#c8a84b;box-shadow:0 0 14px rgba(200,168,75,.45)}
-.card.u{background:linear-gradient(135deg,#1a1428,#0d1525)}
-.card.s{background:linear-gradient(135deg,#1a2814,#0d1a0d)}
-.card.g{background:linear-gradient(135deg,#2a2014,#1a1408)}
-.rc{width:34px;height:48px;border-radius:3px;border:1px solid;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0}
-
-@media(max-width:580px){.zb{min-width:48px;min-height:46px}.card{width:34px;height:48px}}
+/* SCORE HUD */
+#pts-hud{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:200;font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.2em;color:rgba(200,168,75,.4);text-transform:uppercase;opacity:0;transition:opacity .5s}
+#pts-hud.on{opacity:1}
 </style>
 </head>
 <body>
 <div id="stage">
 
-<div id="nav"><a href="index.html">← Decks</a></div>
+<!-- BG -->
+<div id="bg-lol" class="scene-layer"></div>
+<div id="bg-dark" class="scene-layer on"></div>
+<div id="bg-combat" class="scene-layer"></div>
+<div id="bg-win" class="scene-layer"></div>
 
-<div id="pts">
-  <div class="ptb" id="pty"><div class="ptl">You</div><div class="ptv" id="pyv">0</div></div>
-  <div class="ptb" id="pto"><div class="ptl">Them</div><div class="ptv" id="pov">0</div></div>
+<!-- EPISODE TITLE -->
+<div id="eptitle">
+  <h1>Episode 1</h1>
+  <p>How to Play Riftbound</p>
 </div>
 
-<div id="af"><div id="al"></div><div id="an"></div></div>
+<!-- BOARD (player looking down — you at bottom, battlefields middle, opp faded top) -->
+<div id="board">
+  <!-- Opponent (faded, top) -->
+  <div class="brow opp">
+    <div class="bzone">👑<br>Legend</div>
+    <div class="bzone"><div class="cback"></div><br>Deck</div>
+    <div class="bzone"><span class="rtok"></span><span class="rtok"></span><br>Runes</div>
+    <div class="bzone"><div class="cback"></div><div class="cback"></div><div class="cback"></div><br>Hand</div>
+    <div class="bzone">⚡<br>Champ</div>
+  </div>
 
-<div id="jc"><div id="jw">
-  <svg id="jsv" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
-    <rect x="25" y="105" width="70" height="45" rx="6" fill="#1a2035"/>
-    <rect x="50" y="105" width="20" height="45" fill="#151c2d"/>
-    <polygon points="60,105 50,118 60,113" fill="#fff" opacity=".9"/>
-    <polygon points="60,105 70,118 60,113" fill="#fff" opacity=".9"/>
-    <rect x="50" y="95" width="20" height="14" rx="3" fill="#c8956a"/>
-    <rect x="22" y="44" width="76" height="60" rx="16" fill="#c8956a"/>
-    <rect x="18" y="36" width="84" height="24" rx="8" fill="#1a1a2e"/>
-    <ellipse cx="60" cy="38" rx="42" ry="10" fill="#1a1a2e"/>
-    <rect x="8" y="50" width="40" height="8" rx="4" fill="#141428"/>
-    <text x="24" y="47" font-family="Arial" font-size="6.5" fill="#c8a84b" font-weight="bold" letter-spacing="1.2">JOHN</text>
-    <ellipse cx="22" cy="72" rx="7" ry="9" fill="#b07850"/>
-    <ellipse cx="98" cy="72" rx="7" ry="9" fill="#b07850"/>
-    <rect x="30" y="64" width="24" height="18" rx="2" fill="none" stroke="#aaa" stroke-width="2"/>
-    <rect x="66" y="64" width="24" height="18" rx="2" fill="none" stroke="#aaa" stroke-width="2"/>
-    <line x1="54" y1="73" x2="66" y2="73" stroke="#aaa" stroke-width="1.5"/>
-    <line x1="22" y1="73" x2="30" y2="73" stroke="#aaa" stroke-width="1"/>
-    <line x1="90" y1="73" x2="98" y2="73" stroke="#aaa" stroke-width="1"/>
-    <ellipse cx="42" cy="73" rx="6" ry="6" fill="#fff"/>
-    <ellipse cx="78" cy="73" rx="6" ry="6" fill="#fff"/>
-    <ellipse cx="43" cy="73" rx="3.5" ry="3.5" fill="#1a0a00"/>
-    <ellipse cx="79" cy="73" rx="3.5" ry="3.5" fill="#1a0a00"/>
-    <circle cx="44" cy="71" r="1" fill="white"/>
-    <circle cx="80" cy="71" r="1" fill="white"/>
-    <line x1="31" y1="61" x2="53" y2="62" stroke="#4a3828" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="67" y1="62" x2="89" y2="61" stroke="#4a3828" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M30,94 Q35,106 60,108 Q85,106 90,94 Q78,100 60,101 Q42,100 30,94Z" fill="#3a2a1a"/>
-    <path d="M46,88 Q54,93 60,90 Q66,93 74,88" stroke="#3a2a1a" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M50,97 Q60,100 70,97" stroke="#7a4a2a" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <polygon points="108,130 118,110 128,135" fill="#c8a84b" opacity=".45"/>
-    <circle cx="114" cy="123" r="2" fill="#e84040" opacity=".6"/>
-  </svg>
-  <div id="jb"><div id="jbt"></div></div>
-</div></div>
+  <!-- BATTLEFIELDS (middle) -->
+  <div class="brow">
+    <div class="bbf" id="bf1">
+      <div class="bf-lbl">Battlefield 1</div>
+      <div class="bf-sub">1 point to conquer</div>
+    </div>
+    <div class="bbf" id="bf2">
+      <div class="bf-lbl">Battlefield 2</div>
+      <div class="bf-sub">1 point to conquer</div>
+    </div>
+  </div>
 
-<div id="sb"><div id="st"></div></div>
-<div id="prog"><div id="pb"></div></div>
+  <!-- YOUR BASE (bottom) -->
+  <div class="brow">
+    <div class="bzone" id="z-legend" style="border-color:rgba(200,168,75,.35);background:rgba(200,168,75,.05);color:var(--gold)">👑<br>Legend</div>
+    <div class="bzone" id="z-champ" style="border-color:rgba(11,196,227,.28);color:rgba(11,196,227,.55)">⚡<br>Champ</div>
+    <div class="bzone" id="z-base"><div class="cback unit"></div><br>Base</div>
+    <div class="bzone" id="z-runes"><span class="rtok" id="r1"></span><span class="rtok" id="r2"></span><span class="rtok" id="r3" style="opacity:0"></span><br>Runes</div>
+    <div class="bzone" id="z-hand" style="display:flex;flex-direction:row;gap:2px;flex-wrap:wrap;justify-content:center;align-items:center"><div class="cback"></div><div class="cback"></div><div class="cback"></div><div class="cback"></div><br></div>
+    <div class="bzone" id="z-deck"><div class="cback"></div><br>Deck</div>
+    <div class="bzone" id="z-trash" style="border-color:rgba(239,68,68,.18);color:rgba(239,68,68,.4)">🗑<br>Trash</div>
+  </div>
+</div>
+
+<!-- ABCD FLASH -->
+<div id="abcd">
+  <div id="abcd-L"></div>
+  <div id="abcd-S"></div>
+</div>
+
+<!-- SCORE POP -->
+<div id="score-pop">+1 POINT</div>
+
+<!-- JOHN BOTTOM -->
+<div id="john-wrap">
+  <div id="john-fig">
+    <svg viewBox="0 0 180 230" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;filter:drop-shadow(0 -4px 18px rgba(200,168,75,.14))">
+      <rect x="38" y="158" width="104" height="72" rx="8" fill="#1a2035"/>
+      <rect x="73" y="158" width="34" height="72" fill="#141c2e"/>
+      <polygon points="90,158 73,178 90,170" fill="#fff" opacity=".85"/>
+      <polygon points="90,158 107,178 90,170" fill="#fff" opacity=".85"/>
+      <rect x="73" y="140" width="34" height="22" rx="4" fill="#d4a57a"/>
+      <rect x="36" y="68" width="108" height="94" rx="22" fill="#d4a57a"/>
+      <rect x="32" y="58" width="116" height="32" rx="10" fill="#1a1a2e"/>
+      <ellipse cx="90" cy="60" rx="57" ry="14" fill="#1a1a2e"/>
+      <rect x="18" y="78" width="54" height="11" rx="5" fill="#141428"/>
+      <text x="61" y="79" font-family="sans-serif" font-size="8" fill="#c8a84b" font-weight="bold" letter-spacing="1">JOHN</text>
+      <ellipse cx="36" cy="112" rx="10" ry="13" fill="#c89060"/>
+      <ellipse cx="144" cy="112" rx="10" ry="13" fill="#c89060"/>
+      <ellipse cx="90" cy="150" rx="40" ry="16" fill="#3a3028"/>
+      <ellipse cx="90" cy="144" rx="31" ry="9" fill="#d4a57a"/>
+      <path d="M71,132 Q81,137 90,134 Q99,137 109,132" stroke="#3a3028" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <rect x="50" y="99" width="32" height="24" rx="3" fill="rgba(200,230,255,.07)" stroke="#999" stroke-width="2.5"/>
+      <rect x="98" y="99" width="32" height="24" rx="3" fill="rgba(200,230,255,.07)" stroke="#999" stroke-width="2.5"/>
+      <line x1="82" y1="111" x2="98" y2="111" stroke="#999" stroke-width="2"/>
+      <line x1="34" y1="111" x2="50" y2="111" stroke="#999" stroke-width="1.5"/>
+      <line x1="130" y1="111" x2="144" y2="111" stroke="#999" stroke-width="1.5"/>
+      <ellipse cx="66" cy="111" rx="7" ry="7" fill="#fff"/>
+      <ellipse cx="114" cy="111" rx="7" ry="7" fill="#fff"/>
+      <ellipse cx="67" cy="111" rx="4" ry="4" fill="#2a1800"/>
+      <ellipse cx="115" cy="111" rx="4" ry="4" fill="#2a1800"/>
+      <circle cx="69" cy="109" r="1.5" fill="#fff"/>
+      <circle cx="117" cy="109" r="1.5" fill="#fff"/>
+      <path d="M52,97 Q66,92 80,96" stroke="#3a3028" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M100,96 Q114,92 128,97" stroke="#3a3028" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M75,142 Q90,145 105,142" stroke="#8a6040" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <g transform="translate(145,178)">
+        <polygon points="0,18 16,-4 26,20" fill="#c8a84b" opacity=".9"/>
+        <circle cx="9" cy="12" r="2.5" fill="#e84040" opacity=".9"/>
+        <circle cx="17" cy="6" r="2" fill="#e84040"/>
+        <circle cx="19" cy="16" r="2" fill="#e84040" opacity=".8"/>
+      </g>
+      <path d="M136,174 Q158,152 172,132" stroke="#d4a57a" stroke-width="11" fill="none" stroke-linecap="round" id="arm"/>
+      <ellipse cx="173" cy="130" rx="8" ry="8" fill="#d4a57a" id="hand"/>
+      <path d="M173,130 L183,117" stroke="#d4a57a" stroke-width="7" fill="none" stroke-linecap="round" id="finger"/>
+    </svg>
+  </div>
+  <div id="speech">
+    <div id="sp-name">JOHN</div>
+    <div id="sp-text"></div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div id="prog"><div id="prog-bar"></div></div>
+
+<!-- CONTROLS -->
 <div id="ctrl">
-  <button class="cb" onclick="T.skip()">Skip →</button>
-  <button class="cb" id="sbtn" onclick="T.sound()">🔊</button>
+  <button class="cbtn" id="btn-pause" onclick="togglePause()">Pause</button>
+  <button class="cbtn" onclick="restart()">↺ Restart</button>
+  <button class="cbtn" id="btn-mute" onclick="toggleMute()">🔊</button>
 </div>
+<a href="index.html" id="back-lnk">← Decks</a>
+<div id="pts-hud">Score: <span id="pts-n">0</span> / 8</div>
 
-<!-- SCENE 0: TITLE -->
-<div class="scene active" id="sc0">
-  <h1>RIFTBOUND</h1>
-  <p class="ep">Episode 1 — How to Play</p>
-  <p class="sh">Starting shortly...</p>
-</div>
-
-<!-- SCENE 1: LOL MAP -->
-<div class="scene" id="sc1">
-<div id="lw">
-<svg width="100%" height="100%" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-  <rect width="500" height="500" fill="#060d06"/>
-  <rect x="10" y="10" width="480" height="480" rx="8" fill="none" stroke="rgba(120,200,120,.12)" stroke-width="1"/>
-  <rect x="58" y="58" width="155" height="155" rx="4" fill="rgba(0,28,0,.4)"/>
-  <rect x="287" y="287" width="155" height="155" rx="4" fill="rgba(0,28,0,.4)"/>
-  <path d="M175,0 L0,175" stroke="rgba(11,196,227,.18)" stroke-width="26" fill="none"/>
-  <path d="M500,325 L325,500" stroke="rgba(11,196,227,.18)" stroke-width="26" fill="none"/>
-  <rect x="26" y="26" width="22" height="345" rx="4" fill="rgba(120,200,120,.13)"/>
-  <rect x="452" y="129" width="22" height="345" rx="4" fill="rgba(120,200,120,.13)"/>
-  <path d="M48,48 L452,452" stroke="rgba(120,200,120,.12)" stroke-width="20" fill="none"/>
-  <rect x="10" y="375" width="115" height="115" rx="6" fill="rgba(11,100,227,.1)" stroke="rgba(11,196,227,.28)" stroke-width="1.5"/>
-  <circle cx="67" cy="445" r="12" fill="rgba(11,196,227,.22)" stroke="rgba(11,196,227,.5)" stroke-width="2"/>
-  <text x="67" y="426" text-anchor="middle" font-family="Arial" font-size="7.5" fill="rgba(11,196,227,.55)" letter-spacing="1">NEXUS</text>
-  <rect x="375" y="10" width="115" height="115" rx="6" fill="rgba(227,64,64,.1)" stroke="rgba(239,68,68,.28)" stroke-width="1.5"/>
-  <circle cx="433" cy="75" r="12" fill="rgba(239,68,68,.22)" stroke="rgba(239,68,68,.5)" stroke-width="2"/>
-  <text x="433" y="56" text-anchor="middle" font-family="Arial" font-size="7.5" fill="rgba(239,68,68,.55)" letter-spacing="1">NEXUS</text>
-  <circle cx="37" cy="355" r="8" fill="rgba(11,196,227,.28)" stroke="rgba(11,196,227,.7)" stroke-width="2"/>
-  <circle cx="37" cy="270" r="7" fill="rgba(11,196,227,.22)" stroke="rgba(11,196,227,.5)" stroke-width="1.5"/>
-  <circle cx="37" cy="190" r="6" fill="rgba(11,196,227,.18)" stroke="rgba(11,196,227,.4)" stroke-width="1.5"/>
-  <circle cx="135" cy="463" r="8" fill="rgba(11,196,227,.28)" stroke="rgba(11,196,227,.7)" stroke-width="2"/>
-  <circle cx="215" cy="463" r="7" fill="rgba(11,196,227,.22)" stroke="rgba(11,196,227,.5)" stroke-width="1.5"/>
-  <circle cx="463" cy="145" r="8" fill="rgba(239,68,68,.28)" stroke="rgba(239,68,68,.7)" stroke-width="2"/>
-  <circle cx="463" cy="225" r="7" fill="rgba(239,68,68,.22)" stroke="rgba(239,68,68,.5)" stroke-width="1.5"/>
-  <circle cx="463" cy="305" r="6" fill="rgba(239,68,68,.18)" stroke="rgba(239,68,68,.4)" stroke-width="1.5"/>
-  <circle cx="365" cy="37" r="8" fill="rgba(239,68,68,.28)" stroke="rgba(239,68,68,.7)" stroke-width="2"/>
-  <circle cx="285" cy="37" r="7" fill="rgba(239,68,68,.22)" stroke="rgba(239,68,68,.5)" stroke-width="1.5"/>
-  <g><circle cx="37" cy="320" r="5" fill="#0bc4e3" opacity=".85"><animate attributeName="cy" values="320;155;320" dur="5.5s" repeatCount="indefinite"/></circle></g>
-  <g><circle cx="43" cy="330" r="4" fill="#0bc4e3" opacity=".7"><animate attributeName="cy" values="330;165;330" dur="5.5s" begin=".5s" repeatCount="indefinite"/></circle></g>
-  <g><circle cx="463" cy="175" r="5" fill="#ef4444" opacity=".85"><animate attributeName="cy" values="175;340;175" dur="5.5s" begin="1s" repeatCount="indefinite"/></circle></g>
-  <g><circle r="4.5" fill="#0bc4e3" opacity=".75"><animateMotion dur="7s" repeatCount="indefinite" path="M48,452 L340,160"/></circle></g>
-  <g><circle r="4" fill="#ef4444" opacity=".75"><animateMotion dur="7s" begin="1.5s" repeatCount="indefinite" path="M452,48 L160,340"/></circle></g>
-  <text x="18" y="195" font-family="Arial" font-size="8" fill="rgba(120,200,120,.35)" transform="rotate(-90,18,195)">TOP LANE</text>
-  <text x="468" y="315" font-family="Arial" font-size="8" fill="rgba(120,200,120,.35)" transform="rotate(90,468,315)">BOT LANE</text>
-  <text x="198" y="290" font-family="Arial" font-size="8" fill="rgba(120,200,120,.35)" transform="rotate(-44,198,290)">MID LANE</text>
-  <g id="rbo" opacity="0" style="transition:opacity 1.5s">
-    <rect x="8" y="215" width="484" height="58" fill="rgba(200,168,75,.06)" stroke="rgba(200,168,75,.35)" stroke-width="1.5" rx="4"/>
-    <text x="250" y="249" text-anchor="middle" font-family="serif" font-size="13" fill="#c8a84b" letter-spacing="4">BATTLEFIELD 1</text>
-    <rect x="8" y="320" width="484" height="58" fill="rgba(200,168,75,.06)" stroke="rgba(200,168,75,.35)" stroke-width="1.5" rx="4"/>
-    <text x="250" y="354" text-anchor="middle" font-family="serif" font-size="13" fill="#c8a84b" letter-spacing="4">BATTLEFIELD 2</text>
-  </g>
-</svg>
-</div>
-</div>
-
-<!-- SCENE 2: BOARD -->
-<div class="scene" id="sc2">
-<div class="bw">
-  <div class="or">
-    <div class="zb lg"><div class="zl">Legend</div></div>
-    <div class="zb ch"><div class="zl">Champ</div></div>
-    <div class="ba" style="min-height:46px;max-width:380px"><div class="bl">Opponent Base</div>
-      <div class="card ex"></div><div class="card ex"></div><div class="card ex"></div>
-    </div>
-    <div class="zb ru"><div class="zl">Runes</div></div>
-    <div class="zb"><div class="zl">Deck</div></div>
-  </div>
-  <div class="bfr">
-    <div class="bf" id="bf1"><div class="bfn">Battlefield 1</div><div id="bf1u" style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;padding:4px"></div></div>
-    <div class="bf" id="bf2"><div class="bfn">Battlefield 2</div><div id="bf2u" style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;padding:4px"></div></div>
-  </div>
-  <div class="pr">
-    <div class="zb lg"><div style="font-size:.85rem">👑</div><div class="zl">Legend</div></div>
-    <div class="zb ch"><div style="font-size:.85rem">⚡</div><div class="zl">Champ</div></div>
-    <div class="ba" id="ybase">
-      <div class="bl">Your Base</div>
-      <div class="card u" id="ca"></div>
-      <div class="card u" id="cb"></div>
-      <div class="card s" id="cc"></div>
-      <div class="card g" id="cd"></div>
-    </div>
-    <div class="zb ru" id="rz">
-      <div style="display:flex;gap:3px;justify-content:center">
-        <div class="rc" style="border-color:#E53935;color:#E53935">F</div>
-        <div class="rc" style="border-color:#F57C00;color:#F57C00">B</div>
-      </div>
-      <div class="zl">Runes</div>
-    </div>
-    <div class="zb"><div style="font-size:.85rem">📚</div><div class="zl">Deck</div></div>
-  </div>
-</div>
-</div>
-
-</div><!-- /stage -->
 <script>
-const T=(()=>{
-const W=t=>new Promise(r=>setTimeout(r,t));
-let sy=window.speechSynthesis,vs=[],sv=null,jv=null,sOn=true,yp=0,op=0,cur=0,going=false;
+// ── AUDIO ──
+let AC = null, muted = false;
+function ac(){ if(!AC) AC=new(window.AudioContext||window.webkitAudioContext)(); return AC; }
+function toggleMute(){ muted=!muted; document.getElementById('btn-mute').textContent=muted?'🔇':'🔊'; }
 
-function lv(){
-  vs=sy.getVoices();
-  sv=vs.find(v=>v.lang==='en-US'&&/zira|samantha|karen|google us/i.test(v.name))||vs.find(v=>v.lang==='en-US')||vs[0];
-  jv=vs.find(v=>v.lang==='en-GB'&&/daniel|george|oliver/i.test(v.name))||vs.find(v=>v.lang==='en-GB')||vs[1]||vs[0];
-}
-if(sy.onvoiceschanged!==undefined)sy.onvoiceschanged=lv;
-setTimeout(lv,400);
-
-function spk(txt,isJ=false){
-  if(!sOn)return Promise.resolve();
-  return new Promise(r=>{
-    sy.cancel();
-    const u=new SpeechSynthesisUtterance(txt);
-    u.voice=isJ?jv:sv;
-    u.rate=isJ?.86:1.12;
-    u.pitch=isJ?.88:1.06;
-    u.volume=1;
-    u.onend=r;u.onerror=r;
-    sy.speak(u);
-  });
-}
-
-function sno(html,txt=''){
-  const e=document.getElementById('sb'),t=document.getElementById('st');
-  t.innerHTML=html;e.classList.add('show');
-  return txt?spk(txt):Promise.resolve();
-}
-function hno(){document.getElementById('sb').classList.remove('show')}
-
-function jhn(txt,yell=false){
-  const b=document.getElementById('jb'),t=document.getElementById('jbt'),s=document.getElementById('jsv');
-  t.className=yell?'yell':'';t.textContent=txt;b.classList.add('show');
-  if(yell)s.style.transform='scale(1.12) translateY(-7px)';
-  return spk(txt,true).then(()=>{if(yell)s.style.transform=''});
-}
-function hjn(){document.getElementById('jb').classList.remove('show');document.getElementById('jsv').style.transform=''}
-
-function sc(id){document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function pr(p){document.getElementById('pb').style.width=p+'%'}
-
-function flash(ltr,nm,col){
-  const e=document.getElementById('af'),l=document.getElementById('al'),n=document.getElementById('an');
-  l.textContent=ltr;l.style.color=col;n.textContent=nm;n.style.color=col;
-  e.classList.add('show');
-  // Boom sound
-  if(sOn){const ac=new AudioContext(),o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);o.frequency.value=200;g.gain.setValueAtTime(.4,ac.currentTime);g.gain.exponentialRampToConstantValue(.001,ac.currentTime+.6);o.start();o.stop(ac.currentTime+.6)}
-  const u=new SpeechSynthesisUtterance(ltr+'! '+nm);
-  u.voice=jv;u.rate=.7;u.pitch=.85;u.volume=1;
-  if(sOn)sy.speak(u);
-  return W(2300).then(()=>e.classList.remove('show'));
-}
-
-function apt(who,n){
-  if(who==='y'){yp+=n;document.getElementById('pyv').textContent=yp;if(yp>=8)document.getElementById('pty').classList.add('win')}
-  else{op+=n;document.getElementById('pov').textContent=op}
-  const f=document.createElement('div');f.className='ptf';
-  f.textContent='+'+(n)+' PT';f.style.color=who==='y'?'#22c55e':'#ef4444';
-  document.body.appendChild(f);setTimeout(()=>f.remove(),1500);
-  if(sOn){const ac=new AudioContext(),o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);o.frequency.value=who==='y'?900:400;g.gain.setValueAtTime(.25,ac.currentTime);g.gain.exponentialRampToConstantValue(.001,ac.currentTime+.35);o.start();o.stop(ac.currentTime+.35)}
-}
-
-function cpsnd(){
-  if(!sOn)return;
-  const ac=new AudioContext(),buf=ac.createBuffer(1,ac.sampleRate*.12,ac.sampleRate),d=buf.getChannelData(0);
-  for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length)*.25;
-  const s=ac.createBufferSource();s.buffer=buf;
-  const f=ac.createBiquadFilter();f.type='bandpass';f.frequency.value=1100;
-  s.connect(f);f.connect(ac.destination);s.start();
-}
-
-async function mvcard(id,targetId){
-  const card=document.getElementById(id),tar=document.getElementById(targetId);
-  if(!card||!tar)return;
-  const fr=card.getBoundingClientRect(),to=tar.getBoundingClientRect();
-  const clone=card.cloneNode(true);
-  clone.style.cssText=`position:fixed;left:${fr.left}px;top:${fr.top}px;width:${fr.width}px;height:${fr.height}px;z-index:150;transition:none;margin:0`;
-  document.body.appendChild(clone);
-  card.style.opacity='0';
-  cpsnd();
-  await W(50);
-  clone.style.transition='all .75s cubic-bezier(.4,0,.2,1)';
-  clone.style.left=(to.left+to.width/2-fr.width/2)+'px';
-  clone.style.top=(to.top+to.height/2-fr.height/2)+'px';
-  await W(800);
-  clone.remove();
-  card.style.opacity='1';
-  tar.appendChild(card);
+function sfx(t){
+  if(muted) return;
+  const a=ac(), g=a.createGain(); g.connect(a.destination);
+  if(t==='C'){
+    const o=a.createOscillator(),g2=a.createGain();
+    o.connect(g2);g2.connect(a.destination);
+    o.type='sawtooth';
+    o.frequency.setValueAtTime(200,a.currentTime);
+    o.frequency.exponentialRampToValueAtTime(900,a.currentTime+.07);
+    o.frequency.exponentialRampToValueAtTime(400,a.currentTime+.2);
+    g2.gain.setValueAtTime(.5,a.currentTime);
+    g2.gain.exponentialRampToValueAtTime(.001,a.currentTime+.35);
+    o.start();o.stop(a.currentTime+.35);
+  } else if(t==='card'){
+    const b=a.createBuffer(1,a.sampleRate*.1,a.sampleRate),d=b.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+    const s=a.createBufferSource(),f=a.createBiquadFilter();
+    f.type='highpass';f.frequency.value=2500;
+    s.buffer=b;s.connect(f);f.connect(g);g.gain.setValueAtTime(.25,a.currentTime);s.start();
+  } else if(t==='point'){
+    [523,659,784].forEach((f,i)=>{
+      const o=a.createOscillator(),g2=a.createGain();
+      o.connect(g2);g2.connect(a.destination);
+      o.type='sine';o.frequency.value=f;
+      const T=a.currentTime+i*.1;
+      g2.gain.setValueAtTime(.28,T);g2.gain.exponentialRampToValueAtTime(.001,T+.45);
+      o.start(T);o.stop(T+.45);
+    });
+  } else if(t==='hit'){
+    const b=a.createBuffer(1,a.sampleRate*.28,a.sampleRate),d=b.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3)*(i<800?1:.25);
+    const s=a.createBufferSource(),f=a.createBiquadFilter();
+    f.type='lowpass';f.frequency.value=700;
+    s.buffer=b;s.connect(f);f.connect(g);g.gain.setValueAtTime(.45,a.currentTime);s.start();
+  } else if(t==='rune'){
+    [1046,1319,1568].forEach((f,i)=>{
+      const o=a.createOscillator(),g2=a.createGain();
+      o.connect(g2);g2.connect(a.destination);
+      o.type='triangle';o.frequency.value=f;
+      const T=a.currentTime+i*.07;
+      g2.gain.setValueAtTime(.14,T);g2.gain.exponentialRampToValueAtTime(.001,T+.4);
+      o.start(T);o.stop(T+.4);
+    });
+  } else if(t==='shuffle'){
+    for(let i=0;i<5;i++){
+      const b=a.createBuffer(1,a.sampleRate*.055,a.sampleRate),d=b.getChannelData(0);
+      for(let j=0;j<d.length;j++) d[j]=(Math.random()*2-1)*Math.pow(1-j/d.length,2);
+      const s=a.createBufferSource();s.buffer=b;s.connect(g);
+      g.gain.setValueAtTime(.18,a.currentTime+i*.08);s.start(a.currentTime+i*.08);
+    }
+  } else if(t==='awaken'){
+    [261,329,392,523].forEach((f,i)=>{
+      const o=a.createOscillator(),g2=a.createGain();
+      o.connect(g2);g2.connect(a.destination);o.type='sine';o.frequency.value=f;
+      g2.gain.setValueAtTime(0,a.currentTime);
+      g2.gain.linearRampToValueAtTime(.13,a.currentTime+.22);
+      g2.gain.exponentialRampToValueAtTime(.001,a.currentTime+1.6);
+      o.start();o.stop(a.currentTime+1.6);
+    });
+  } else if(t==='win'){
+    [523,659,784,1046,1318].forEach((f,i)=>{
+      const o=a.createOscillator(),g2=a.createGain();
+      o.connect(g2);g2.connect(a.destination);o.type='square';o.frequency.value=f;
+      const T=a.currentTime+i*.13;
+      g2.gain.setValueAtTime(.18,T);g2.gain.exponentialRampToValueAtTime(.001,T+.55);
+      o.start(T);o.stop(T+.55);
+    });
+  }
 }
 
-// THE SCRIPT
-const S=[
-  // 0 title
-  async()=>{sc('sc0');pr(0);await W(2200)},
-  // 1 john tries to introduce himself formally
-  async()=>{pr(5);await jhn("Good evening. My name is John and I would like to formally present an introductory lecture on Riftbound covering the fundamental ruleset, zone architecture, and strategic—")},
-  // 2 snow cuts him off
-  async()=>{hjn();await sno(`<span class="b">THIS IS JOHN.</span> He taught Snow how to play. Now he's teaching you. He will try very hard to be proper about it. <span class="r">It will not go well.</span>`,"This is John. He taught Snow how to play. Now he's teaching you. He will try very hard to be proper about it. It will not go well.");await W(4500);hno()},
-  // 3 snow: the goal
-  async()=>{pr(12);await sno(`<span class="b">THE GOAL IS 8 POINTS.</span> That is it. That is the whole game. First to <span class="g">8 points</span> wins.`,"The goal is 8 points. That is it. That is the whole game. First to 8 points wins.");await W(3500);hno()},
-  // 4 john tries to add context
-  async()=>{await jhn("Precisely, and the point accumulation mechanism operates through two distinct scoring vectors, specifically the conquer event and the hold event, both of which I can elaborate on if you would—")},
-  // 5 snow interrupts
-  async()=>{hjn();await sno(`<span class="r">TWO WAYS TO GET POINTS.</span> One: <span class="b">Conquer.</span> Move your units to a battlefield and win the fight. <span class="g">+1 point.</span> Two: <span class="b">Hold.</span> Still have units there next turn when the turn starts. <span class="g">+1 point.</span> Every turn you hold.`,"Two ways to get points. One: Conquer. Move your units to a battlefield and win the fight. Plus 1 point. Two: Hold. Still have units there next turn when the turn starts. Plus 1 point. Every turn you hold.");await W(5500);hno()},
-  // 6 lol map
-  async()=>{pr(24);sc('sc1');await W(700);await sno(`You play League of Legends? <span class="b">You already understand this.</span> Two lanes. Your team pushes. First to take the Nexus wins.`,"You play League of Legends? You already understand this. Two lanes. Your team pushes. First to take the Nexus wins.");await W(4000);hno()},
-  // 7 rb overlay on map
-  async()=>{pr(32);const o=document.getElementById('rbo');o.style.transition='opacity 1.5s';o.style.opacity='1';await sno(`Riftbound has <span class="b">two battlefields</span> instead of lanes. Your base instead of a nexus. Units instead of minions — except these ones actually listen to you.`,"Riftbound has two battlefields instead of lanes. Your base instead of a nexus. Units instead of minions — except these ones actually listen to you.");await W(4500);hno()},
-  // 8 board
-  async()=>{pr(40);sc('sc2');await W(400);await sno(`<span class="b">THE BOARD.</span> You are looking down at the table. Your stuff is at the bottom. <span class="b">Always.</span> Opponent is at the top — faded out because right now they're not your problem.`,"The board. You are looking down at the table. Your stuff is at the bottom. Always. Opponent is at the top — faded out because right now they're not your problem.");await W(4500);hno()},
-  // 9 john zones
-  async()=>{await jhn("The zone architecture consists of the Legend Zone, Champion Zone, Base Area, two Battlefield zones, and the Rune Deck — each with specific entry and exit rules as defined in the core rulebook sections—")},
-  // A FLASH
-  async()=>{pr(50);hjn();hno();await flash('A','AWAKEN','#c8a84b')},
-  // A explain
-  async()=>{await sno(`<span class="b">A — AWAKEN.</span> Everything that's exhausted, sideways, tired — it all stands back up. Units. Runes. Legend. Ready to go again.`,"A — Awaken. Everything that's exhausted stands back up. Units. Runes. Legend. Ready to go again.");await W(3800);hno()},
-  // B FLASH
-  async()=>{pr(58);await flash('B','BOARD STATE','#1E88E5')},
-  // B explain
-  async()=>{await sno(`<span class="b">B — BOARD STATE.</span> Score points for anything you held. Then look at the board. <span class="r">What do you see?`,"B — Board State. Score points for anything you held. Then look at the board. What do you see?");await W(600);await jhn("Nobody knows. John doesn't know either.");hjn();apt('y',1);await W(2200);hno()},
-  // C FLASH
-  async()=>{pr(66);await flash('C','CONJURE','#E53935')},
-  // C explain
-  async()=>{await sno(`<span class="b">C — CONJURE.</span> Draw 2 runes from your rune deck. These are your energy. You spend them to play cards. <span class="b">Going second?</span> Draw 3 runes on turn 1. That's your consolation prize.`,"C — Conjure. Draw 2 runes from your rune deck. These are your energy. You spend them to play cards. Going second? Draw 3 runes on turn 1. That's your consolation prize.");await W(400);await jhn("C.");hjn();await W(2500);hno()},
-  // D FLASH
-  async()=>{pr(74);await flash('D','DRAW','#43A047')},
-  // D explain
-  async()=>{await sno(`<span class="b">D — DRAW.</span> Draw 1 card. Everyone loves the D.`,"D — Draw. Draw 1 card. Everyone loves the D.");await W(500);await jhn("If I could address the stack resolution order when multiple draw triggers fire simultaneously — I have a forty-seven slide presentation—");hjn();await sno(`<span class="r">NO.</span> D is draw. One card. From deck. To hand. Done.`,"No. D is draw. One card. From deck. To hand. Done.");await W(2800);hno()},
-  // Play cards
-  async()=>{pr(82);await sno(`Now you <span class="b">play cards.</span> Units enter your base <span class="b">exhausted</span> — sideways. They can't move to a battlefield the same turn. Next turn they're ready.`,"Now you play cards. Units enter your base exhausted — sideways. They can't move to a battlefield the same turn. Next turn they're ready.");const ca=document.getElementById('ca');if(ca)ca.classList.add('ex');await W(4200);hno()},
-  // Move to BF
-  async()=>{pr(87);await sno(`Move a ready unit to a battlefield. <span class="b">Nobody there?</span> <span class="g">FREE POINT.</span> Scream. You deserve it.`,"Move a ready unit to a battlefield. Nobody there? Free point. Scream. You deserve it.");await mvcard('cb',document.getElementById('bf1u'));document.getElementById('bf1').classList.add('cq');apt('y',1);await W(3000);hno()},
-  // John: C
-  async()=>{await jhn("C.");await W(200);await sno(`<span class="r">YES JOHN. C. CONQUER. PLUS ONE POINT. THANK YOU JOHN.</span>`,"Yes John. C. Conquer. Plus one point. Thank you John.");await W(2500);hjn();hno()},
-  // Combat
-  async()=>{pr(91);document.getElementById('bf2').classList.add('ct');await sno(`If they <span class="b">have units</span> at the battlefield — <span class="b">Showdown.</span> Add up all your Might. Add up all theirs. Highest wins. Units heal fully after combat. Damage doesn't stick.`,"If they have units at the battlefield — Showdown. Add up all your Might. Add up all theirs. Highest wins. Units heal fully after combat. Damage doesn't stick.");await W(1500);document.getElementById('bf2').classList.remove('ct');document.getElementById('bf2').classList.add('cq');apt('y',1);await W(3000);hno()},
-  // Win condition
-  async()=>{pr(95);await sno(`<span class="b">THE FINAL POINT RULE.</span> You cannot sneak a single conquest for point 8. Your last point must come from <span class="g">holding</span> a battlefield, OR <span class="g">conquering BOTH</span> battlefields the same turn. Try to take just one? <span class="r">You draw a card instead. Game continues. You played yourself.</span>`,"The final point rule. You cannot sneak a single conquest for point 8. Your last point must come from holding a battlefield, or conquering both battlefields the same turn. Try to take just one? You draw a card instead. Game continues. You played yourself.");await W(7000);hno()},
-  // John's final speech
-  async()=>{await jhn("In conclusion I would like to present a comprehensive review of the official Riftbound Core Rules, specifically section twelve which covers the advanced nuances of—");hjn();await sno(`<span class="b">Remember John's ABCD. Shuffle up and play.</span><br><span style="color:#5a5550;font-size:.9em">4-player rules, advanced formats — RiftboundGuide.com</span><br><span class="r">Good luck. Don't suck.</span>`,"Remember John's ABCD. Shuffle up and play. Good luck. Don't suck.");await W(500);await jhn("C.");await W(3500);hjn();hno();pr(100)},
-  // End
-  async()=>{sc('sc0');document.querySelector('#sc0 h1').textContent='Now Pick Your Legend';document.querySelector('#sc0 .ep').textContent='Episode 1 Complete';document.querySelector('#sc0 .sh').innerHTML='<a href="index.html" style="color:#c8a84b;text-decoration:none;letter-spacing:.2em">CHOOSE YOUR LEGEND →</a>'},
+// ── SPEECH SYNTHESIS ──
+let voices=[], johnV=null;
+function loadV(){
+  voices=window.speechSynthesis.getVoices();
+  const pref=['Google UK English Male','Microsoft David','Daniel','Alex','en-GB'];
+  for(let p of pref){ let v=voices.find(x=>x.name.includes(p)||x.lang===p); if(v){johnV=v;break;} }
+  if(!johnV) johnV=voices.find(v=>v.lang.startsWith('en'))||voices[0];
+}
+window.speechSynthesis.onvoiceschanged=loadV;
+setTimeout(loadV,400);
+
+function say(text,rate,pitch,onend){
+  if(muted){if(onend)setTimeout(onend,100);return;}
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  if(johnV)u.voice=johnV;
+  u.rate=rate||0.92;u.pitch=pitch||0.82;u.volume=1;
+  if(onend)u.onend=onend;
+  window.speechSynthesis.speak(u);
+}
+
+// ── BEATS ──
+const BEATS=[
+  {type:'title',dur:2800},
+  // INTRO
+  {type:'say',text:"Good evening. My name is John and I will be providing a thorough academic overview of Riftbound, beginning with the historical context of trading card games and their cultural significance in—",dur:7200,bg:'dark',hi:[]},
+  {type:'C',sub:'EIGHT POINTS. THAT IS THE GAME.',dur:2400},
+  {type:'say',text:"...Eight points. First to eight wins. That is the entire game.",dur:3200,bg:'dark',hi:[]},
+  // SETUP
+  {type:'say',text:"Setup. Roll to go first. Most choose first. But going second gets you three runes on turn one instead of two. Choose wisely.",dur:5500,bg:'dark',hi:['z-deck'],sfx:'shuffle'},
+  {type:'say',text:"Shuffle. Cut. Draw four cards. You can put up to two back and draw replacements. One chance.",dur:4800,bg:'dark',hi:['z-hand','z-deck'],sfx:'card'},
+  {type:'say',text:"Reveal your battlefields. You chose three. Pick two for this game. Place them between you and your opponent.",dur:5200,bg:'dark',hi:['bf1','bf2']},
+  {type:'C',sub:'TWO BATTLEFIELDS. CHOOSE.',dur:1800},
+  // A
+  {type:'A',sub:'AWAKEN — Untap Everything',dur:2800,sfx:'awaken'},
+  {type:'say',text:"Every exhausted card stands back up. Units, runes, your legend — all ready to use again. This happens at the start of every single turn.",dur:5200,bg:'dark',hi:['z-runes','z-legend','z-base'],sfx:'awaken'},
+  // B
+  {type:'B',sub:'BOARD STATE — Score Your Points',dur:2800,sfx:'point'},
+  {type:'say',text:"Any battlefield your units held since last turn — that is one point each. Right now. Free. Before you do anything else.",dur:5200,bg:'dark',hi:['bf1','bf2'],sfx:'point'},
+  {type:'say',text:"Then look at the board. What does your opponent have. What do you have. Nod like you have a plan.",dur:4200,bg:'dark',hi:[]},
+  // C
+  {type:'C',sub:'CONJURE — Draw Your Runes',dur:2800,sfx:'rune'},
+  {type:'say',text:"Draw two runes from your twelve-card rune deck. These are your resources for the turn. Spend them to play cards. Unspent runes vanish at end of turn. Do not hoard.",dur:5800,bg:'dark',hi:['z-runes'],sfx:'rune'},
+  {type:'C',sub:'...That was me interrupting myself. Ignore that.',dur:2200},
+  // D
+  {type:'D',sub:'DRAW — Everyone Loves the D',dur:2600,sfx:'card'},
+  {type:'say',text:"Draw one card from your main deck. Now you have cards and runes. This is where you actually play. Units, spells, gear.",dur:5000,bg:'dark',hi:['z-hand','z-deck'],sfx:'card'},
+  {type:'say',text:"Units enter your base exhausted. They cannot move to a battlefield the same turn they are played. Next turn they are ready.",dur:5500,bg:'dark',hi:['z-base']},
+  // MOVE + COMBAT
+  {type:'say',text:"Move your ready units to a battlefield. Nobody there? One point. Congratulations. You are unstoppable. Scream at them.",dur:5000,bg:'dark',hi:['bf1'],sfx:'card'},
+  {type:'C',sub:'CONQUER. ONE. POINT.',dur:2200,sfx:'point'},
+  {type:'say',text:"They DO have units — Showdown. Both sides add up Might. Assign damage. Weak units die. Strong units conquer. Everyone fully heals after combat.",dur:6200,bg:'combat',hi:['bf1','bf2'],sfx:'hit'},
+  {type:'C',sub:'C. CONQUER. STILL ONE POINT.',dur:2000},
+  // WIN
+  {type:'say',text:"Final point rule. You need eight points. But you cannot score your last point by conquering just one battlefield alone.",dur:5500,bg:'win',hi:['bf1','bf2']},
+  {type:'say',text:"Either HOLD a battlefield into your next turn's B step — that's point eight, you win. Or conquer BOTH battlefields in the same turn.",dur:6200,bg:'win',hi:['bf1','bf2'],sfx:'point'},
+  {type:'say',text:"Try to conquer just one for your eighth? You draw a card instead. They got another chance. That is on you.",dur:5200,bg:'win',hi:[]},
+  // OUTRO
+  {type:'say',text:"Hidden cards. Reactions. Counter-spells. Equipment. Buffs. The game has layers. But remember the A B C D. Shuffle up. Play.",dur:6200,bg:'dark',hi:[]},
+  {type:'say',text:"Good luck. Do not suck.",dur:2600,bg:'dark',hi:[],sfx:'win'},
+  {type:'C',sub:'— John',dur:3000},
 ];
 
-async function run(){
-  if(going)return;going=true;
-  for(let i=cur;i<S.length;i++){cur=i;await S[i]();await W(150)}
-  going=false;
+// ── CONTROLLER ──
+let idx=0, paused=false, timer=null;
+const total=BEATS.reduce((a,b)=>a+b.dur,0);
+let elapsed=0;
+
+const COLORS={A:'#c8a84b',B:'#1E88E5',C:'#E53935',D:'#43A047'};
+
+function hi(ids){
+  document.querySelectorAll('.bzone,.bbf').forEach(z=>z.classList.remove('hi'));
+  (ids||[]).forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hi');});
 }
 
-function skip(){sy.cancel();cur=Math.min(cur+1,S.length-1);hno();hjn()}
-function sound(){sOn=!sOn;document.getElementById('sbtn').textContent=sOn?'🔊':'🔇';if(!sOn)sy.cancel()}
+function setBg(t){
+  ['bg-lol','bg-dark','bg-combat','bg-win'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  document.getElementById('bg-'+t).classList.add('on');
+}
 
-setTimeout(()=>run(),2800);
-return{skip,sound};
-})();
+function showBoard(){document.getElementById('board').classList.add('on')}
+function hideBoard(){document.getElementById('board').classList.remove('on')}
+
+function showABCD(letter,sub,color){
+  const fl=document.getElementById('abcd');
+  const L=document.getElementById('abcd-L');
+  const S=document.getElementById('abcd-S');
+  L.textContent=letter;L.style.color=color||'#c8a84b';
+  S.textContent=sub||'';
+  L.classList.remove('pop');void L.offsetWidth;L.classList.add('pop');
+  fl.classList.add('on');
+  sfx('C');
+  if(!muted){
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(letter+'!');
+    if(johnV)u.voice=johnV;u.rate=0.6;u.pitch=0.55;u.volume=1;
+    window.speechSynthesis.speak(u);
+  }
+}
+function hideABCD(){document.getElementById('abcd').classList.remove('on')}
+
+function setSpeech(t){
+  const sp=document.getElementById('speech');
+  document.getElementById('sp-text').textContent=t;
+  sp.classList.add('on');
+}
+function hideSpeech(){document.getElementById('speech').classList.remove('on')}
+
+function setProgress(p){document.getElementById('prog-bar').style.width=p+'%'}
+
+function next(){
+  if(idx>=BEATS.length){done();return;}
+  if(paused)return;
+  const b=BEATS[idx];
+  setProgress((elapsed/total)*100);
+
+  if(b.type==='title'){
+    hideBoard();hideSpeech();hideABCD();setBg('dark');
+    const t=document.getElementById('eptitle');
+    t.classList.add('on');
+    timer=setTimeout(()=>{t.classList.remove('on');elapsed+=b.dur;idx++;next();},b.dur);
+    return;
+  }
+
+  if(b.type==='C'||b.type==='A'||b.type==='B'||b.type==='D'){
+    hideBoard();hideSpeech();
+    if(b.sfx)sfx(b.sfx);
+    showABCD(b.type,b.sub,COLORS[b.type]);
+    timer=setTimeout(()=>{hideABCD();showBoard();elapsed+=b.dur;idx++;next();},b.dur);
+    return;
+  }
+
+  if(b.type==='say'){
+    hideABCD();showBoard();
+    setBg(b.bg||'dark');
+    hi(b.hi||[]);
+    if(b.sfx)setTimeout(()=>sfx(b.sfx),150);
+    setSpeech(b.text);
+    say(b.text);
+    timer=setTimeout(()=>{elapsed+=b.dur;idx++;next();},b.dur);
+    return;
+  }
+}
+
+function done(){
+  setProgress(100);
+  hideSpeech();hideABCD();
+  setSpeech("That is Riftbound. A B C D. Shuffle up. Play. Good luck. Do not suck.");
+  say("That is Riftbound. A B C D. Shuffle up. Play. Good luck. Do not suck.");
+}
+
+function togglePause(){
+  paused=!paused;
+  document.getElementById('btn-pause').textContent=paused?'Play':'Pause';
+  if(paused){clearTimeout(timer);window.speechSynthesis.pause();}
+  else{window.speechSynthesis.resume();next();}
+}
+
+function restart(){
+  clearTimeout(timer);window.speechSynthesis.cancel();
+  idx=0;elapsed=0;paused=false;
+  document.getElementById('btn-pause').textContent='Pause';
+  hideABCD();hideSpeech();hideBoard();
+  document.querySelectorAll('.bzone,.bbf').forEach(z=>z.classList.remove('hi','won'));
+  document.getElementById('eptitle').classList.remove('on');
+  setProgress(0);
+  setTimeout(()=>next(),500);
+}
+
+document.addEventListener('click',()=>{try{ac();}catch(e){}loadV();},{once:true});
+window.addEventListener('load',()=>{loadV();setTimeout(()=>next(),900);});
 </script>
+</div>
 </body>
 </html>
