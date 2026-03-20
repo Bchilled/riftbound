@@ -3,872 +3,412 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Riftbound — Learn to Play</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Rajdhani:wght@300;400;500;600;700&family=Caveat:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
+<title>Riftbound — How to Play</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#07080f;--mid:#0d0f1a;--gold:#c8a84b;
-  --txt:#e8e4d8;--txt2:#9a9080;--txt3:#5a5550;
-  --blue:#0bc4e3;--red:#ef4444;--green:#22c55e;
-  --fury:#E53935;--body:#F57C00;--calm:#43A047;
-  --order:#F9A825;--mind:#1E88E5;--chaos:#8E24AA;
-}
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden}
-.page{min-height:100vh;background:radial-gradient(ellipse at 50% 0%,rgba(200,168,75,.08) 0%,transparent 55%),var(--bg)}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Rajdhani',sans-serif}
+#stage{position:fixed;inset:0;background:#07080f;overflow:hidden}
+.scene{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .8s ease}
+.scene.active{opacity:1;pointer-events:all}
+
+/* JOHN */
+#jc{position:fixed;bottom:0;left:0;right:0;height:185px;z-index:100;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}
+#jw{position:relative;display:flex;align-items:flex-end;gap:14px;padding:0 24px;width:100%;max-width:1000px}
+#jsv{width:110px;height:140px;flex-shrink:0;filter:drop-shadow(0 -4px 20px rgba(200,168,75,.3));transition:transform .15s}
+#jb{position:relative;background:#1a1400;border:2px solid #c8a84b;padding:11px 16px;border-radius:12px 12px 12px 0;max-width:420px;margin-bottom:36px;opacity:0;transition:opacity .3s;flex-shrink:1}
+#jb.show{opacity:1}
+#jbt{font-family:'Caveat',cursive;font-size:1.1rem;color:#e8e4d8;line-height:1.4}
+#jbt.yell{font-family:'Cinzel Decorative',serif;font-size:clamp(1.6rem,4vw,2.6rem);color:#c8a84b;font-weight:900;letter-spacing:.1em}
+
+/* SNOW */
+#sb{position:fixed;top:16px;left:50%;transform:translateX(-50%);max-width:720px;width:92%;background:rgba(0,18,36,.93);border:1px solid rgba(11,196,227,.4);padding:15px 20px;border-radius:12px;opacity:0;transition:opacity .4s;z-index:99;text-align:center}
+#sb.show{opacity:1}
+#st{font-family:'Rajdhani',sans-serif;font-size:clamp(.95rem,2.4vw,1.25rem);color:#e8e4d8;line-height:1.6}
+#st .b{color:#c8a84b;font-weight:700}
+#st .r{color:#ef4444;font-weight:700}
+#st .g{color:#22c55e;font-weight:700}
+
+/* ABCD FLASH */
+#af{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.88);opacity:0;pointer-events:none;transition:opacity .3s}
+#af.show{opacity:1}
+#al{font-family:'Cinzel Decorative',serif;font-size:clamp(7rem,22vw,16rem);font-weight:900;line-height:.85;text-shadow:0 0 80px currentColor;animation:boom .5s cubic-bezier(.36,.07,.19,.97) both}
+@keyframes boom{0%{transform:scale(0) rotate(-8deg)}60%{transform:scale(1.2) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
+#an{font-family:'Cinzel',serif;font-size:clamp(1.1rem,3.5vw,2.2rem);letter-spacing:.3em;text-transform:uppercase;color:#e8e4d8;margin-top:14px;opacity:.8}
+
+/* POINTS */
+#pts{position:fixed;top:14px;right:18px;display:flex;gap:10px;z-index:98}
+.ptb{background:rgba(0,0,0,.75);border:1px solid rgba(200,168,75,.2);padding:7px 14px;text-align:center}
+.ptl{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:#5a5550}
+.ptv{font-family:'Cinzel Decorative',serif;font-size:1.6rem;color:#c8a84b}
+.ptb.win .ptv{color:#22c55e;text-shadow:0 0 20px #22c55e}
+.ptf{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font-family:'Cinzel Decorative',serif;font-size:clamp(2.5rem,9vw,5rem);font-weight:900;pointer-events:none;z-index:180;animation:ptA 1.4s ease both}
+@keyframes ptA{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}30%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}70%{opacity:1;transform:translate(-50%,-65%) scale(1)}100%{opacity:0;transform:translate(-50%,-85%) scale(.7)}}
+
+/* PROGRESS */
+#prog{position:fixed;bottom:188px;left:0;right:0;height:2px;background:rgba(255,255,255,.04);z-index:101}
+#pb{height:100%;background:linear-gradient(90deg,#c8a84b,#e8c96a);width:0%;transition:width .3s linear}
+
+/* CONTROLS */
+#ctrl{position:fixed;bottom:193px;right:14px;display:flex;gap:7px;z-index:102}
+.cb{background:rgba(200,168,75,.1);border:1px solid rgba(200,168,75,.28);color:#c8a84b;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.1em;padding:5px 11px;cursor:pointer;transition:all .2s;border-radius:2px}
+.cb:hover{background:rgba(200,168,75,.22)}
 
 /* NAV */
-.nav{padding:16px 28px;display:flex;align-items:center;gap:20px;border-bottom:1px solid rgba(200,168,75,.08)}
-.nav a{font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);text-decoration:none;opacity:.6;transition:opacity .2s}
-.nav a:hover{opacity:1}
-.nav-title{font-family:'Cinzel Decorative',serif;font-size:.85rem;color:var(--txt3);letter-spacing:.1em;margin-left:auto}
+#nav{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;padding:9px 18px;background:linear-gradient(180deg,rgba(0,0,0,.75),transparent);z-index:97}
+#nav a{font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:#c8a84b;text-decoration:none;opacity:.55}
+#nav a:hover{opacity:1}
 
-/* SECTION WRAPPER */
-.wrap{width:100%;max-width:1100px;margin:0 auto;padding:0 24px}
+/* SCENE: TITLE */
+#sc0{display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,rgba(200,168,75,.09),transparent 60%),#07080f}
+#sc0 h1{font-family:'Cinzel Decorative',serif;font-size:clamp(2rem,7vw,5rem);font-weight:900;background:linear-gradient(180deg,#fff9e8,#c8a84b 50%,#7a5c18);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.15em;text-align:center;animation:tIn 1.5s ease both}
+#sc0 .ep{font-family:'Cinzel',serif;font-size:clamp(.75rem,1.8vw,1rem);color:#9a9080;letter-spacing:.4em;text-transform:uppercase;margin-top:11px;animation:tIn 1.5s .3s ease both}
+#sc0 .sh{font-family:'Rajdhani',sans-serif;font-size:.88rem;color:#5a5550;margin-top:38px;letter-spacing:.15em;text-transform:uppercase;animation:pulse 2s ease-in-out infinite}
+@keyframes tIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
 
-/* ═══════════════════════════════════════
-   JOHN INTRO
-═══════════════════════════════════════ */
-.john-section{padding:60px 0 40px;display:flex;flex-direction:column;align-items:center}
+/* SCENE: LOL MAP */
+#sc1{display:flex;align-items:center;justify-content:center;background:#060a06}
+#lw{position:relative;width:min(560px,88vw);height:min(560px,78vh)}
 
-/* Style toggle */
-.style-toggle{display:flex;gap:12px;margin-bottom:40px}
-.sty-btn{
-  font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;
-  padding:7px 18px;border:1px solid rgba(255,255,255,.1);background:transparent;
-  color:var(--txt3);cursor:pointer;transition:all .2s;border-radius:2px;
-}
-.sty-btn.on{border-color:var(--gold);color:var(--gold);background:rgba(200,168,75,.08)}
+/* SCENE: BOARD */
+#sc2{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px 18px 195px;background:#07080f;overflow:hidden}
+.bw{width:100%;max-width:800px;display:flex;flex-direction:column;gap:5px;flex:1}
+.or{display:flex;gap:5px;justify-content:center;opacity:.28;filter:blur(1px)}
+.bfr{display:flex;gap:7px;justify-content:center;flex:1}
+.bf{flex:1;max-width:350px;min-height:110px;border:2px solid rgba(200,168,75,.38);background:rgba(200,168,75,.03);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;position:relative;transition:border-color .3s,box-shadow .3s}
+.bf.ct{border-color:#ef4444;box-shadow:0 0 18px rgba(239,68,68,.28)}
+.bf.cq{border-color:#22c55e;box-shadow:0 0 18px rgba(34,197,94,.28)}
+.bfn{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:#c8a84b}
+.pr{display:flex;gap:5px;justify-content:center}
+.zb{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.02);padding:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:62px;min-height:54px}
+.zb.lg{border-color:rgba(200,168,75,.4);background:rgba(200,168,75,.06)}
+.zb.ch{border-color:rgba(11,196,227,.28);background:rgba(11,196,227,.04)}
+.zb.ru{border-color:rgba(200,168,75,.18)}
+.zl{font-family:'Cinzel',serif;font-size:.43rem;letter-spacing:.09em;text-transform:uppercase;color:#9a9080;text-align:center}
+.zb.lg .zl{color:#c8a84b}.zb.ch .zl{color:#0bc4e3}
+.ba{flex:1;border:1px dashed rgba(255,255,255,.07);padding:9px;display:flex;flex-wrap:wrap;gap:5px;justify-content:center;align-items:center;min-height:74px;position:relative}
+.bl{position:absolute;top:-8px;left:10px;font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;background:#07080f;padding:0 5px;color:#5a5550}
+.card{width:42px;height:58px;border-radius:3px;border:1px solid rgba(200,168,75,.45);background:linear-gradient(135deg,#1a1428,#0f0d1a);display:flex;align-items:center;justify-content:center;font-size:.38rem;color:rgba(200,168,75,.35);flex-shrink:0;transition:all .3s;box-shadow:0 2px 7px rgba(0,0,0,.5);position:relative}
+.card::before{content:'';position:absolute;inset:3px;border:1px solid rgba(200,168,75,.12);border-radius:2px}
+.card.ex{transform:rotate(90deg);opacity:.65}
+.card.hi{border-color:#c8a84b;box-shadow:0 0 14px rgba(200,168,75,.45)}
+.card.u{background:linear-gradient(135deg,#1a1428,#0d1525)}
+.card.s{background:linear-gradient(135deg,#1a2814,#0d1a0d)}
+.card.g{background:linear-gradient(135deg,#2a2014,#1a1408)}
+.rc{width:34px;height:48px;border-radius:3px;border:1px solid;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0}
 
-/* John faces container */
-.john-faces{position:relative;width:180px;height:220px;margin-bottom:28px}
-.john-face{position:absolute;inset:0;transition:opacity .5s}
-.john-face.hide{opacity:0;pointer-events:none}
-
-/* ── CLEAN CARTOON JOHN ── */
-.john-clean svg text{font-family:'Special Elite',serif}
-
-/* ── SKETCH JOHN ── */
-.john-sketch svg{filter:contrast(1.1)}
-
-/* Pizza indicator */
-.pizza-hint{
-  font-family:'Caveat',cursive;font-size:.85rem;color:var(--txt3);
-  text-align:center;margin-top:-12px;margin-bottom:20px;
-  animation:pizzapulse 3s ease-in-out infinite;
-}
-@keyframes pizzapulse{0%,100%{opacity:.4}50%{opacity:.8}}
-
-/* ── SPEECH BUBBLES ── */
-.scene{display:flex;flex-direction:column;align-items:center;gap:0;width:100%;max-width:680px}
-
-.bubble-wrap{
-  display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;
-  animation:fadeUp .5s ease both;
-  width:100%;
-}
-.bubble-wrap.right{flex-direction:row-reverse}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-
-.avatar{
-  width:44px;height:44px;border-radius:50%;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cinzel Decorative',serif;font-size:.9rem;font-weight:900;
-  border:2px solid;
-}
-.avatar.snow{background:rgba(11,196,227,.15);border-color:var(--blue);color:var(--blue)}
-.avatar.john{background:rgba(200,168,75,.15);border-color:var(--gold);color:var(--gold)}
-
-.bubble{
-  position:relative;padding:12px 16px;border-radius:12px;
-  font-family:'Rajdhani',sans-serif;font-size:1rem;line-height:1.55;
-  max-width:500px;
-}
-.bubble.snow-b{background:#0d1a28;border:1px solid rgba(11,196,227,.2);color:var(--txt)}
-.bubble.john-b{background:#1a1400;border:1px solid rgba(200,168,75,.25);color:var(--txt)}
-.bubble.john-yell{
-  background:#1a1000;border:2px solid var(--gold);
-  font-family:'Cinzel Decorative',serif;
-  font-size:clamp(1.2rem,3vw,1.8rem);font-weight:900;color:var(--gold);
-  text-align:center;letter-spacing:.08em;
-  animation:yell .35s cubic-bezier(.36,.07,.19,.97);
-}
-@keyframes yell{0%{transform:scale(.85) rotate(-1deg)}60%{transform:scale(1.1) rotate(.5deg)}100%{transform:scale(1) rotate(0)}}
-
-.bubble .cutoff{color:var(--txt3);font-style:italic}
-.bubble .bold{color:var(--gold);font-weight:700}
-.bubble .funny{color:var(--txt2);font-style:italic;font-size:.9rem}
-.bubble .swear{color:var(--red);font-weight:700}
-.bubble .pts{color:var(--green);font-weight:700}
-
-/* ABCD INTERRUPT — full width flash */
-.abcd-flash{
-  width:100%;text-align:center;padding:20px;margin:8px 0;
-  background:linear-gradient(90deg,transparent,rgba(200,168,75,.08),transparent);
-  border-top:1px solid rgba(200,168,75,.15);border-bottom:1px solid rgba(200,168,75,.15);
-}
-.abcd-letter{
-  font-family:'Cinzel Decorative',serif;font-size:clamp(2rem,6vw,4rem);font-weight:900;
-  display:inline-block;animation:letterPop .4s ease;
-}
-@keyframes letterPop{0%{transform:scale(0) rotate(-10deg)}70%{transform:scale(1.2) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
-.abcd-name{
-  font-family:'Cinzel',serif;font-size:clamp(.8rem,2vw,1.1rem);
-  letter-spacing:.2em;text-transform:uppercase;display:block;margin-top:4px;
-}
-
-/* ═══════════════════════════════════════
-   MAP TRANSITION
-═══════════════════════════════════════ */
-.map-section{padding:20px 0 60px}
-.map-label{
-  font-family:'Cinzel Decorative',serif;font-size:clamp(1rem,2.5vw,1.6rem);
-  color:var(--gold);text-align:center;margin-bottom:8px;letter-spacing:.08em;
-}
-.map-sub{font-family:'Rajdhani',sans-serif;font-size:.95rem;color:var(--txt2);text-align:center;margin-bottom:28px}
-
-.map-canvas{
-  position:relative;width:100%;max-width:900px;margin:0 auto;
-  height:clamp(280px,40vw,420px);
-  border:1px solid rgba(255,255,255,.07);overflow:hidden;
-  background:#060a06;
-}
-
-/* LoL side */
-.lol-side{
-  position:absolute;left:0;top:0;width:52%;height:100%;
-  background:linear-gradient(135deg,#060d06,#0a1a0a,#071207);
-  overflow:hidden;
-}
-.lol-river{
-  position:absolute;width:12%;height:130%;top:-15%;left:44%;
-  background:rgba(11,196,227,.06);transform:rotate(-45deg);
-  border-left:1px solid rgba(11,196,227,.15);border-right:1px solid rgba(11,196,227,.15);
-}
-.lol-lane{position:absolute;background:rgba(120,200,120,.12)}
-.lol-lane.top{width:10px;height:72%;top:0;left:13%;border-right:1px solid rgba(120,200,120,.2)}
-.lol-lane.mid{width:125%;height:10px;top:47%;left:-12%;transform:rotate(-42deg);background:rgba(120,200,120,.1)}
-.lol-lane.bot{width:10px;height:72%;bottom:0;right:13%;border-left:1px solid rgba(120,200,120,.2)}
-
-.tower{position:absolute;width:14px;height:14px;border-radius:50%;border:2px solid}
-.t-blue{border-color:var(--blue);background:rgba(11,196,227,.25);box-shadow:0 0 6px var(--blue)}
-.t-red{border-color:var(--red);background:rgba(239,68,68,.25);box-shadow:0 0 6px var(--red)}
-
-.minion{position:absolute;width:8px;height:8px;border-radius:50%}
-.m-blue{background:var(--blue);box-shadow:0 0 4px var(--blue);animation:march1 2.8s ease-in-out infinite}
-.m-red{background:var(--red);box-shadow:0 0 4px var(--red);animation:march2 3.2s ease-in-out infinite}
-@keyframes march1{0%,100%{transform:translate(0,0)}50%{transform:translate(3px,5px)}}
-@keyframes march2{0%,100%{transform:translate(0,0)}50%{transform:translate(-3px,-5px)}}
-
-.lol-tag{
-  position:absolute;bottom:10px;left:10px;
-  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.2em;
-  color:var(--blue);opacity:.5;text-transform:uppercase;
-}
-
-/* Fade zone */
-.map-fade{
-  position:absolute;left:38%;top:0;width:24%;height:100%;
-  background:linear-gradient(90deg,transparent 0%,rgba(7,8,15,.85) 50%,transparent 100%);
-  pointer-events:none;z-index:5;
-}
-.becomes{
-  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  font-family:'Cinzel Decorative',serif;font-size:clamp(.7rem,2vw,1rem);
-  color:var(--gold);opacity:.6;letter-spacing:.1em;z-index:6;text-align:center;
-  line-height:1.4;
-}
-
-/* Riftbound side */
-.rb-side{
-  position:absolute;right:0;top:0;width:52%;height:100%;
-  background:linear-gradient(135deg,#07080f,#0d0f1a,#07080f);
-}
-.rb-base-zone{
-  position:absolute;border:1px solid rgba(200,168,75,.25);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cinzel',serif;font-size:clamp(.42rem,.8vw,.6rem);
-  letter-spacing:.08em;color:var(--gold);text-transform:uppercase;
-  background:rgba(200,168,75,.03);
-}
-.rb-bf-zone{
-  position:absolute;border:2px solid rgba(200,168,75,.45);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:4px;background:rgba(200,168,75,.05);
-}
-.rb-bf-name{
-  font-family:'Cinzel',serif;font-size:clamp(.4rem,.75vw,.58rem);
-  letter-spacing:.1em;color:var(--gold);text-transform:uppercase;
-}
-.rb-arrow{font-size:clamp(.5rem,1vw,.7rem);color:var(--gold);opacity:.5}
-
-/* Animated unit on RB side */
-.rb-unit{
-  position:absolute;width:16px;height:16px;border-radius:3px;
-  background:var(--blue);border:1.5px solid rgba(255,255,255,.4);
-  box-shadow:0 0 8px var(--blue);
-}
-.rb-unit.u1{animation:patrol1 5s ease-in-out infinite}
-.rb-unit.u2{animation:patrol2 4.5s ease-in-out infinite;background:rgba(200,168,75,.8);box-shadow:0 0 8px var(--gold)}
-@keyframes patrol1{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-@keyframes patrol2{0%,100%{transform:translateY(0)}50%{transform:translateY(10px)}}
-
-.rb-tag{
-  position:absolute;bottom:10px;right:10px;
-  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.2em;
-  color:var(--gold);opacity:.5;text-transform:uppercase;
-}
-
-/* Lane→BF connector lines */
-.connector{
-  position:absolute;top:50%;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,rgba(120,200,120,.2),rgba(200,168,75,.3));
-  opacity:.4;pointer-events:none;
-}
-
-/* ═══════════════════════════════════════
-   PLAY AREA DIAGRAM
-═══════════════════════════════════════ */
-.playarea-section{padding:20px 0 60px}
-
-.playarea-canvas{
-  position:relative;width:100%;max-width:900px;margin:0 auto;
-  background:linear-gradient(180deg,#070c07,#07080f,#070c07);
-  border:1px solid rgba(200,168,75,.15);
-  display:grid;grid-template-rows:1fr 60px 1fr;
-  gap:0;overflow:hidden;
-  min-height:480px;
-}
-
-/* Opponent top */
-.pa-opp{
-  display:grid;grid-template-columns:100px 1fr 100px;
-  align-items:center;padding:16px;gap:12px;
-  border-bottom:1px dashed rgba(255,255,255,.05);
-}
-/* Battlefields middle */
-.pa-bfs{
-  display:grid;grid-template-columns:1fr 1fr;
-  border-top:1px dashed rgba(255,255,255,.06);
-  border-bottom:1px dashed rgba(255,255,255,.06);
-}
-.pa-bf{
-  display:flex;align-items:center;justify-content:center;
-  border:1px solid rgba(200,168,75,.3);margin:4px;
-  background:rgba(200,168,75,.04);position:relative;
-}
-.pa-bf:first-child{border-right:1px solid rgba(200,168,75,.15)}
-/* Player bottom */
-.pa-player{
-  display:grid;grid-template-columns:100px 1fr 100px;
-  align-items:center;padding:16px;gap:12px;
-  border-top:1px dashed rgba(255,255,255,.05);
-}
-
-/* Zone cards */
-.zone{
-  border:1px solid rgba(255,255,255,.1);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:8px 4px;gap:3px;background:rgba(255,255,255,.02);
-  font-family:'Cinzel',serif;font-size:clamp(.38rem,.65vw,.55rem);
-  letter-spacing:.08em;text-transform:uppercase;text-align:center;
-  color:var(--txt2);min-height:60px;
-}
-.zone.legend{border-color:rgba(200,168,75,.4);background:rgba(200,168,75,.06);color:var(--gold)}
-.zone.champion{border-color:rgba(11,196,227,.3);background:rgba(11,196,227,.04);color:var(--blue)}
-.zone.deck{border-color:rgba(255,255,255,.15)}
-.zone.runes{border-color:rgba(200,168,75,.2);background:rgba(200,168,75,.03)}
-.zone.hand{border-color:rgba(255,255,255,.15)}
-.zone.trash{border-color:rgba(239,68,68,.2);color:var(--red)}
-.zone-icon{font-size:1.2rem;margin-bottom:2px}
-.zone-lbl{font-size:clamp(.35rem,.6vw,.5rem);letter-spacing:.06em}
-
-.pa-base-label{
-  font-family:'Cinzel',serif;font-size:clamp(.42rem,.75vw,.6rem);
-  letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);
-  text-align:center;padding:0 4px;
-}
-.pa-base{
-  display:flex;gap:6px;align-items:center;justify-content:center;flex:1;
-}
-.pa-bf-lbl{
-  font-family:'Cinzel',serif;font-size:clamp(.45rem,.8vw,.65rem);
-  letter-spacing:.1em;text-transform:uppercase;color:var(--gold);
-}
-.pa-bf-sub{
-  font-family:'Rajdhani',sans-serif;font-size:clamp(.38rem,.65vw,.55rem);
-  color:var(--txt3);margin-top:2px;
-}
-
-/* Animated unit on playarea */
-.pa-unit{
-  position:absolute;width:14px;height:14px;border-radius:3px;
-  background:var(--blue);border:1.5px solid rgba(255,255,255,.4);
-  box-shadow:0 0 6px var(--blue);
-  animation:paunit 6s ease-in-out infinite;
-}
-@keyframes paunit{
-  0%,100%{transform:translate(0,0)}
-  30%{transform:translate(0,40px)}
-  60%{transform:translate(20px,40px)}
-  80%{transform:translate(20px,0)}
-}
-
-/* ═══════════════════════════════════════
-   ABCD SEQUENCE
-═══════════════════════════════════════ */
-.abcd-section{padding:20px 0 80px}
-.abcd-section h2{
-  font-family:'Cinzel Decorative',serif;font-size:clamp(1.2rem,3vw,2rem);
-  color:var(--gold);text-align:center;margin-bottom:6px;letter-spacing:.1em;
-}
-.abcd-section .sub{
-  font-family:'Rajdhani',sans-serif;font-size:.95rem;color:var(--txt2);
-  text-align:center;margin-bottom:40px;
-}
-
-.abcd-cards{display:flex;flex-direction:column;gap:0}
-
-.abcd-card{
-  display:grid;grid-template-columns:80px 1fr;
-  min-height:120px;border-bottom:1px solid rgba(255,255,255,.04);
-  position:relative;overflow:hidden;
-  transition:background .3s;
-}
-.abcd-card:hover{background:rgba(255,255,255,.015)}
-.abcd-card::before{
-  content:'';position:absolute;left:80px;top:0;bottom:0;width:1px;
-  background:rgba(255,255,255,.06);
-}
-
-.abcd-left{
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cinzel Decorative',serif;font-size:clamp(2.5rem,5vw,4rem);
-  font-weight:900;text-shadow:0 0 30px currentColor;
-  position:relative;
-}
-.abcd-right{padding:20px 24px;display:flex;flex-direction:column;gap:12px}
-
-.abcd-phase-name{
-  font-family:'Cinzel',serif;font-size:clamp(.85rem,2vw,1.1rem);
-  letter-spacing:.15em;text-transform:uppercase;
-}
-.abcd-snow{
-  font-family:'Rajdhani',sans-serif;font-size:clamp(.9rem,1.8vw,1.05rem);
-  color:var(--txt);line-height:1.65;
-}
-.abcd-john{
-  display:flex;align-items:flex-start;gap:10px;margin-top:4px;
-  background:rgba(200,168,75,.04);border-left:2px solid var(--gold);
-  padding:10px 14px;
-}
-.abcd-john-av{
-  font-family:'Cinzel Decorative',serif;font-size:.65rem;color:var(--gold);
-  flex-shrink:0;width:32px;height:32px;border:1px solid var(--gold);
-  display:flex;align-items:center;justify-content:center;
-  border-radius:2px;background:rgba(200,168,75,.1);
-}
-.abcd-john-txt{
-  font-family:'Caveat',cursive;font-size:clamp(.9rem,2vw,1.15rem);
-  color:var(--gold);line-height:1.4;
-}
-.abcd-john-txt .cutoff{color:var(--txt3);font-size:.9rem}
-
-/* Win condition box */
-.win-box{
-  border:1px solid rgba(200,168,75,.3);padding:28px;
-  background:rgba(200,168,75,.04);margin:40px 0;position:relative;
-}
-.win-box::before{
-  content:'WIN CONDITION';position:absolute;top:-9px;left:20px;
-  background:var(--bg);padding:0 10px;
-  font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.2em;color:var(--gold);
-}
-.win-box h3{
-  font-family:'Cinzel Decorative',serif;font-size:clamp(1rem,2.5vw,1.5rem);
-  color:var(--gold);margin-bottom:12px;
-}
-.win-box p{font-family:'Rajdhani',sans-serif;font-size:1rem;color:var(--txt);line-height:1.7;margin-bottom:10px}
-.win-box .funny{color:var(--txt2);font-style:italic;font-size:.9rem}
-
-/* Final CTA */
-.cta-section{padding:40px 0 80px;text-align:center}
-.cta-section h2{
-  font-family:'Cinzel Decorative',serif;font-size:clamp(1.2rem,3vw,2rem);
-  color:var(--gold);margin-bottom:16px;letter-spacing:.1em;
-}
-.cta-section p{font-family:'Rajdhani',sans-serif;font-size:1.05rem;color:var(--txt2);margin-bottom:32px;line-height:1.6}
-.cta-btn{
-  display:inline-block;font-family:'Cinzel',serif;font-size:.85rem;
-  letter-spacing:.2em;text-transform:uppercase;padding:14px 36px;
-  border:1px solid var(--gold);color:var(--gold);text-decoration:none;
-  background:rgba(200,168,75,.08);transition:all .3s;margin:8px;
-}
-.cta-btn:hover{background:rgba(200,168,75,.18);box-shadow:0 0 20px rgba(200,168,75,.2)}
-.cta-btn.primary{background:var(--gold);color:#07080f;font-weight:700}
-.cta-btn.primary:hover{background:var(--gold);box-shadow:0 0 30px rgba(200,168,75,.4)}
-
-/* ═══════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════ */
-@media(max-width:768px){
-  .pa-opp,.pa-player{grid-template-columns:70px 1fr 70px}
-  .zone{min-height:50px}
-  .abcd-card{grid-template-columns:60px 1fr}
-  .abcd-left{font-size:clamp(2rem,8vw,3rem)}
-  .bubble-wrap{flex-direction:column;align-items:flex-start}
-  .bubble-wrap.right{align-items:flex-end}
-}
-@media(max-width:480px){
-  .map-canvas{height:220px}
-  .abcd-card{grid-template-columns:50px 1fr}
-}
+@media(max-width:580px){.zb{min-width:48px;min-height:46px}.card{width:34px;height:48px}}
 </style>
 </head>
 <body>
-<div class="page">
+<div id="stage">
 
-<nav class="nav">
-  <a href="index.html">← Back to Decks</a>
-  <span class="nav-title">Riftbound — Learn to Play</span>
-</nav>
+<div id="nav"><a href="index.html">← Decks</a></div>
 
-<!-- ═══ JOHN INTRO ═══ -->
-<section class="wrap">
-<div class="john-section">
-
-  
-
-  <!-- JOHN FACES -->
-  <div class="john-faces">
-
-    <!-- CLEAN VERSION -->
-    <div class="john-face">
-      <svg width="180" height="220" viewBox="0 0 180 220" xmlns="http://www.w3.org/2000/svg">
-        <!-- Body / shirt -->
-        <rect x="40" y="155" width="100" height="65" rx="8" fill="#1a2035"/>
-        <rect x="75" y="155" width="30" height="65" fill="#151c2d"/>
-        <!-- Collar -->
-        <polygon points="90,155 75,175 90,168" fill="#fff" opacity=".9"/>
-        <polygon points="90,155 105,175 90,168" fill="#fff" opacity=".9"/>
-        <!-- Neck -->
-        <rect x="75" y="138" width="30" height="22" rx="4" fill="#d4a57a"/>
-        <!-- Head -->
-        <rect x="38" y="70" width="104" height="90" rx="22" fill="#d4a57a"/>
-        <!-- Baseball cap -->
-        <ellipse cx="90" cy="72" rx="56" ry="16" fill="#1a1a2e"/>
-        <rect x="34" y="60" width="112" height="28" rx="10" fill="#1a1a2e"/>
-        <!-- Cap brim -->
-        <rect x="22" y="76" width="50" height="10" rx="5" fill="#141428"/>
-        <!-- Cap logo (R) -->
-        <text x="76" y="77" font-family="serif" font-size="9" fill="#c8a84b" font-weight="bold">JOHN</text>
-        <!-- Ears -->
-        <ellipse cx="38" cy="110" rx="10" ry="13" fill="#c89060"/>
-        <ellipse cx="142" cy="110" rx="10" ry="13" fill="#c89060"/>
-        <!-- Beard - trimmed -->
-        <ellipse cx="90" cy="148" rx="38" ry="16" fill="#3a3028"/>
-        <ellipse cx="90" cy="143" rx="30" ry="8" fill="#d4a57a"/>
-        <!-- Mustache -->
-        <path d="M72,130 Q82,135 90,132 Q98,135 108,130" stroke="#3a3028" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <!-- Eyes behind square glasses -->
-        <!-- Glass frames -->
-        <rect x="52" y="100" width="30" height="22" rx="3" fill="none" stroke="#888" stroke-width="2.5"/>
-        <rect x="98" y="100" width="30" height="22" rx="3" fill="none" stroke="#888" stroke-width="2.5"/>
-        <line x1="82" y1="111" x2="98" y2="111" stroke="#888" stroke-width="2"/>
-        <!-- Nose bridge reflection -->
-        <line x1="36" y1="111" x2="52" y2="111" stroke="#888" stroke-width="1.5"/>
-        <line x1="128" y1="111" x2="142" y2="111" stroke="#888" stroke-width="1.5"/>
-        <!-- Eyes -->
-        <ellipse cx="67" cy="111" rx="7" ry="7" fill="#fff"/>
-        <ellipse cx="113" cy="111" rx="7" ry="7" fill="#fff"/>
-        <ellipse cx="68" cy="111" rx="4" ry="4" fill="#2a1800"/>
-        <ellipse cx="114" cy="111" rx="4" ry="4" fill="#2a1800"/>
-        <circle cx="70" cy="109" r="1.5" fill="white"/>
-        <circle cx="116" cy="109" r="1.5" fill="white"/>
-        <!-- Eyebrows - serious -->
-        <path d="M54,98 Q67,93 80,97" stroke="#3a3028" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <path d="M100,97 Q113,93 126,98" stroke="#3a3028" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <!-- Mouth - straight serious -->
-        <path d="M76,140 Q90,143 104,140" stroke="#8a6040" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <!-- Pizza slice in hand (peeking) -->
-        <polygon points="155,190 170,170 180,200" fill="#c8a84b" opacity=".8"/>
-        <circle cx="163" cy="183" r="3" fill="#e84040" opacity=".9"/>
-        <circle cx="170" cy="178" r="2" fill="#e84040" opacity=".9"/>
-      </svg>
-    </div>
-
-    </div><!-- /john-faces -->
-
-  <p class="pizza-hint">📍 There is definitely a slice of pizza nearby</p>
-
-  <!-- THE SCENE: Snow narrates, John interrupts -->
-  <div class="scene">
-
-    <div class="bubble-wrap" style="animation-delay:.1s">
-      <div class="avatar john">J</div>
-      <div class="bubble john-b">
-        "Good evening. My name is John, and I have been asked to provide a formal introduction to the strategic mechanics of the Riftbound Trading Card Game, developed by Riot Games, which I believe warrants—"
-      </div>
-    </div>
-
-    <div class="bubble-wrap right" style="animation-delay:.3s">
-      <div class="avatar snow">S</div>
-      <div class="bubble snow-b">
-        This is John. He taught Snow how to play. He is going to teach you too.<br>
-        <span class="funny">He will try very hard to explain things properly. This will not go as planned.</span>
-      </div>
-    </div>
-
-    <div class="bubble-wrap" style="animation-delay:.5s">
-      <div class="avatar john">J</div>
-      <div class="bubble john-b">
-        "The objective of the game is to reach eight points before your opponent, which I can explain in considerable detail if you would allow me to outline the—"
-      </div>
-    </div>
-
-    <div class="abcd-flash" style="animation-delay:.7s">
-      <span class="abcd-letter" style="color:var(--gold)">8</span>
-      <span class="abcd-name" style="color:var(--txt2)">Eight points. First to 8 wins. That's the whole game.</span>
-    </div>
-
-    <div class="bubble-wrap right" style="animation-delay:.9s">
-      <div class="avatar snow">S</div>
-      <div class="bubble snow-b">
-        You get points two ways. <span class="bold">Conquer</span> a battlefield — move your units there and win the fight — that's <span class="pts">1 point</span>. Then if you still <span class="bold">hold</span> it at the start of your next turn, that's <span class="pts">another point</span>. Every turn you hold it.
-      </div>
-    </div>
-
-    <div class="bubble-wrap" style="animation-delay:1.1s">
-      <div class="avatar john">J</div>
-      <div class="bubble john-b">
-        "Precisely, and the battlefield scoring mechanism is analogous in some ways to lane control in the original League of Legends—"
-      </div>
-    </div>
-
-    <div class="bubble-wrap right" style="animation-delay:1.3s">
-      <div class="avatar snow">S</div>
-      <div class="bubble snow-b">
-        Actually yes. The two battlefields are basically the two side lanes. Your base is your nexus. Units are minions that know what they're doing. More on that in a second.
-      </div>
-    </div>
-
-    <div class="bubble-wrap" style="animation-delay:1.5s">
-      <div class="avatar john">J</div>
-      <div class="bubble john-yell">C.</div>
-    </div>
-    <div class="bubble-wrap" style="animation-delay:1.6s;margin-top:-16px">
-      <div class="avatar john">J</div>
-      <div class="bubble john-b" style="font-size:.9rem;color:var(--txt2)">&nbsp;&nbsp;<em>points aggressively at the battlefield</em></div>
-    </div>
-
-    <div class="bubble-wrap right" style="animation-delay:1.8s">
-      <div class="avatar snow">S</div>
-      <div class="bubble snow-b">
-        ...Yes John. <span class="bold">C</span> is for Conquer. One point. We're getting there.
-      </div>
-    </div>
-
-  </div><!-- /scene -->
+<div id="pts">
+  <div class="ptb" id="pty"><div class="ptl">You</div><div class="ptv" id="pyv">0</div></div>
+  <div class="ptb" id="pto"><div class="ptl">Them</div><div class="ptv" id="pov">0</div></div>
 </div>
-</section>
 
-<!-- ═══ MAP TRANSITION ═══ -->
-<section class="wrap map-section">
-  <p class="map-label">The Board</p>
-  <p class="map-sub">If you've played League of Legends, you already understand this</p>
+<div id="af"><div id="al"></div><div id="an"></div></div>
 
-  <div class="map-canvas">
-    <!-- LoL side -->
-    <div class="lol-side">
-      <div class="lol-river"></div>
-      <div class="lol-lane top"></div>
-      <div class="lol-lane mid"></div>
-      <div class="lol-lane bot"></div>
-      <!-- Blue towers -->
-      <div class="tower t-blue" style="left:8%;top:18%"></div>
-      <div class="tower t-blue" style="left:8%;bottom:18%"></div>
-      <div class="tower t-blue" style="left:28%;top:18%"></div>
-      <!-- Red towers -->
-      <div class="tower t-red" style="right:8%;top:18%"></div>
-      <div class="tower t-red" style="right:8%;bottom:18%"></div>
-      <!-- Minions -->
-      <div class="minion m-blue" style="left:16%;top:35%"></div>
-      <div class="minion m-blue" style="left:19%;top:42%"></div>
-      <div class="minion m-blue" style="left:22%;top:38%"></div>
-      <div class="minion m-red" style="left:30%;top:55%"></div>
-      <div class="minion m-red" style="left:33%;top:60%"></div>
-      <div class="minion m-blue" style="left:40%;top:28%"></div>
-      <div class="minion m-red" style="left:40%;top:68%"></div>
-      <div class="lol-tag">League of Legends</div>
+<div id="jc"><div id="jw">
+  <svg id="jsv" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+    <rect x="25" y="105" width="70" height="45" rx="6" fill="#1a2035"/>
+    <rect x="50" y="105" width="20" height="45" fill="#151c2d"/>
+    <polygon points="60,105 50,118 60,113" fill="#fff" opacity=".9"/>
+    <polygon points="60,105 70,118 60,113" fill="#fff" opacity=".9"/>
+    <rect x="50" y="95" width="20" height="14" rx="3" fill="#c8956a"/>
+    <rect x="22" y="44" width="76" height="60" rx="16" fill="#c8956a"/>
+    <rect x="18" y="36" width="84" height="24" rx="8" fill="#1a1a2e"/>
+    <ellipse cx="60" cy="38" rx="42" ry="10" fill="#1a1a2e"/>
+    <rect x="8" y="50" width="40" height="8" rx="4" fill="#141428"/>
+    <text x="24" y="47" font-family="Arial" font-size="6.5" fill="#c8a84b" font-weight="bold" letter-spacing="1.2">JOHN</text>
+    <ellipse cx="22" cy="72" rx="7" ry="9" fill="#b07850"/>
+    <ellipse cx="98" cy="72" rx="7" ry="9" fill="#b07850"/>
+    <rect x="30" y="64" width="24" height="18" rx="2" fill="none" stroke="#aaa" stroke-width="2"/>
+    <rect x="66" y="64" width="24" height="18" rx="2" fill="none" stroke="#aaa" stroke-width="2"/>
+    <line x1="54" y1="73" x2="66" y2="73" stroke="#aaa" stroke-width="1.5"/>
+    <line x1="22" y1="73" x2="30" y2="73" stroke="#aaa" stroke-width="1"/>
+    <line x1="90" y1="73" x2="98" y2="73" stroke="#aaa" stroke-width="1"/>
+    <ellipse cx="42" cy="73" rx="6" ry="6" fill="#fff"/>
+    <ellipse cx="78" cy="73" rx="6" ry="6" fill="#fff"/>
+    <ellipse cx="43" cy="73" rx="3.5" ry="3.5" fill="#1a0a00"/>
+    <ellipse cx="79" cy="73" rx="3.5" ry="3.5" fill="#1a0a00"/>
+    <circle cx="44" cy="71" r="1" fill="white"/>
+    <circle cx="80" cy="71" r="1" fill="white"/>
+    <line x1="31" y1="61" x2="53" y2="62" stroke="#4a3828" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="67" y1="62" x2="89" y2="61" stroke="#4a3828" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M30,94 Q35,106 60,108 Q85,106 90,94 Q78,100 60,101 Q42,100 30,94Z" fill="#3a2a1a"/>
+    <path d="M46,88 Q54,93 60,90 Q66,93 74,88" stroke="#3a2a1a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M50,97 Q60,100 70,97" stroke="#7a4a2a" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <polygon points="108,130 118,110 128,135" fill="#c8a84b" opacity=".45"/>
+    <circle cx="114" cy="123" r="2" fill="#e84040" opacity=".6"/>
+  </svg>
+  <div id="jb"><div id="jbt"></div></div>
+</div></div>
+
+<div id="sb"><div id="st"></div></div>
+<div id="prog"><div id="pb"></div></div>
+<div id="ctrl">
+  <button class="cb" onclick="T.skip()">Skip →</button>
+  <button class="cb" id="sbtn" onclick="T.sound()">🔊</button>
+</div>
+
+<!-- SCENE 0: TITLE -->
+<div class="scene active" id="sc0">
+  <h1>RIFTBOUND</h1>
+  <p class="ep">Episode 1 — How to Play</p>
+  <p class="sh">Starting shortly...</p>
+</div>
+
+<!-- SCENE 1: LOL MAP -->
+<div class="scene" id="sc1">
+<div id="lw">
+<svg width="100%" height="100%" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <rect width="500" height="500" fill="#060d06"/>
+  <rect x="10" y="10" width="480" height="480" rx="8" fill="none" stroke="rgba(120,200,120,.12)" stroke-width="1"/>
+  <rect x="58" y="58" width="155" height="155" rx="4" fill="rgba(0,28,0,.4)"/>
+  <rect x="287" y="287" width="155" height="155" rx="4" fill="rgba(0,28,0,.4)"/>
+  <path d="M175,0 L0,175" stroke="rgba(11,196,227,.18)" stroke-width="26" fill="none"/>
+  <path d="M500,325 L325,500" stroke="rgba(11,196,227,.18)" stroke-width="26" fill="none"/>
+  <rect x="26" y="26" width="22" height="345" rx="4" fill="rgba(120,200,120,.13)"/>
+  <rect x="452" y="129" width="22" height="345" rx="4" fill="rgba(120,200,120,.13)"/>
+  <path d="M48,48 L452,452" stroke="rgba(120,200,120,.12)" stroke-width="20" fill="none"/>
+  <rect x="10" y="375" width="115" height="115" rx="6" fill="rgba(11,100,227,.1)" stroke="rgba(11,196,227,.28)" stroke-width="1.5"/>
+  <circle cx="67" cy="445" r="12" fill="rgba(11,196,227,.22)" stroke="rgba(11,196,227,.5)" stroke-width="2"/>
+  <text x="67" y="426" text-anchor="middle" font-family="Arial" font-size="7.5" fill="rgba(11,196,227,.55)" letter-spacing="1">NEXUS</text>
+  <rect x="375" y="10" width="115" height="115" rx="6" fill="rgba(227,64,64,.1)" stroke="rgba(239,68,68,.28)" stroke-width="1.5"/>
+  <circle cx="433" cy="75" r="12" fill="rgba(239,68,68,.22)" stroke="rgba(239,68,68,.5)" stroke-width="2"/>
+  <text x="433" y="56" text-anchor="middle" font-family="Arial" font-size="7.5" fill="rgba(239,68,68,.55)" letter-spacing="1">NEXUS</text>
+  <circle cx="37" cy="355" r="8" fill="rgba(11,196,227,.28)" stroke="rgba(11,196,227,.7)" stroke-width="2"/>
+  <circle cx="37" cy="270" r="7" fill="rgba(11,196,227,.22)" stroke="rgba(11,196,227,.5)" stroke-width="1.5"/>
+  <circle cx="37" cy="190" r="6" fill="rgba(11,196,227,.18)" stroke="rgba(11,196,227,.4)" stroke-width="1.5"/>
+  <circle cx="135" cy="463" r="8" fill="rgba(11,196,227,.28)" stroke="rgba(11,196,227,.7)" stroke-width="2"/>
+  <circle cx="215" cy="463" r="7" fill="rgba(11,196,227,.22)" stroke="rgba(11,196,227,.5)" stroke-width="1.5"/>
+  <circle cx="463" cy="145" r="8" fill="rgba(239,68,68,.28)" stroke="rgba(239,68,68,.7)" stroke-width="2"/>
+  <circle cx="463" cy="225" r="7" fill="rgba(239,68,68,.22)" stroke="rgba(239,68,68,.5)" stroke-width="1.5"/>
+  <circle cx="463" cy="305" r="6" fill="rgba(239,68,68,.18)" stroke="rgba(239,68,68,.4)" stroke-width="1.5"/>
+  <circle cx="365" cy="37" r="8" fill="rgba(239,68,68,.28)" stroke="rgba(239,68,68,.7)" stroke-width="2"/>
+  <circle cx="285" cy="37" r="7" fill="rgba(239,68,68,.22)" stroke="rgba(239,68,68,.5)" stroke-width="1.5"/>
+  <g><circle cx="37" cy="320" r="5" fill="#0bc4e3" opacity=".85"><animate attributeName="cy" values="320;155;320" dur="5.5s" repeatCount="indefinite"/></circle></g>
+  <g><circle cx="43" cy="330" r="4" fill="#0bc4e3" opacity=".7"><animate attributeName="cy" values="330;165;330" dur="5.5s" begin=".5s" repeatCount="indefinite"/></circle></g>
+  <g><circle cx="463" cy="175" r="5" fill="#ef4444" opacity=".85"><animate attributeName="cy" values="175;340;175" dur="5.5s" begin="1s" repeatCount="indefinite"/></circle></g>
+  <g><circle r="4.5" fill="#0bc4e3" opacity=".75"><animateMotion dur="7s" repeatCount="indefinite" path="M48,452 L340,160"/></circle></g>
+  <g><circle r="4" fill="#ef4444" opacity=".75"><animateMotion dur="7s" begin="1.5s" repeatCount="indefinite" path="M452,48 L160,340"/></circle></g>
+  <text x="18" y="195" font-family="Arial" font-size="8" fill="rgba(120,200,120,.35)" transform="rotate(-90,18,195)">TOP LANE</text>
+  <text x="468" y="315" font-family="Arial" font-size="8" fill="rgba(120,200,120,.35)" transform="rotate(90,468,315)">BOT LANE</text>
+  <text x="198" y="290" font-family="Arial" font-size="8" fill="rgba(120,200,120,.35)" transform="rotate(-44,198,290)">MID LANE</text>
+  <g id="rbo" opacity="0" style="transition:opacity 1.5s">
+    <rect x="8" y="215" width="484" height="58" fill="rgba(200,168,75,.06)" stroke="rgba(200,168,75,.35)" stroke-width="1.5" rx="4"/>
+    <text x="250" y="249" text-anchor="middle" font-family="serif" font-size="13" fill="#c8a84b" letter-spacing="4">BATTLEFIELD 1</text>
+    <rect x="8" y="320" width="484" height="58" fill="rgba(200,168,75,.06)" stroke="rgba(200,168,75,.35)" stroke-width="1.5" rx="4"/>
+    <text x="250" y="354" text-anchor="middle" font-family="serif" font-size="13" fill="#c8a84b" letter-spacing="4">BATTLEFIELD 2</text>
+  </g>
+</svg>
+</div>
+</div>
+
+<!-- SCENE 2: BOARD -->
+<div class="scene" id="sc2">
+<div class="bw">
+  <div class="or">
+    <div class="zb lg"><div class="zl">Legend</div></div>
+    <div class="zb ch"><div class="zl">Champ</div></div>
+    <div class="ba" style="min-height:46px;max-width:380px"><div class="bl">Opponent Base</div>
+      <div class="card ex"></div><div class="card ex"></div><div class="card ex"></div>
     </div>
-
-    <!-- Fade -->
-    <div class="map-fade"></div>
-    <div class="becomes">BECOMES<br>↓</div>
-
-    <!-- Riftbound side -->
-    <div class="rb-side">
-      <!-- Opponent base -->
-      <div class="rb-base-zone" style="top:6%;right:3%;width:35%;height:18%">
-        Opponent Base
-      </div>
-      <!-- BF 1 (top lane → BF1) -->
-      <div class="rb-bf-zone" style="top:28%;left:3%;width:42%;height:22%">
-        <div class="rb-bf-name">Battlefield 1</div>
-        <div class="rb-arrow">← Top Lane</div>
-        <div class="rb-unit u1" style="top:25%;left:35%"></div>
-      </div>
-      <!-- BF 2 (bot lane → BF2) -->
-      <div class="rb-bf-zone" style="top:52%;left:3%;width:42%;height:22%">
-        <div class="rb-bf-name">Battlefield 2</div>
-        <div class="rb-arrow">← Bot Lane</div>
-        <div class="rb-unit u2" style="top:25%;right:25%"></div>
-      </div>
-      <!-- Your base -->
-      <div class="rb-base-zone" style="bottom:6%;right:3%;width:35%;height:18%">
-        Your Base
-      </div>
-      <div class="rb-tag">Riftbound</div>
+    <div class="zb ru"><div class="zl">Runes</div></div>
+    <div class="zb"><div class="zl">Deck</div></div>
+  </div>
+  <div class="bfr">
+    <div class="bf" id="bf1"><div class="bfn">Battlefield 1</div><div id="bf1u" style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;padding:4px"></div></div>
+    <div class="bf" id="bf2"><div class="bfn">Battlefield 2</div><div id="bf2u" style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;padding:4px"></div></div>
+  </div>
+  <div class="pr">
+    <div class="zb lg"><div style="font-size:.85rem">👑</div><div class="zl">Legend</div></div>
+    <div class="zb ch"><div style="font-size:.85rem">⚡</div><div class="zl">Champ</div></div>
+    <div class="ba" id="ybase">
+      <div class="bl">Your Base</div>
+      <div class="card u" id="ca"></div>
+      <div class="card u" id="cb"></div>
+      <div class="card s" id="cc"></div>
+      <div class="card g" id="cd"></div>
     </div>
-  </div>
-</section>
-
-<!-- ═══ PLAY AREA DIAGRAM ═══ -->
-<section class="wrap playarea-section">
-  <p class="map-label" style="margin-bottom:8px">Where Everything Goes</p>
-  <p class="map-sub">Your table layout every game</p>
-
-  <div class="playarea-canvas" style="max-width:900px;margin:0 auto">
-
-    <!-- OPPONENT ROW -->
-    <div class="pa-opp">
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <div class="zone legend"><span class="zone-icon">👑</span><span class="zone-lbl">Legend</span></div>
-        <div class="zone champion"><span class="zone-icon">⚡</span><span class="zone-lbl">Champion</span></div>
+    <div class="zb ru" id="rz">
+      <div style="display:flex;gap:3px;justify-content:center">
+        <div class="rc" style="border-color:#E53935;color:#E53935">F</div>
+        <div class="rc" style="border-color:#F57C00;color:#F57C00">B</div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-        <div class="pa-base-label">Opponent Base</div>
-        <div class="pa-base">
-          <div class="zone" style="flex:1;min-height:70px"><span class="zone-icon">🃏</span><span class="zone-lbl">Hand</span></div>
-          <div class="zone deck" style="flex:1;min-height:70px"><span class="zone-icon">📚</span><span class="zone-lbl">Main Deck</span></div>
-          <div class="zone runes" style="flex:1;min-height:70px"><span class="zone-icon">💎</span><span class="zone-lbl">Rune Deck</span></div>
-          <div class="zone trash" style="flex:1;min-height:70px"><span class="zone-icon">🗑</span><span class="zone-lbl">Trash</span></div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <div class="zone deck"><span class="zone-icon">🎴</span><span class="zone-lbl">Deck</span></div>
-        <div class="zone runes"><span class="zone-icon">🔮</span><span class="zone-lbl">Runes</span></div>
-      </div>
+      <div class="zl">Runes</div>
     </div>
-
-    <!-- BATTLEFIELDS -->
-    <div class="pa-bfs">
-      <div class="pa-bf">
-        <div style="text-align:center">
-          <div class="pa-bf-lbl">Battlefield 1</div>
-          <div class="pa-bf-sub">Units fight here</div>
-        </div>
-        <div class="pa-unit" style="top:20%;left:20%"></div>
-      </div>
-      <div class="pa-bf">
-        <div style="text-align:center">
-          <div class="pa-bf-lbl">Battlefield 2</div>
-          <div class="pa-bf-sub">Units fight here</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- YOUR ROW -->
-    <div class="pa-player">
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <div class="zone deck"><span class="zone-icon">📚</span><span class="zone-lbl">Main Deck</span></div>
-        <div class="zone runes"><span class="zone-icon">💎</span><span class="zone-lbl">Rune Deck</span></div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-        <div class="pa-base-label">Your Base</div>
-        <div class="pa-base">
-          <div class="zone trash" style="flex:1;min-height:70px"><span class="zone-icon">🗑</span><span class="zone-lbl">Trash</span></div>
-          <div class="zone runes" style="flex:1;min-height:70px"><span class="zone-icon">💎</span><span class="zone-lbl">Runes</span></div>
-          <div class="zone deck" style="flex:1;min-height:70px"><span class="zone-icon">📚</span><span class="zone-lbl">Main Deck</span></div>
-          <div class="zone" style="flex:1;min-height:70px"><span class="zone-icon">🃏</span><span class="zone-lbl">Hand</span></div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <div class="zone legend"><span class="zone-icon">👑</span><span class="zone-lbl">Legend</span></div>
-        <div class="zone champion"><span class="zone-icon">⚡</span><span class="zone-lbl">Champion</span></div>
-      </div>
-    </div>
-
+    <div class="zb"><div style="font-size:.85rem">📚</div><div class="zl">Deck</div></div>
   </div>
-</section>
+</div>
+</div>
 
-<!-- ═══ ABCD SEQUENCE ═══ -->
-<section class="wrap abcd-section">
-  <h2>John's A B C D of Riftbound</h2>
-  <p class="sub">Snow explains. John yells letters. This is fine.</p>
+</div><!-- /stage -->
+<script>
+const T=(()=>{
+const W=t=>new Promise(r=>setTimeout(r,t));
+let sy=window.speechSynthesis,vs=[],sv=null,jv=null,sOn=true,yp=0,op=0,cur=0,going=false;
 
-  <!-- A -->
-  <div class="abcd-card">
-    <div class="abcd-left" style="color:var(--gold)">A</div>
-    <div class="abcd-right">
-      <div class="abcd-phase-name" style="color:var(--gold)">Awaken</div>
-      <div class="abcd-snow">
-        Untap everything. Every exhausted unit, rune, legend, and gear stands back up. Think of it like your team taking a deep breath before the next round. Everything that was sideways is now upright and ready to use again.
-      </div>
-      <div class="abcd-john">
-        <div class="abcd-john-av">J</div>
-        <div class="abcd-john-txt">"A. Awaken. <span class="cutoff">In the original rulings document, section four, paragraph two, the Awaken phase is formally defined as the—"</span> <em>cut off</em></div>
-      </div>
-    </div>
-  </div>
+function lv(){
+  vs=sy.getVoices();
+  sv=vs.find(v=>v.lang==='en-US'&&/zira|samantha|karen|google us/i.test(v.name))||vs.find(v=>v.lang==='en-US')||vs[0];
+  jv=vs.find(v=>v.lang==='en-GB'&&/daniel|george|oliver/i.test(v.name))||vs.find(v=>v.lang==='en-GB')||vs[1]||vs[0];
+}
+if(sy.onvoiceschanged!==undefined)sy.onvoiceschanged=lv;
+setTimeout(lv,400);
 
-  <!-- B -->
-  <div class="abcd-card" style="background:rgba(255,255,255,.01)">
-    <div class="abcd-left" style="color:var(--mind)">B</div>
-    <div class="abcd-right">
-      <div class="abcd-phase-name" style="color:var(--mind)">Board State</div>
-      <div class="abcd-snow">
-        Check the board and score points. Any battlefield your units held since last turn — that's a point each. <em>Right now. Free.</em> Then look at the board. What does your opponent have? What do you have? Where are you winning and where are you about to get destroyed? This is your moment to nod and pretend you have a plan.
-        <br><br>
-        <span style="color:var(--txt2);font-style:italic;font-size:.92rem">"B is for Board State. Look at the board. What do you see? Nobody knows. John doesn't know either. Just nod."</span>
-      </div>
-      <div class="abcd-john">
-        <div class="abcd-john-av">J</div>
-        <div class="abcd-john-txt">"B. Board State. <span class="cutoff">Which, if I may elaborate, encompasses the totality of game objects currently—"</span> <em>John is escorted away from the table</em></div>
-      </div>
-    </div>
-  </div>
+function spk(txt,isJ=false){
+  if(!sOn)return Promise.resolve();
+  return new Promise(r=>{
+    sy.cancel();
+    const u=new SpeechSynthesisUtterance(txt);
+    u.voice=isJ?jv:sv;
+    u.rate=isJ?.86:1.12;
+    u.pitch=isJ?.88:1.06;
+    u.volume=1;
+    u.onend=r;u.onerror=r;
+    sy.speak(u);
+  });
+}
 
-  <!-- C -->
-  <div class="abcd-card">
-    <div class="abcd-left" style="color:var(--fury)">C</div>
-    <div class="abcd-right">
-      <div class="abcd-phase-name" style="color:var(--fury)">Conjure</div>
-      <div class="abcd-snow">
-        Draw 2 runes from your 12-card rune deck. These are your mana for the turn — you'll spend them to play cards. If you chose to go <em>second</em>, you draw 3 runes on your very first turn instead of 2. That's your consolation prize for being polite.
-        <br><br>
-        Runes exhaust when you use them. They ready back up during Awaken. You don't bank them — unspent rune power disappears at end of turn.
-      </div>
-      <div class="abcd-john">
-        <div class="abcd-john-av">J</div>
-        <div class="abcd-john-txt">"C." <em>points at opponent's battlefield.</em> "C."<br><span class="cutoff">Snow: "John that's conquering." John: "...C."</span></div>
-      </div>
-    </div>
-  </div>
+function sno(html,txt=''){
+  const e=document.getElementById('sb'),t=document.getElementById('st');
+  t.innerHTML=html;e.classList.add('show');
+  return txt?spk(txt):Promise.resolve();
+}
+function hno(){document.getElementById('sb').classList.remove('show')}
 
-  <!-- D -->
-  <div class="abcd-card" style="background:rgba(255,255,255,.01)">
-    <div class="abcd-left" style="color:var(--calm)">D</div>
-    <div class="abcd-right">
-      <div class="abcd-phase-name" style="color:var(--calm)">Draw</div>
-      <div class="abcd-snow">
-        Draw 1 card from your main deck. Everyone loves the D.
-        <br><br>
-        <span style="color:var(--txt2);font-style:italic;font-size:.92rem">— wink —</span>
-        <br><br>
-        Now you have your cards and your runes. This is where you actually play the game. Play units to your base, cast spells, equip gear, trigger your legend. Units enter your base exhausted — they can't move to a battlefield the same turn they're played. Next turn they're ready and they can move.
-      </div>
-      <div class="abcd-john">
-        <div class="abcd-john-av">J</div>
-        <div class="abcd-john-txt">"D. Draw. <span class="cutoff">Now, regarding the stack resolution order when multiple draw effects trigger simultaneously, which is a nuanced topic I covered in my 47-slide presentation—"</span><br><em>Snow has left the building</em></div>
-      </div>
-    </div>
-  </div>
+function jhn(txt,yell=false){
+  const b=document.getElementById('jb'),t=document.getElementById('jbt'),s=document.getElementById('jsv');
+  t.className=yell?'yell':'';t.textContent=txt;b.classList.add('show');
+  if(yell)s.style.transform='scale(1.12) translateY(-7px)';
+  return spk(txt,true).then(()=>{if(yell)s.style.transform=''});
+}
+function hjn(){document.getElementById('jb').classList.remove('show');document.getElementById('jsv').style.transform=''}
 
-  <!-- E/F/G -->
-  <div class="abcd-card">
-    <div class="abcd-left" style="color:var(--body)">E·F·G</div>
-    <div class="abcd-right">
-      <div class="abcd-phase-name" style="color:var(--body)">Execute — Fight — Go</div>
-      <div class="abcd-snow">
-        Move your ready units to the battlefields. If nobody's there — easy point. Scream into the void. You are a god.
-        <br><br>
-        If they <em>do</em> have units there, you're in a Showdown. Play spells and reactions. Buff your units. Make theirs weaker. Then combat resolves — total Might vs total Might, damage is assigned, the weak fall, the strong conquer. Units heal fully after combat.
-        <br><br>
-        You can also move units <em>back</em> to your base if they're not exhausted — retreat is valid. You can play units directly to a battlefield you already control. And there are hidden cards, counter-spells, equipment, buffs, blinks — the game has layers. But the bones are simple.
-        <br><br>
-        <span style="color:var(--txt2);font-size:.92rem;font-style:italic">There are abilities everywhere. Hidden cards sitting facedown. Reactions that trigger on your opponent's turn. Units that buff on arrival. Gear that changes might mid-combat. You are not always safe — not at your battlefield, not at your base, not even in your hand. That's ok. Neither are they.</span>
-      </div>
-      <div class="abcd-john">
-        <div class="abcd-john-av">J</div>
-        <div class="abcd-john-txt">"C."<br><span class="cutoff">Snow: "John we're on E." John: "...C."</span></div>
-      </div>
-    </div>
-  </div>
+function sc(id){document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function pr(p){document.getElementById('pb').style.width=p+'%'}
 
-  <!-- WIN CONDITION -->
-  <div class="win-box">
-    <h3>The Final Point Rule</h3>
-    <p>You need 8 points to win. But you can't sneak your last point from just one conquest.</p>
-    <p>Your 8th point has to come from one of these:</p>
-    <p style="padding-left:16px;border-left:2px solid var(--gold);margin:12px 0">
-      <strong style="color:var(--gold)">Hold it.</strong> If you're sitting at 7 points and you hold a battlefield into your B step next turn — that's point 8. You win.<br><br>
-      <strong style="color:var(--gold)">Take both.</strong> Conquer battlefield 1 and battlefield 2 in the same turn. You win.<br><br>
-      <strong style="color:var(--gold)">Card effect.</strong> Some cards give you points directly. Those can be your last point regardless of battlefield state.
-    </p>
-    <p>If you try to conquer just one battlefield for your 8th point without holding anything — you draw a card instead. The game continues. They just got a second chance and it's your fault.</p>
-    <p class="funny" style="margin-top:10px">John would like to explain this in detail. John is eating pizza.</p>
-  </div>
+function flash(ltr,nm,col){
+  const e=document.getElementById('af'),l=document.getElementById('al'),n=document.getElementById('an');
+  l.textContent=ltr;l.style.color=col;n.textContent=nm;n.style.color=col;
+  e.classList.add('show');
+  // Boom sound
+  if(sOn){const ac=new AudioContext(),o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);o.frequency.value=200;g.gain.setValueAtTime(.4,ac.currentTime);g.gain.exponentialRampToConstantValue(.001,ac.currentTime+.6);o.start();o.stop(ac.currentTime+.6)}
+  const u=new SpeechSynthesisUtterance(ltr+'! '+nm);
+  u.voice=jv;u.rate=.7;u.pitch=.85;u.volume=1;
+  if(sOn)sy.speak(u);
+  return W(2300).then(()=>e.classList.remove('show'));
+}
 
-  <!-- SETUP SEQUENCE -->
-  <div style="margin:40px 0">
-    <div class="abcd-phase-name" style="color:var(--gold);font-family:'Cinzel',serif;font-size:1rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.07)">Before You Start — Game Setup</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
-      <div style="padding:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)">
-        <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Roll</div>
-        <div style="font-family:'Rajdhani',sans-serif;font-size:.92rem;color:var(--txt);line-height:1.5">Roll to see who goes first. Most people choose first. Going second gets you 3 runes on turn 1 instead of 2. Choose wisely.</div>
-      </div>
-      <div style="padding:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)">
-        <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Shuffle &amp; Cut</div>
-        <div style="font-family:'Rajdhani',sans-serif;font-size:.92rem;color:var(--txt);line-height:1.5">Shuffle your deck. Offer your opponent a cut. They shuffle theirs. Now you both have no excuses.</div>
-      </div>
-      <div style="padding:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)">
-        <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Draw 4</div>
-        <div style="font-family:'Rajdhani',sans-serif;font-size:.92rem;color:var(--txt);line-height:1.5">Draw your opening hand of 4 cards. Look at them. Don't make a face.</div>
-      </div>
-      <div style="padding:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)">
-        <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Mulligan</div>
-        <div style="font-family:'Rajdhani',sans-serif;font-size:.92rem;color:var(--txt);line-height:1.5">You can put up to 2 cards randomly to the bottom of your deck and draw that many back. One chance. Use it.</div>
-      </div>
-      <div style="padding:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)">
-        <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Reveal Battlefields</div>
-        <div style="font-family:'Rajdhani',sans-serif;font-size:.92rem;color:var(--txt);line-height:1.5">Reveal your 3 pre-chosen battlefields. Pick which 2 you're playing this game. Your opponent does the same. Place them between you.</div>
-      </div>
-      <div style="padding:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)">
-        <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Play</div>
-        <div style="font-family:'Rajdhani',sans-serif;font-size:.92rem;color:var(--txt);line-height:1.5">Legends are revealed. Take turns. First player starts with their A step. Now you're playing Riftbound.</div>
-      </div>
-    </div>
-  </div>
+function apt(who,n){
+  if(who==='y'){yp+=n;document.getElementById('pyv').textContent=yp;if(yp>=8)document.getElementById('pty').classList.add('win')}
+  else{op+=n;document.getElementById('pov').textContent=op}
+  const f=document.createElement('div');f.className='ptf';
+  f.textContent='+'+(n)+' PT';f.style.color=who==='y'?'#22c55e':'#ef4444';
+  document.body.appendChild(f);setTimeout(()=>f.remove(),1500);
+  if(sOn){const ac=new AudioContext(),o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);o.frequency.value=who==='y'?900:400;g.gain.setValueAtTime(.25,ac.currentTime);g.gain.exponentialRampToConstantValue(.001,ac.currentTime+.35);o.start();o.stop(ac.currentTime+.35)}
+}
 
-</section>
+function cpsnd(){
+  if(!sOn)return;
+  const ac=new AudioContext(),buf=ac.createBuffer(1,ac.sampleRate*.12,ac.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length)*.25;
+  const s=ac.createBufferSource();s.buffer=buf;
+  const f=ac.createBiquadFilter();f.type='bandpass';f.frequency.value=1100;
+  s.connect(f);f.connect(ac.destination);s.start();
+}
 
-<!-- ═══ CTA ═══ -->
-<section class="wrap cta-section">
-  <h2>That's Riftbound</h2>
-  <p>
-    Remember John's ABCD. Shuffle up and play.<br>
-    There is no better way to learn than a game.<br>
-    <span style="color:var(--txt3);font-size:.9rem">For 4-player rules, formats, and competitive rulings — <a href="https://riftboundguide.com" target="_blank" style="color:var(--gold)">RiftboundGuide.com</a></span><br>
-    <span style="color:var(--txt3);font-size:.9rem;font-style:italic">Good luck. Don't suck.</span>
-  </p>
-  <div style="margin-top:24px">
-    <a href="index.html" class="cta-btn primary">Choose Your Legend →</a>
-    <a href="https://riftboundguide.com" target="_blank" class="cta-btn">Full Rules Guide</a>
-  </div>
-  <div style="margin-top:32px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06)">
-    <p style="font-family:'Caveat',cursive;font-size:1.1rem;color:var(--txt2)">
-      "In conclusion, the strategic depth of this game cannot be overstated and I would like to present my findings in a formal—"
-    </p>
-    <p style="font-family:'Cinzel Decorative',serif;font-size:1.5rem;color:var(--gold);margin-top:8px">C.</p>
-    <p style="font-family:'Rajdhani',sans-serif;font-size:.85rem;color:var(--txt3);margin-top:4px">— John</p>
-  </div>
-</section>
+async function mvcard(id,targetId){
+  const card=document.getElementById(id),tar=document.getElementById(targetId);
+  if(!card||!tar)return;
+  const fr=card.getBoundingClientRect(),to=tar.getBoundingClientRect();
+  const clone=card.cloneNode(true);
+  clone.style.cssText=`position:fixed;left:${fr.left}px;top:${fr.top}px;width:${fr.width}px;height:${fr.height}px;z-index:150;transition:none;margin:0`;
+  document.body.appendChild(clone);
+  card.style.opacity='0';
+  cpsnd();
+  await W(50);
+  clone.style.transition='all .75s cubic-bezier(.4,0,.2,1)';
+  clone.style.left=(to.left+to.width/2-fr.width/2)+'px';
+  clone.style.top=(to.top+to.height/2-fr.height/2)+'px';
+  await W(800);
+  clone.remove();
+  card.style.opacity='1';
+  tar.appendChild(card);
+}
 
-</div><!-- /page -->
+// THE SCRIPT
+const S=[
+  // 0 title
+  async()=>{sc('sc0');pr(0);await W(2200)},
+  // 1 john tries to introduce himself formally
+  async()=>{pr(5);await jhn("Good evening. My name is John and I would like to formally present an introductory lecture on Riftbound covering the fundamental ruleset, zone architecture, and strategic—")},
+  // 2 snow cuts him off
+  async()=>{hjn();await sno(`<span class="b">THIS IS JOHN.</span> He taught Snow how to play. Now he's teaching you. He will try very hard to be proper about it. <span class="r">It will not go well.</span>`,"This is John. He taught Snow how to play. Now he's teaching you. He will try very hard to be proper about it. It will not go well.");await W(4500);hno()},
+  // 3 snow: the goal
+  async()=>{pr(12);await sno(`<span class="b">THE GOAL IS 8 POINTS.</span> That is it. That is the whole game. First to <span class="g">8 points</span> wins.`,"The goal is 8 points. That is it. That is the whole game. First to 8 points wins.");await W(3500);hno()},
+  // 4 john tries to add context
+  async()=>{await jhn("Precisely, and the point accumulation mechanism operates through two distinct scoring vectors, specifically the conquer event and the hold event, both of which I can elaborate on if you would—")},
+  // 5 snow interrupts
+  async()=>{hjn();await sno(`<span class="r">TWO WAYS TO GET POINTS.</span> One: <span class="b">Conquer.</span> Move your units to a battlefield and win the fight. <span class="g">+1 point.</span> Two: <span class="b">Hold.</span> Still have units there next turn when the turn starts. <span class="g">+1 point.</span> Every turn you hold.`,"Two ways to get points. One: Conquer. Move your units to a battlefield and win the fight. Plus 1 point. Two: Hold. Still have units there next turn when the turn starts. Plus 1 point. Every turn you hold.");await W(5500);hno()},
+  // 6 lol map
+  async()=>{pr(24);sc('sc1');await W(700);await sno(`You play League of Legends? <span class="b">You already understand this.</span> Two lanes. Your team pushes. First to take the Nexus wins.`,"You play League of Legends? You already understand this. Two lanes. Your team pushes. First to take the Nexus wins.");await W(4000);hno()},
+  // 7 rb overlay on map
+  async()=>{pr(32);const o=document.getElementById('rbo');o.style.transition='opacity 1.5s';o.style.opacity='1';await sno(`Riftbound has <span class="b">two battlefields</span> instead of lanes. Your base instead of a nexus. Units instead of minions — except these ones actually listen to you.`,"Riftbound has two battlefields instead of lanes. Your base instead of a nexus. Units instead of minions — except these ones actually listen to you.");await W(4500);hno()},
+  // 8 board
+  async()=>{pr(40);sc('sc2');await W(400);await sno(`<span class="b">THE BOARD.</span> You are looking down at the table. Your stuff is at the bottom. <span class="b">Always.</span> Opponent is at the top — faded out because right now they're not your problem.`,"The board. You are looking down at the table. Your stuff is at the bottom. Always. Opponent is at the top — faded out because right now they're not your problem.");await W(4500);hno()},
+  // 9 john zones
+  async()=>{await jhn("The zone architecture consists of the Legend Zone, Champion Zone, Base Area, two Battlefield zones, and the Rune Deck — each with specific entry and exit rules as defined in the core rulebook sections—")},
+  // A FLASH
+  async()=>{pr(50);hjn();hno();await flash('A','AWAKEN','#c8a84b')},
+  // A explain
+  async()=>{await sno(`<span class="b">A — AWAKEN.</span> Everything that's exhausted, sideways, tired — it all stands back up. Units. Runes. Legend. Ready to go again.`,"A — Awaken. Everything that's exhausted stands back up. Units. Runes. Legend. Ready to go again.");await W(3800);hno()},
+  // B FLASH
+  async()=>{pr(58);await flash('B','BOARD STATE','#1E88E5')},
+  // B explain
+  async()=>{await sno(`<span class="b">B — BOARD STATE.</span> Score points for anything you held. Then look at the board. <span class="r">What do you see?`,"B — Board State. Score points for anything you held. Then look at the board. What do you see?");await W(600);await jhn("Nobody knows. John doesn't know either.");hjn();apt('y',1);await W(2200);hno()},
+  // C FLASH
+  async()=>{pr(66);await flash('C','CONJURE','#E53935')},
+  // C explain
+  async()=>{await sno(`<span class="b">C — CONJURE.</span> Draw 2 runes from your rune deck. These are your energy. You spend them to play cards. <span class="b">Going second?</span> Draw 3 runes on turn 1. That's your consolation prize.`,"C — Conjure. Draw 2 runes from your rune deck. These are your energy. You spend them to play cards. Going second? Draw 3 runes on turn 1. That's your consolation prize.");await W(400);await jhn("C.");hjn();await W(2500);hno()},
+  // D FLASH
+  async()=>{pr(74);await flash('D','DRAW','#43A047')},
+  // D explain
+  async()=>{await sno(`<span class="b">D — DRAW.</span> Draw 1 card. Everyone loves the D.`,"D — Draw. Draw 1 card. Everyone loves the D.");await W(500);await jhn("If I could address the stack resolution order when multiple draw triggers fire simultaneously — I have a forty-seven slide presentation—");hjn();await sno(`<span class="r">NO.</span> D is draw. One card. From deck. To hand. Done.`,"No. D is draw. One card. From deck. To hand. Done.");await W(2800);hno()},
+  // Play cards
+  async()=>{pr(82);await sno(`Now you <span class="b">play cards.</span> Units enter your base <span class="b">exhausted</span> — sideways. They can't move to a battlefield the same turn. Next turn they're ready.`,"Now you play cards. Units enter your base exhausted — sideways. They can't move to a battlefield the same turn. Next turn they're ready.");const ca=document.getElementById('ca');if(ca)ca.classList.add('ex');await W(4200);hno()},
+  // Move to BF
+  async()=>{pr(87);await sno(`Move a ready unit to a battlefield. <span class="b">Nobody there?</span> <span class="g">FREE POINT.</span> Scream. You deserve it.`,"Move a ready unit to a battlefield. Nobody there? Free point. Scream. You deserve it.");await mvcard('cb',document.getElementById('bf1u'));document.getElementById('bf1').classList.add('cq');apt('y',1);await W(3000);hno()},
+  // John: C
+  async()=>{await jhn("C.");await W(200);await sno(`<span class="r">YES JOHN. C. CONQUER. PLUS ONE POINT. THANK YOU JOHN.</span>`,"Yes John. C. Conquer. Plus one point. Thank you John.");await W(2500);hjn();hno()},
+  // Combat
+  async()=>{pr(91);document.getElementById('bf2').classList.add('ct');await sno(`If they <span class="b">have units</span> at the battlefield — <span class="b">Showdown.</span> Add up all your Might. Add up all theirs. Highest wins. Units heal fully after combat. Damage doesn't stick.`,"If they have units at the battlefield — Showdown. Add up all your Might. Add up all theirs. Highest wins. Units heal fully after combat. Damage doesn't stick.");await W(1500);document.getElementById('bf2').classList.remove('ct');document.getElementById('bf2').classList.add('cq');apt('y',1);await W(3000);hno()},
+  // Win condition
+  async()=>{pr(95);await sno(`<span class="b">THE FINAL POINT RULE.</span> You cannot sneak a single conquest for point 8. Your last point must come from <span class="g">holding</span> a battlefield, OR <span class="g">conquering BOTH</span> battlefields the same turn. Try to take just one? <span class="r">You draw a card instead. Game continues. You played yourself.</span>`,"The final point rule. You cannot sneak a single conquest for point 8. Your last point must come from holding a battlefield, or conquering both battlefields the same turn. Try to take just one? You draw a card instead. Game continues. You played yourself.");await W(7000);hno()},
+  // John's final speech
+  async()=>{await jhn("In conclusion I would like to present a comprehensive review of the official Riftbound Core Rules, specifically section twelve which covers the advanced nuances of—");hjn();await sno(`<span class="b">Remember John's ABCD. Shuffle up and play.</span><br><span style="color:#5a5550;font-size:.9em">4-player rules, advanced formats — RiftboundGuide.com</span><br><span class="r">Good luck. Don't suck.</span>`,"Remember John's ABCD. Shuffle up and play. Good luck. Don't suck.");await W(500);await jhn("C.");await W(3500);hjn();hno();pr(100)},
+  // End
+  async()=>{sc('sc0');document.querySelector('#sc0 h1').textContent='Now Pick Your Legend';document.querySelector('#sc0 .ep').textContent='Episode 1 Complete';document.querySelector('#sc0 .sh').innerHTML='<a href="index.html" style="color:#c8a84b;text-decoration:none;letter-spacing:.2em">CHOOSE YOUR LEGEND →</a>'},
+];
 
+async function run(){
+  if(going)return;going=true;
+  for(let i=cur;i<S.length;i++){cur=i;await S[i]();await W(150)}
+  going=false;
+}
 
+function skip(){sy.cancel();cur=Math.min(cur+1,S.length-1);hno();hjn()}
+function sound(){sOn=!sOn;document.getElementById('sbtn').textContent=sOn?'🔊':'🔇';if(!sOn)sy.cancel()}
+
+setTimeout(()=>run(),2800);
+return{skip,sound};
+})();
+</script>
 </body>
 </html>
