@@ -108,11 +108,11 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--txt);ove
 .bf-name{font-family:'Cinzel',serif;font-size:.82rem;color:var(--txt)}
 .bf-ab{font-family:'Rajdhani',sans-serif;font-size:.78rem;color:var(--txt2);line-height:1.45}
 /* TOOLTIP */
-.tt{display:none;position:fixed;z-index:9999;background:#0d0f1a;border:1px solid var(--gold);padding:11px 15px;max-width:270px;pointer-events:none;box-shadow:0 8px 28px rgba(0,0,0,.85)}
-.tt.on{display:block}
-.tt-name{font-family:'Cinzel',serif;font-size:.83rem;color:var(--gold);margin-bottom:5px}
-.tt-stats{font-family:'Rajdhani',sans-serif;font-size:.73rem;color:var(--txt3);margin-bottom:7px}
-.tt-ab{font-family:'Rajdhani',sans-serif;font-size:.81rem;color:var(--txt);line-height:1.5}
+/* CARD OVERLAY */
+#card-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);align-items:center;justify-content:center;cursor:pointer}
+#card-overlay.on{display:flex}
+#card-overlay img{max-height:85vh;max-width:min(340px,88vw);border-radius:6px;box-shadow:0 8px 40px rgba(0,0,0,.9)}
+#card-overlay .co-close{position:absolute;top:16px;right:16px;font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.15em;color:rgba(255,255,255,.5);text-transform:uppercase}
 @keyframes slideDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 footer{text-align:center;padding:28px;font-family:'Rajdhani',sans-serif;font-size:.73rem;color:var(--txt3);letter-spacing:.1em;border-top:1px solid rgba(200,168,75,.08);margin-top:30px}
@@ -171,7 +171,7 @@ footer{text-align:center;padding:28px;font-family:'Rajdhani',sans-serif;font-siz
 </div>
 <div class="detail" id="detail"></div>
 </div>
-<div class="tt" id="tt"><div class="tt-name" id="ttN"></div><div class="tt-stats" id="ttS"></div><div class="tt-ab" id="ttA"></div></div>
+<div id="card-overlay" onclick="closeCard()"><img id="co-img" src=""><div class="co-close">tap to close</div></div>
 <footer>RIFTBOUND WAR TABLE &nbsp;·&nbsp; Origins &amp; Spiritforged &nbsp;·&nbsp; 8 Decks &nbsp;·&nbsp; Card content © Riot Games</footer>
 
 <script>
@@ -261,64 +261,105 @@ function renderDetail(key){
 }
 
 function pnlABC(d){
-  return`<div class="d-pnl${atab==='abc'?' on':''}" id="pa-${d.key}"><div class="abc-grid">${
-    d.abcdefg.map((s,i)=>`<div class="abc-row"><div class="abc-ltr" style="color:${CLRS[i]}">${s.letter}</div><div class="abc-bd"><h4>${s.phase}</h4><p>${s.desc}</p></div></div>`).join('')
-  }</div></div>`;
+  const rows=d.abcdefg.map((s,i)=>`
+    <div class="abc-row">
+      <div class="abc-ltr" style="color:${CLRS[i]}">${s.letter}</div>
+      <div class="abc-bd"><h4>${s.phase}</h4><p>${s.desc}</p></div>
+    </div>`).join('');
+  return`<div class="d-pnl${atab==='abc'?' on':''}" id="pa-${d.key}">
+    <div class="abc-grid">${rows}</div>
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06)">
+      <button onclick="switchTab('${d.key}','strat')"
+        style="font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+        color:var(--dac-c,var(--gold));background:rgba(0,0,0,.3);border:1px solid var(--dac-c,rgba(200,168,75,.3));
+        padding:10px 20px;cursor:pointer;transition:all .2s;width:100%">
+        Deep Strategy — How This Deck Wins →
+      </button>
+    </div>
+  </div>`;
 }
 
 function pnlStrat(d){
-  const CARD='https://cdn.piltoverarchive.com/cards/';
   return`<div class="d-pnl${atab==='strat'?' on':''}" id="ps-${d.key}">
-    <div style="display:flex;gap:10px;margin-bottom:16px">
-      <div style="flex:1;position:relative">
-        <img src="${CARD}${d.legend_cid}.webp" alt="${d.legend_name}"
-          style="width:100%;border-radius:4px;border:2px solid var(--dac-c,var(--gold));display:block"
-          onerror="this.style.display='none'">
-        <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.08em;color:var(--dac-c,var(--gold));text-transform:uppercase;margin-top:5px">Legend</div>
-      </div>
-      <div style="flex:1;position:relative">
-        <img src="${CARD}${d.champion_cid}.webp" alt="${d.champion_name}"
-          style="width:100%;border-radius:4px;border:2px solid rgba(11,196,227,.5);display:block"
-          onerror="this.style.display='none'">
-        <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.08em;color:rgba(11,196,227,.7);text-transform:uppercase;margin-top:5px">Champion · ${d.champion_cost} cost · ${d.champion_might}M</div>
-      </div>
-    </div>
-    <div class="s-blk"><h4>How It Plays</h4><p>${d.how_it_plays}</p></div>
-    <div class="s-blk"><h4>Early / Mid / Late</h4><p style="white-space:pre-line">${d.turn_order}</p></div>
+    <div class="s-blk"><p style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;color:var(--txt);line-height:1.7;font-style:italic;border-left:3px solid var(--dac-c,var(--gold));padding-left:14px">${d.how_it_plays}</p></div>
+    <div class="s-blk"><h4>The Game Plan</h4><p style="white-space:pre-line;font-family:'Rajdhani',sans-serif;font-size:.98rem;color:var(--txt);line-height:1.72">${d.turn_order}</p></div>
   </div>`;
 }
 
 function pnlDeck(d){
-  const bfR=d.battlefields.map(bf=>`<div class="bf-row" onclick="showCard('${esc(bf.name)}','Battlefield','${esc(bf.ability)}')"><div class="bf-name">${bf.name}</div><div class="bf-ab">${bf.ability}</div></div>`).join('');
-  const mR=d.main_cards.map(c=>`<div class="crow" onmouseenter="showTT(event,'${esc(c.name)}','Cost ${c.cost} / ${c.might}M','${esc(c.ability)}')" onmouseleave="hideTT()" onclick="showCard('${esc(c.name)}','${c.cost}/${c.might} · ${c.domain}','${esc(c.ability)}')"><span class="c-qty">x${c.qty}</span><span class="c-rar r${c.rarity}">${RSYM[c.rarity]||'·'}</span><span class="c-name">${c.name}</span><span class="c-cost">${c.cost}/${c.might}</span></div>`).join('');
-  const sR=d.sb_cards.map(c=>`<div class="crow" onmouseenter="showTT(event,'${esc(c.name)}','Cost ${c.cost} / ${c.might}M','${esc(c.ability)}')" onmouseleave="hideTT()" onclick="showCard('${esc(c.name)}','${c.cost}/${c.might}','${esc(c.ability)}')"><span class="c-qty">x${c.qty}</span><span class="c-rar r${c.rarity}">${RSYM[c.rarity]||'·'}</span><span class="c-name">${c.name}</span><span class="c-cost">${c.cost}/${c.might}</span></div>`).join('');
+  const RUNE_IDS={Fury:'OGN-007',Body:'OGN-126',Calm:'OGN-042',Order:'OGN-214',Mind:'OGN-089',Chaos:'OGN-166'};
+  const bfR=d.battlefields.map(bf=>`
+    <div style="padding:10px 12px;border:1px solid rgba(255,255,255,.06);margin-bottom:4px;cursor:pointer;background:rgba(255,255,255,.02)"
+      onclick="showCard('${bf.cid}')">
+      <div style="font-family:'Cinzel',serif;font-size:.8rem;color:var(--txt)">${bf.name}</div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:.75rem;color:var(--txt2);margin-top:3px">${bf.ability}</div>
+    </div>`).join('');
+
+  const mR=d.main_cards.map(c=>`
+    <div class="crow" onclick="showCard('${c.cid}')">
+      <span class="c-qty">x${c.qty}</span>
+      <span class="c-rar r${c.rarity}">${RSYM[c.rarity]||'·'}</span>
+      <span class="c-name">${c.name}</span>
+      <span class="c-cost">${c.cost}/${c.might}</span>
+    </div>`).join('');
+
+  const sR=d.sb_cards.map(c=>`
+    <div class="crow" onclick="showCard('${c.cid}')">
+      <span class="c-qty">x${c.qty}</span>
+      <span class="c-rar r${c.rarity}">${RSYM[c.rarity]||'·'}</span>
+      <span class="c-name">${c.name}</span>
+      <span class="c-cost">${c.cost}/${c.might}</span>
+    </div>`).join('');
+
+  const runeR=d.runes.map(r=>{
+    const domain=r.replace(/\d+x |\(.*?\)/g,'').trim();
+    const rid=RUNE_IDS[domain]||'';
+    return`<div class="rune-pill" style="cursor:pointer" onclick="showCard('${rid}')">${r}</div>`;
+  }).join('');
+
   return`<div class="d-pnl${atab==='deck'?' on':''}" id="pd-${d.key}">
-    <div class="dl-sec"><div class="dl-hdr">Battlefields — Choose 2 of These 3 Each Game</div><div class="bf-list">${bfR}</div></div>
-    <div class="dl-sec"><div class="dl-hdr">Legend &amp; Champion Zone</div>
-      <div class="zone-row" style="margin-bottom:0">
-        <div class="zcard" onclick="showCard('${esc(d.legend_name)}','Legend Zone','${esc(d.legend_ability)}')"><div class="zcard-lbl">Legend — Always Active</div><div class="zcard-name">${d.legend_name}</div><div class="zcard-ab">${d.legend_ability.substring(0,120)}…</div></div>
-        <div class="zcard" onclick="showCard('${esc(d.champion_name)}','Champion','${esc(d.champion_ability)}')"><div class="zcard-lbl">Champion — In Deck x3</div><div class="zcard-name">${d.champion_name} (${d.champion_cost}/${d.champion_might})</div><div class="zcard-ab">${d.champion_ability.substring(0,120)}…</div></div>
+
+    <div class="dl-sec">
+      <div class="dl-hdr">Main Deck — 40 Cards</div>
+      <div class="dl-sub">✦ Signature &nbsp;◈ Epic &nbsp;★ Rare &nbsp;◆ Uncommon &nbsp;○ Common — tap any card to view it</div>
+      <div class="card-list">${mR}</div>
+    </div>
+
+    <div class="dl-sec">
+      <div class="dl-hdr">Sideboard — 8 Cards (Game 2)</div>
+      <div class="card-list">${sR}</div>
+    </div>
+
+    <div class="dl-sec">
+      <div class="dl-hdr" style="cursor:pointer" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+        Rune Deck — 12 Cards &nbsp;<span style="opacity:.5;font-size:.7em">▼</span>
+      </div>
+      <div style="display:none">
+        <div class="rune-row" style="margin-top:8px">${runeR}</div>
       </div>
     </div>
-    <div class="dl-sec"><div class="dl-hdr">Rune Deck — 12 Cards</div><div class="rune-row">${d.runes.map(r=>`<div class="rune-pill">${r}</div>`).join('')}</div></div>
-    <div class="dl-sec"><div class="dl-hdr">Main Deck — 40 Cards</div><div class="dl-sub">✦ Signature &nbsp;◈ Epic &nbsp;★ Rare &nbsp;◆ Uncommon &nbsp;○ Common — Premium cards shown first</div><div class="card-list">${mR}</div></div>
-    <div class="dl-sec"><div class="dl-hdr">Sideboard — 8 Cards (swap in for Game 2)</div><div class="card-list">${sR}</div></div>
+
+    <div class="dl-sec">
+      <div class="dl-hdr" style="cursor:pointer" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+        Battlefields — 3 in Deck &nbsp;<span style="opacity:.5;font-size:.7em">▼</span>
+      </div>
+      <div style="display:none;margin-top:8px">${bfR}</div>
+    </div>
+
   </div>`;
 }
 
 function switchTab(key,tab){atab=tab;renderDetail(key)}
 
-function showTT(ev,name,stats,ab){
-  document.getElementById('ttN').textContent=name;
-  document.getElementById('ttS').textContent=stats;
-  document.getElementById('ttA').textContent=ab;
-  document.getElementById('tt').classList.add('on');
-  posTT(ev);
+const CARD_CDN='https://cdn.piltoverarchive.com/cards/';
+function showCard(cid){
+  if(!cid)return;
+  document.getElementById('co-img').src=CARD_CDN+cid+'.webp';
+  document.getElementById('card-overlay').classList.add('on');
 }
-function hideTT(){document.getElementById('tt').classList.remove('on')}
-function posTT(ev){const tt=document.getElementById('tt');tt.style.left=Math.min(ev.clientX+14,window.innerWidth-285)+'px';tt.style.top=Math.min(ev.clientY+8,window.innerHeight-180)+'px'}
-document.addEventListener('mousemove',ev=>{if(document.getElementById('tt').classList.contains('on'))posTT(ev)});
-function showCard(name,stats,ab){if(window.innerWidth>768)return;alert(name+'\n'+stats+'\n\n'+ab)}
+function closeCard(){document.getElementById('card-overlay').classList.remove('on')}
+function showTT(ev,name,stats,ab){}
+function hideTT(){}
 function toggleHTP(){document.getElementById('htpBody').classList.toggle('open');document.getElementById('htpBtn').classList.toggle('open')}
 
 renderGrid();
