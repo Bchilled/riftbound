@@ -112,6 +112,7 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--txt);ove
 #card-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);align-items:center;justify-content:center;cursor:pointer}
 #card-overlay.on{display:flex}
 #card-overlay img{max-height:85vh;max-width:min(340px,88vw);border-radius:6px;box-shadow:0 8px 40px rgba(0,0,0,.9)}
+#card-overlay img.rotated{transform:rotate(90deg);max-height:min(340px,88vw);max-width:85vh}
 #card-overlay .co-close{position:absolute;top:16px;right:16px;font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.15em;color:rgba(255,255,255,.5);text-transform:uppercase}
 @keyframes slideDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -293,7 +294,7 @@ function renderDetail(key){
     </div>`).join('');
 
   const bfHTML=d.battlefields.map(bf=>`
-    <div class="crow" onclick="showCard('${bf.cid}')">
+    <div class="crow" onclick="showCard('${bf.cid}',true)">
       <span class="c-name">${bf.name}</span>
     </div>`).join('');
 
@@ -391,10 +392,12 @@ function renderDetail(key){
 function switchTab(key,tab){atab=tab;renderDetail(key)}
 
 const CARD_CDN='https://cdn.piltoverarchive.com/cards/';
-function showCard(cid){
+function showCard(cid,rotate){
   if(!cid)return;
   const src=cid.startsWith('http')?cid:CARD_CDN+cid+'.webp';
-  document.getElementById('co-img').src=src;
+  const img=document.getElementById('co-img');
+  img.src=src;
+  img.className=rotate?'rotated':'';
   document.getElementById('card-overlay').classList.add('on');
 }
 function closeCard(){document.getElementById('card-overlay').classList.remove('on')}
