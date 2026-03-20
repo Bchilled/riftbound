@@ -150,79 +150,49 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ra
 #pts-hud{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:200;font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.2em;color:rgba(200,168,75,.4);text-transform:uppercase;opacity:0;transition:opacity .5s}
 #pts-hud.on{opacity:1}
 
-/* ── PLAYMAT — SINGLE PLAYER ── */
-#board{
-  position:absolute;left:50%;top:50%;
-  transform:translate(-50%,-58%);
-  width:min(700px,90vw);
-  opacity:0;transition:opacity .8s;
-}
+/* ── PLAYMAT ── */
+#board{position:absolute;left:50%;top:50%;transform:translate(-50%,-58%);width:min(700px,92vw);opacity:0;transition:opacity .8s}
 #board.on{opacity:1}
-#mat{
-  display:flex;gap:6px;
-  background:linear-gradient(160deg,#07090f,#0a0d18,#060a12);
-  border:1px solid rgba(200,168,75,.2);border-radius:6px;
-  padding:8px;min-height:clamp(240px,36vw,360px);
-}
-/* SCORE TRACK */
-#score-track{
-  display:flex;flex-direction:column-reverse;justify-content:space-between;
-  width:26px;flex-shrink:0;
-}
-.stc{
-  width:22px;height:22px;border-radius:50%;
-  border:1.5px solid rgba(200,168,75,.2);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,75,.28);transition:all .4s;
-}
-.stc.on{border-color:var(--gold);color:var(--gold);background:rgba(200,168,75,.1);box-shadow:0 0 7px rgba(200,168,75,.25)}
-.stc.done{border-color:#22c55e;color:#22c55e;background:rgba(34,197,94,.12)}
-/* MAT BODY */
-#mat-body{display:flex;flex-direction:column;flex:1;gap:5px}
-.mrow{display:flex;gap:5px;flex:1}
-/* RIGHT COLUMN */
-#mat-right{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
-/* ZONES */
-.mzone{
-  border:1px solid rgba(200,168,75,.18);background:rgba(200,168,75,.02);
-  display:flex;flex-direction:column;align-items:center;
-  padding:5px 4px;transition:all .4s;border-radius:2px;position:relative;
-}
-.mzone.hi{border-color:rgba(200,168,75,.7);background:rgba(200,168,75,.07);box-shadow:0 0 10px rgba(200,168,75,.12)}
-.mzone.won{border-color:#22c55e;background:rgba(34,197,94,.06);box-shadow:0 0 10px rgba(34,197,94,.12)}
-.mzlbl{
-  font-family:'Cinzel',serif;font-size:clamp(.3rem,.52vw,.46rem);
-  letter-spacing:.07em;text-transform:uppercase;
-  color:rgba(200,168,75,.4);text-align:center;line-height:1.3;flex-shrink:0;
-}
+#mat{display:flex;flex-direction:row;gap:5px;background:linear-gradient(160deg,#07090f,#0a0d18);border:1px solid rgba(200,168,75,.2);border-radius:6px;padding:8px;height:clamp(200px,32vw,320px)}
+#stk{display:flex;flex-direction:column;justify-content:space-between;width:22px;flex-shrink:0}
+.stc{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(200,168,75,.2);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:.46rem;color:rgba(200,168,75,.25);transition:all .4s;flex-shrink:0}
+.stc.on{border-color:var(--gold);color:var(--gold);background:rgba(200,168,75,.1);box-shadow:0 0 6px rgba(200,168,75,.2)}
+.stc.done{border-color:#22c55e;color:#22c55e;background:rgba(34,197,94,.1)}
+/* ZONES COLUMN */
+#zones{display:flex;flex-direction:column;flex:1;gap:4px}
 .mz-bf{flex:1}
-.mz-sm{width:clamp(52px,8.5vw,74px);flex-shrink:0}
-.mz-base{flex:1;overflow:hidden}
-.mz-deck{width:clamp(46px,7.5vw,66px);flex-shrink:0}
-.mz-rdeck{width:clamp(40px,6.5vw,58px);flex-shrink:0}
-.mz-runes{flex:0 0 auto;padding:5px 10px}
+.mz-base{flex:1.2;overflow:hidden;position:relative}
+#bot-strip{display:flex;gap:4px;height:clamp(44px,8vw,70px);flex-shrink:0}
+/* RIGHT COLUMN */
+#rcol{display:flex;flex-direction:column;gap:4px;width:clamp(50px,8.5vw,72px);flex-shrink:0}
+.mz-rc{flex:1}
+/* ZONE BASE */
+.mzone{border:1px solid rgba(200,168,75,.18);background:rgba(200,168,75,.02);display:flex;flex-direction:column;align-items:center;padding:5px 4px;transition:all .4s;border-radius:2px}
+.mzone.hi{border-color:rgba(200,168,75,.7);background:rgba(200,168,75,.07);box-shadow:0 0 10px rgba(200,168,75,.12)}
+.mzone.won{border-color:#22c55e;background:rgba(34,197,94,.06)}
+.mzlbl{font-family:'Cinzel',serif;font-size:clamp(.28rem,.48vw,.42rem);letter-spacing:.07em;text-transform:uppercase;color:rgba(200,168,75,.4);text-align:center;line-height:1.3;flex-shrink:0}
+.mz-rdeck{width:clamp(36px,6vw,54px);flex-shrink:0}
 .mz-hand{flex:1}
-.mz-trash{width:clamp(40px,6.5vw,58px);flex-shrink:0}
-/* Legend card slot */
-.lgcard{width:clamp(30px,5vw,44px);height:clamp(42px,7vw,62px);background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(200,168,75,.38);border-radius:3px;margin-top:4px}
-/* Watermark */
-#mat-logo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(2rem,5vw,3.5rem);opacity:.05;pointer-events:none;color:var(--gold)}
+.mz-runes{flex:0 0 auto;padding:4px 6px}
+/* Swirl watermark */
+#swirl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(1.8rem,4.5vw,3.5rem);opacity:.06;color:var(--gold);pointer-events:none}
 /* Base units */
-#base-units{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:6px}
-/* Rune row */
-#rune-row{display:flex;gap:4px;margin-top:5px;justify-content:center}
-/* Hand cards */
+#base-units{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:5px}
+/* Runes */
+#rune-row{display:flex;gap:3px;margin-top:4px;justify-content:center}
+/* Hand */
 #hand-cards{display:flex;gap:4px;justify-content:center;align-items:center;height:100%}
 /* Card backs */
-.cback{width:clamp(20px,3.2vw,28px);height:clamp(28px,4.5vw,40px);background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(200,168,75,.32);border-radius:2px;position:relative;overflow:hidden;display:inline-block;flex-shrink:0}
-.cback::before{content:'';position:absolute;inset:2px;border:1px solid rgba(200,168,75,.16);border-radius:1px}
+.cback{width:clamp(18px,3vw,26px);height:clamp(26px,4.2vw,37px);background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(200,168,75,.3);border-radius:2px;position:relative;overflow:hidden;display:inline-block;flex-shrink:0}
+.cback::before{content:'';position:absolute;inset:2px;border:1px solid rgba(200,168,75,.14);border-radius:1px}
 .cback::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(200,168,75,.03) 3px,rgba(200,168,75,.03) 4px)}
-.cback.unit{background:linear-gradient(135deg,#0d2b4a,#0a1a2e);border-color:rgba(11,196,227,.4)}
-.cback.unit::after{background:none}
-.rback{background:linear-gradient(135deg,#1a0a00,#2a1500);border-color:rgba(200,168,75,.45)}
+.rback{background:linear-gradient(135deg,#1a0a00,#2a1500);border-color:rgba(200,168,75,.42)}
+/* Legend card */
+.lgcard{width:clamp(28px,4.8vw,42px);height:clamp(40px,6.8vw,60px);background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(200,168,75,.35);border-radius:2px;margin-top:4px;flex-shrink:0}
+.lgcard.champ{border-color:rgba(11,196,227,.38)}
 /* Rune tokens */
-.rtok{width:clamp(11px,1.9vw,16px);height:clamp(11px,1.9vw,16px);border-radius:50%;border:1.5px solid rgba(200,168,75,.38);background:rgba(200,168,75,.08);display:inline-block;transition:all .3s;flex-shrink:0}
-.rtok.lit{background:rgba(200,168,75,.48);box-shadow:0 0 6px rgba(200,168,75,.5)}
+.rtok{width:clamp(10px,1.8vw,15px);height:clamp(10px,1.8vw,15px);border-radius:50%;border:1.5px solid rgba(200,168,75,.35);background:rgba(200,168,75,.08);display:inline-block;transition:all .3s;flex-shrink:0}
+.rtok.lit{background:rgba(200,168,75,.45);box-shadow:0 0 5px rgba(200,168,75,.45)}
 
 </style>
 </head>
@@ -241,86 +211,49 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ra
   <p>How to Play Riftbound</p>
 </div>
 
-<!-- BOARD — Single player mat, player perspective -->
+<!-- BOARD — exact copy of playmat photo -->
 <div id="board">
-  <div id="mat">
+<div id="mat">
 
-    <!-- SCORE TRACK left edge, 1-8 bottom to top -->
-    <div id="score-track">
-      <div class="stc" id="s8">8</div>
-      <div class="stc" id="s7">7</div>
-      <div class="stc" id="s6">6</div>
-      <div class="stc" id="s5">5</div>
-      <div class="stc" id="s4">4</div>
-      <div class="stc" id="s3">3</div>
-      <div class="stc" id="s2">2</div>
-      <div class="stc on" id="s1">1</div>
+  <!-- COL 1: Score circles 8 top to 1 bottom -->
+  <div id="stk">
+    <div class="stc" id="s8">8</div>
+    <div class="stc" id="s7">7</div>
+    <div class="stc" id="s6">6</div>
+    <div class="stc" id="s5">5</div>
+    <div class="stc" id="s4">4</div>
+    <div class="stc" id="s3">3</div>
+    <div class="stc" id="s2">2</div>
+    <div class="stc on" id="s1">1</div>
+  </div>
+
+  <!-- COL 2+3: Main zones grid -->
+  <div id="zones">
+    <!-- Top half: BATTLEFIELD -->
+    <div class="mzone mz-bf" id="z-bf"><div class="mzlbl">BATTLEFIELD</div></div>
+    <!-- Bottom half: BASE with swirl watermark -->
+    <div class="mzone mz-base" id="z-base">
+      <div class="mzlbl">BASE</div>
+      <div id="base-units"></div>
+      <div id="swirl">☯</div>
     </div>
+    <!-- Bottom strip: RUNE DECK | HAND ZONE | RUNES | TRASH -->
+    <div id="bot-strip">
+      <div class="mzone mz-rdeck" id="z-rdeck"><div class="mzlbl">RUNE<br>DECK</div><div class="cback rback" style="margin-top:4px"></div></div>
+      <div class="mzone mz-hand" id="z-hand"><div id="hand-cards"><div class="cback"></div><div class="cback"></div><div class="cback"></div><div class="cback"></div></div></div>
+      <div class="mzone mz-runes" id="z-runes"><div class="mzlbl">RUNES</div><div id="rune-row"><div class="rtok" id="r1"></div><div class="rtok" id="r2"></div><div class="rtok" id="r3" style="opacity:0"></div><div class="rtok" id="r4" style="opacity:0"></div><div class="rtok" id="r5" style="opacity:0"></div><div class="rtok" id="r6" style="opacity:0"></div></div></div>
+      <div class="mzone mz-rdeck" id="z-trash"><div class="mzlbl">TRASH</div></div>
+    </div>
+  </div>
 
-    <!-- MAT CONTENT -->
-    <div id="mat-body">
+  <!-- COL 4: Right column — CHAMPION LEGEND | CHOSEN CHAMPION | MAIN DECK -->
+  <div id="rcol">
+    <div class="mzone mz-rc" id="z-legend"><div class="mzlbl">CHAMPION<br>LEGEND</div><div class="lgcard"></div></div>
+    <div class="mzone mz-rc" id="z-champ"><div class="mzlbl">CHOSEN<br>CHAMPION</div><div class="lgcard champ"></div></div>
+    <div class="mzone mz-rc" id="z-deck"><div class="mzlbl">MAIN<br>DECK</div><div class="cback" style="margin-top:5px"></div></div>
+  </div>
 
-      <!-- ROW 1: BATTLEFIELD (top, far from player) -->
-      <div class="mrow" id="row-bf">
-        <div class="mzone mz-bf" id="z-bf">
-          <div class="mzlbl">BATTLEFIELD</div>
-          <div id="bf-slot"></div>
-        </div>
-        <div id="mat-right">
-          <div class="mzone mz-sm" id="z-legend">
-            <div class="mzlbl">CHAMPION<br>LEGEND</div>
-            <div class="lgcard"></div>
-          </div>
-          <div class="mzone mz-sm" id="z-champ">
-            <div class="mzlbl">CHOSEN<br>CHAMPION</div>
-            <div class="lgcard" style="border-color:rgba(11,196,227,.4)"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ROW 2: BASE (middle) -->
-      <div class="mrow" id="row-base">
-        <div class="mzone mz-base" id="z-base">
-          <div class="mzlbl">BASE</div>
-          <div id="base-units"></div>
-          <div id="mat-logo">⟳</div>
-        </div>
-        <div class="mzone mz-deck" id="z-deck">
-          <div class="mzlbl">MAIN<br>DECK</div>
-          <div class="cback" style="margin-top:6px"></div>
-        </div>
-      </div>
-
-      <!-- ROW 3: RUNE DECK + RUNES + HAND + TRASH (bottom, closest to player) -->
-      <div class="mrow" id="row-bot">
-        <div class="mzone mz-rdeck" id="z-rdeck">
-          <div class="mzlbl">RUNE<br>DECK</div>
-          <div class="cback rback" style="margin-top:5px"></div>
-        </div>
-        <div class="mzone mz-runes" id="z-runes">
-          <div class="mzlbl">RUNES</div>
-          <div id="rune-row">
-            <div class="rtok" id="r1"></div>
-            <div class="rtok" id="r2"></div>
-            <div class="rtok" id="r3" style="opacity:0"></div>
-            <div class="rtok" id="r4" style="opacity:0"></div>
-            <div class="rtok" id="r5" style="opacity:0"></div>
-            <div class="rtok" id="r6" style="opacity:0"></div>
-          </div>
-        </div>
-        <div class="mzone mz-hand" id="z-hand">
-          <div id="hand-cards">
-            <div class="cback"></div><div class="cback"></div>
-            <div class="cback"></div><div class="cback"></div>
-          </div>
-        </div>
-        <div class="mzone mz-trash" id="z-trash">
-          <div class="mzlbl">TRASH</div>
-        </div>
-      </div>
-
-    </div><!-- /mat-body -->
-  </div><!-- /mat -->
+</div>
 </div>
 
 <!-- ABCD FLASH --><!-- ABCD FLASH -->
@@ -541,7 +474,7 @@ let elapsed=0;
 const COLORS={A:'#c8a84b',B:'#1E88E5',C:'#E53935',D:'#43A047'};
 
 function hi(ids){
-  document.querySelectorAll('.mzone,.bf-card').forEach(z=>z.classList.remove('hi'));
+  document.querySelectorAll('.mzone').forEach(z=>z.classList.remove('hi'));
   (ids||[]).forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hi');});
 }
 
