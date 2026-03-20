@@ -328,7 +328,7 @@ function renderDetail(key){
         <div style="font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin-bottom:10px">Turn by Turn</div>
         <div id="turn-blocks">${d.turn_order.split('\n').map(line=>{
   const parts=line.split('|');
-  const turn=parts[0];
+  const turn=parts[0].replace(/^T(\d)/,'Turn $1').replace(/^T(\d+\+)/,'Turn $1');
   const bullets=parts.slice(1);
   return `<div style="margin-bottom:14px">
     <div style="font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin-bottom:5px">${turn}</div>
