@@ -33,26 +33,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ra
 }
 #board.on{opacity:1}
 
-.brow{display:flex;gap:8px;justify-content:center;align-items:stretch;margin-bottom:8px}
-.bzone{
-  border:1px solid rgba(200,168,75,.18);background:rgba(200,168,75,.025);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;padding:7px 5px;
-  font-family:'Cinzel',serif;font-size:clamp(.35rem,.6vw,.52rem);
-  letter-spacing:.07em;text-transform:uppercase;color:rgba(200,168,75,.4);
-  min-height:52px;min-width:58px;transition:all .4s;
-}
-.bzone.hi{border-color:rgba(200,168,75,.75);background:rgba(200,168,75,.1);color:var(--gold);box-shadow:0 0 14px rgba(200,168,75,.18)}
-.bbf{
-  border:2px solid rgba(200,168,75,.28);background:rgba(200,168,75,.035);
-  flex:1;min-height:72px;max-width:290px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:5px;padding:10px;transition:all .5s;position:relative;overflow:hidden;
-}
-.bbf.hi{border-color:rgba(200,168,75,.75);background:rgba(200,168,75,.09);box-shadow:0 0 18px rgba(200,168,75,.14)}
-.bbf.won{border-color:#22c55e;background:rgba(34,197,94,.09);box-shadow:0 0 18px rgba(34,197,94,.18)}
-.bf-lbl{font-family:'Cinzel',serif;font-size:clamp(.48rem,.85vw,.68rem);letter-spacing:.1em;color:rgba(200,168,75,.65);text-transform:uppercase}
-.bf-sub{font-family:'Rajdhani',sans-serif;font-size:clamp(.4rem,.7vw,.58rem);color:rgba(255,255,255,.28)}
+
 
 .cback{width:26px;height:38px;background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(200,168,75,.35);border-radius:3px;position:relative;overflow:hidden;display:inline-block}
 .cback::before{content:'';position:absolute;inset:2px;border:1px solid rgba(200,168,75,.18);border-radius:2px}
@@ -168,6 +149,128 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ra
 /* SCORE HUD */
 #pts-hud{position:absolute;top:14px;left:50%;transform:translateX(-50%);z-index:200;font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.2em;color:rgba(200,168,75,.4);text-transform:uppercase;opacity:0;transition:opacity .5s}
 #pts-hud.on{opacity:1}
+
+/* ── PLAYMAT EXACT LAYOUT ── */
+#board{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-58%);
+  width:min(720px,92vw);
+  opacity:0;transition:opacity .8s;
+}
+#board.on{opacity:1}
+
+#mat{
+  display:flex;gap:0;
+  background:linear-gradient(160deg,#080d1a,#0a0f1a,#060c14);
+  border:1px solid rgba(200,168,75,.2);
+  border-radius:8px;overflow:hidden;
+  padding:8px;gap:6px;
+  min-height:clamp(260px,38vw,380px);
+}
+
+/* SCORE TRACK */
+#score-track{
+  display:flex;flex-direction:column;justify-content:space-between;
+  width:28px;flex-shrink:0;padding:2px 0;
+}
+.st-circle{
+  width:22px;height:22px;border-radius:50%;
+  border:1.5px solid rgba(200,168,75,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:clamp(.42rem,.7vw,.6rem);
+  color:rgba(200,168,75,.3);transition:all .4s;
+}
+.st-circle.active{
+  border-color:var(--gold);color:var(--gold);
+  background:rgba(200,168,75,.12);
+  box-shadow:0 0 8px rgba(200,168,75,.3);
+}
+.st-circle.scored{
+  background:rgba(34,197,94,.2);border-color:#22c55e;color:#22c55e;
+  box-shadow:0 0 6px rgba(34,197,94,.3);
+}
+
+/* MAIN CONTENT */
+#mat-main{display:flex;flex-direction:column;flex:1;gap:5px}
+
+/* TOP */
+#mat-top{display:flex;gap:5px;flex:1}
+/* MID */
+#mat-mid{display:flex;gap:5px;flex:1.4}
+/* BOT */
+#mat-bot{display:flex;gap:5px;height:clamp(55px,9vw,80px)}
+
+/* ZONES */
+.mzone{
+  border:1px solid rgba(200,168,75,.2);
+  background:rgba(200,168,75,.02);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;
+  padding:5px 4px;transition:all .4s;position:relative;
+  border-radius:3px;
+}
+.mzone.hi{
+  border-color:rgba(200,168,75,.75);
+  background:rgba(200,168,75,.08);
+  box-shadow:0 0 12px rgba(200,168,75,.15);
+}
+.mzone.won{border-color:#22c55e;background:rgba(34,197,94,.06);box-shadow:0 0 12px rgba(34,197,94,.15)}
+.mzone-lbl{
+  font-family:'Cinzel',serif;font-size:clamp(.32rem,.55vw,.48rem);
+  letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(200,168,75,.45);text-align:center;line-height:1.3;
+  flex-shrink:0;
+}
+.mzone-bf{flex:1;min-width:0}
+.mzone-sm{width:clamp(55px,9vw,80px);flex-shrink:0}
+.mzone-base{flex:1;position:relative;overflow:hidden;min-height:0}
+.mzone-deck{width:clamp(50px,8vw,72px);flex-shrink:0}
+.mzone-rdeck{width:clamp(42px,7vw,60px);flex-shrink:0}
+.mzone-runes{flex:0 0 auto;padding:5px 8px}
+.mzone-hand{flex:1;min-width:0;justify-content:center}
+.mzone-trash{width:clamp(42px,7vw,60px);flex-shrink:0}
+
+/* Battlefield card slots */
+.bf-card{
+  border:1px solid rgba(200,168,75,.3);background:rgba(200,168,75,.04);
+  width:clamp(55px,10vw,90px);height:clamp(38px,7vw,60px);
+  display:flex;align-items:center;justify-content:center;border-radius:3px;
+  transition:all .4s;flex-shrink:0;
+}
+.bf-card.hi{border-color:rgba(200,168,75,.8);background:rgba(200,168,75,.1)}
+.bf-card.won{border-color:#22c55e;background:rgba(34,197,94,.1)}
+.bf-card-lbl{font-family:'Cinzel',serif;font-size:clamp(.32rem,.5vw,.46rem);letter-spacing:.06em;color:rgba(200,168,75,.4);text-transform:uppercase}
+
+/* Legend/Champion card slots */
+.lg-card{
+  width:clamp(32px,5.5vw,48px);height:clamp(44px,7.5vw,66px);
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+  border:1px solid rgba(200,168,75,.4);border-radius:3px;margin-top:4px;
+}
+.champ-card{border-color:rgba(11,196,227,.4)}
+
+/* Watermark */
+#mat-logo{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:clamp(2rem,5vw,4rem);opacity:.06;pointer-events:none;
+  color:var(--gold);
+}
+
+/* Card backs */
+.cback{width:clamp(22px,3.5vw,30px);height:clamp(31px,5vw,43px);background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid rgba(200,168,75,.35);border-radius:2px;position:relative;overflow:hidden;display:inline-block;flex-shrink:0}
+.cback::before{content:'';position:absolute;inset:2px;border:1px solid rgba(200,168,75,.18);border-radius:1px}
+.cback::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(200,168,75,.04) 3px,rgba(200,168,75,.04) 4px)}
+.cback.unit{background:linear-gradient(135deg,#0d2b4a,#0a1a2e);border-color:rgba(11,196,227,.45)}
+.cback.unit::after{background:none}
+.rune-back{background:linear-gradient(135deg,#1a0a00,#2a1500);border-color:rgba(200,168,75,.5)}
+
+/* Rune tokens */
+.rtok{width:clamp(12px,2vw,17px);height:clamp(12px,2vw,17px);border-radius:50%;border:1.5px solid rgba(200,168,75,.4);background:rgba(200,168,75,.1);display:inline-block;transition:all .3s;flex-shrink:0}
+.rtok.lit{background:rgba(200,168,75,.5);box-shadow:0 0 7px rgba(200,168,75,.55)}
+
+/* Unit on base */
+.unit-tok{width:clamp(14px,2.5vw,20px);height:clamp(14px,2.5vw,20px);border-radius:3px;background:rgba(11,196,227,.5);border:1.5px solid rgba(11,196,227,.8);box-shadow:0 0 6px rgba(11,196,227,.35);display:inline-block;transition:all .5s}
+
 </style>
 </head>
 <body>
@@ -185,42 +288,102 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ra
   <p>How to Play Riftbound</p>
 </div>
 
-<!-- BOARD (player looking down — you at bottom, battlefields middle, opp faded top) -->
+<!-- BOARD — Exact Riftbound playmat layout from player perspective -->
 <div id="board">
-  <!-- Opponent (faded, top) -->
-  <div class="brow opp">
-    <div class="bzone">👑<br>Legend</div>
-    <div class="bzone"><div class="cback"></div><br>Deck</div>
-    <div class="bzone"><span class="rtok"></span><span class="rtok"></span><br>Runes</div>
-    <div class="bzone"><div class="cback"></div><div class="cback"></div><div class="cback"></div><br>Hand</div>
-    <div class="bzone">⚡<br>Champ</div>
-  </div>
+  <!-- PLAYMAT: dark background with gold zone outlines -->
+  <div id="mat">
 
-  <!-- BATTLEFIELDS (middle) -->
-  <div class="brow">
-    <div class="bbf" id="bf1">
-      <div class="bf-lbl">Battlefield 1</div>
-      <div class="bf-sub">1 point to conquer</div>
+    <!-- SCORE TRACK — left edge, circles 1-8 -->
+    <div id="score-track">
+      <div class="st-circle active" id="s8">8</div>
+      <div class="st-circle" id="s7">7</div>
+      <div class="st-circle" id="s6">6</div>
+      <div class="st-circle" id="s5">5</div>
+      <div class="st-circle" id="s4">4</div>
+      <div class="st-circle" id="s3">3</div>
+      <div class="st-circle" id="s2">2</div>
+      <div class="st-circle" id="s1">1</div>
     </div>
-    <div class="bbf" id="bf2">
-      <div class="bf-lbl">Battlefield 2</div>
-      <div class="bf-sub">1 point to conquer</div>
-    </div>
-  </div>
 
-  <!-- YOUR BASE (bottom) -->
-  <div class="brow">
-    <div class="bzone" id="z-legend" style="border-color:rgba(200,168,75,.35);background:rgba(200,168,75,.05);color:var(--gold)">👑<br>Legend</div>
-    <div class="bzone" id="z-champ" style="border-color:rgba(11,196,227,.28);color:rgba(11,196,227,.55)">⚡<br>Champ</div>
-    <div class="bzone" id="z-base"><div class="cback unit"></div><br>Base</div>
-    <div class="bzone" id="z-runes"><span class="rtok" id="r1"></span><span class="rtok" id="r2"></span><span class="rtok" id="r3" style="opacity:0"></span><br>Runes</div>
-    <div class="bzone" id="z-hand" style="display:flex;flex-direction:row;gap:2px;flex-wrap:wrap;justify-content:center;align-items:center"><div class="cback"></div><div class="cback"></div><div class="cback"></div><div class="cback"></div><br></div>
-    <div class="bzone" id="z-deck"><div class="cback"></div><br>Deck</div>
-    <div class="bzone" id="z-trash" style="border-color:rgba(239,68,68,.18);color:rgba(239,68,68,.4)">🗑<br>Trash</div>
-  </div>
+    <!-- MAIN CONTENT -->
+    <div id="mat-main">
+
+      <!-- TOP SECTION: BATTLEFIELD + LEGEND/CHAMPION -->
+      <div id="mat-top">
+        <!-- BATTLEFIELD (wide, left) - holds 2 battlefield cards -->
+        <div class="mzone mzone-bf" id="z-bf">
+          <div class="mzone-lbl">BATTLEFIELD</div>
+          <div id="bf-cards" style="display:flex;gap:8px;justify-content:center;margin-top:6px">
+            <div class="bf-card" id="bfc1"><div class="bf-card-lbl">Field 1</div></div>
+            <div class="bf-card" id="bfc2"><div class="bf-card-lbl">Field 2</div></div>
+          </div>
+        </div>
+        <!-- RIGHT: LEGEND + CHAMPION stacked -->
+        <div id="mat-right-top">
+          <div class="mzone mzone-sm" id="z-legend">
+            <div class="mzone-lbl">CHAMPION<br>LEGEND</div>
+            <div class="lg-card" id="legend-card"></div>
+          </div>
+          <div class="mzone mzone-sm" id="z-champ">
+            <div class="mzone-lbl">CHOSEN<br>CHAMPION</div>
+            <div class="lg-card champ-card" id="champ-card"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE SECTION: BASE + MAIN DECK -->
+      <div id="mat-mid">
+        <!-- BASE (large, center) -->
+        <div class="mzone mzone-base" id="z-base">
+          <div class="mzone-lbl">BASE</div>
+          <div id="base-units" style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px"></div>
+          <!-- Riftbound watermark -->
+          <div id="mat-logo">⟳</div>
+        </div>
+        <!-- MAIN DECK (right, tall) -->
+        <div class="mzone mzone-deck" id="z-deck">
+          <div class="mzone-lbl">MAIN<br>DECK</div>
+          <div id="deck-stack" style="margin-top:8px">
+            <div class="cback"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM SECTION: RUNE DECK + RUNES + HAND + TRASH -->
+      <div id="mat-bot">
+        <div class="mzone mzone-rdeck" id="z-rdeck">
+          <div class="mzone-lbl">RUNE<br>DECK</div>
+          <div class="cback rune-back" style="margin-top:6px"></div>
+        </div>
+        <div class="mzone mzone-runes" id="z-runes">
+          <div class="mzone-lbl">RUNES</div>
+          <div id="rune-row" style="display:flex;gap:5px;margin-top:6px;justify-content:center">
+            <div class="rtok" id="r1"></div>
+            <div class="rtok" id="r2"></div>
+            <div class="rtok" id="r3" style="opacity:0"></div>
+            <div class="rtok" id="r4" style="opacity:0"></div>
+            <div class="rtok" id="r5" style="opacity:0"></div>
+            <div class="rtok" id="r6" style="opacity:0"></div>
+          </div>
+        </div>
+        <div class="mzone mzone-hand" id="z-hand">
+          <div id="hand-cards" style="display:flex;gap:5px;justify-content:center;align-items:center;height:100%">
+            <div class="cback"></div>
+            <div class="cback"></div>
+            <div class="cback"></div>
+            <div class="cback"></div>
+          </div>
+        </div>
+        <div class="mzone mzone-trash" id="z-trash">
+          <div class="mzone-lbl">TRASH</div>
+        </div>
+      </div>
+
+    </div><!-- /mat-main -->
+  </div><!-- /mat -->
 </div>
 
-<!-- ABCD FLASH -->
+<!-- ABCD FLASH --><!-- ABCD FLASH -->
 <div id="abcd">
   <div id="abcd-L"></div>
   <div id="abcd-S"></div>
@@ -396,16 +559,16 @@ const BEATS=[
   {type:'C',sub:'EIGHT POINTS. THAT IS THE GAME.',dur:2400},
   {type:'say',text:"...Eight points. First to eight wins. That is the entire game.",dur:3200,bg:'dark',hi:[]},
   // SETUP
-  {type:'say',text:"Setup. Roll to go first. Most choose first. But going second gets you three runes on turn one instead of two. Choose wisely.",dur:5500,bg:'dark',hi:['z-deck'],sfx:'shuffle'},
+  {type:'say',text:"Setup. Roll to go first. Most choose first. But going second gets you three runes on turn one instead of two. Choose wisely.",dur:5500,bg:'dark',hi:['z-deck','z-rdeck'],sfx:'shuffle'},
   {type:'say',text:"Shuffle. Cut. Draw four cards. You can put up to two back and draw replacements. One chance.",dur:4800,bg:'dark',hi:['z-hand','z-deck'],sfx:'card'},
-  {type:'say',text:"Reveal your battlefields. You chose three. Pick two for this game. Place them between you and your opponent.",dur:5200,bg:'dark',hi:['bf1','bf2']},
+  {type:'say',text:"Reveal your battlefields. You chose three. Pick two for this game. Place them between you and your opponent.",dur:5200,bg:'dark',hi:['bfc1','bfc2']},
   {type:'C',sub:'TWO BATTLEFIELDS. CHOOSE.',dur:1800},
   // A
   {type:'A',sub:'AWAKEN — Untap Everything',dur:2800,sfx:'awaken'},
   {type:'say',text:"Every exhausted card stands back up. Units, runes, your legend — all ready to use again. This happens at the start of every single turn.",dur:5200,bg:'dark',hi:['z-runes','z-legend','z-base'],sfx:'awaken'},
   // B
   {type:'B',sub:'BOARD STATE — Score Your Points',dur:2800,sfx:'point'},
-  {type:'say',text:"Any battlefield your units held since last turn — that is one point each. Right now. Free. Before you do anything else.",dur:5200,bg:'dark',hi:['bf1','bf2'],sfx:'point'},
+  {type:'say',text:"Any battlefield your units held since last turn — that is one point each. Right now. Free. Before you do anything else.",dur:5200,bg:'dark',hi:['bfc1','bfc2'],sfx:'point'},
   {type:'say',text:"Then look at the board. What does your opponent have. What do you have. Nod like you have a plan.",dur:4200,bg:'dark',hi:[]},
   // C
   {type:'C',sub:'CONJURE — Draw Your Runes',dur:2800,sfx:'rune'},
@@ -418,11 +581,11 @@ const BEATS=[
   // MOVE + COMBAT
   {type:'say',text:"Move your ready units to a battlefield. Nobody there? One point. Congratulations. You are unstoppable. Scream at them.",dur:5000,bg:'dark',hi:['bf1'],sfx:'card'},
   {type:'C',sub:'CONQUER. ONE. POINT.',dur:2200,sfx:'point'},
-  {type:'say',text:"They DO have units — Showdown. Both sides add up Might. Assign damage. Weak units die. Strong units conquer. Everyone fully heals after combat.",dur:6200,bg:'combat',hi:['bf1','bf2'],sfx:'hit'},
+  {type:'say',text:"They DO have units — Showdown. Both sides add up Might. Assign damage. Weak units die. Strong units conquer. Everyone fully heals after combat.",dur:6200,bg:'combat',hi:['bfc1','bfc2'],sfx:'hit'},
   {type:'C',sub:'C. CONQUER. STILL ONE POINT.',dur:2000},
   // WIN
-  {type:'say',text:"Final point rule. You need eight points. But you cannot score your last point by conquering just one battlefield alone.",dur:5500,bg:'win',hi:['bf1','bf2']},
-  {type:'say',text:"Either HOLD a battlefield into your next turn's B step — that's point eight, you win. Or conquer BOTH battlefields in the same turn.",dur:6200,bg:'win',hi:['bf1','bf2'],sfx:'point'},
+  {type:'say',text:"Final point rule. You need eight points. But you cannot score your last point by conquering just one battlefield alone.",dur:5500,bg:'win',hi:['bfc1','bfc2']},
+  {type:'say',text:"Either HOLD a battlefield into your next turn's B step — that's point eight, you win. Or conquer BOTH battlefields in the same turn.",dur:6200,bg:'win',hi:['bfc1','bfc2'],sfx:'point'},
   {type:'say',text:"Try to conquer just one for your eighth? You draw a card instead. They got another chance. That is on you.",dur:5200,bg:'win',hi:[]},
   // OUTRO
   {type:'say',text:"Hidden cards. Reactions. Counter-spells. Equipment. Buffs. The game has layers. But remember the A B C D. Shuffle up. Play.",dur:6200,bg:'dark',hi:[]},
@@ -438,7 +601,7 @@ let elapsed=0;
 const COLORS={A:'#c8a84b',B:'#1E88E5',C:'#E53935',D:'#43A047'};
 
 function hi(ids){
-  document.querySelectorAll('.bzone,.bbf').forEach(z=>z.classList.remove('hi'));
+  document.querySelectorAll('.mzone,.bf-card').forEach(z=>z.classList.remove('hi'));
   (ids||[]).forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hi');});
 }
 
