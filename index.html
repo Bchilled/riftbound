@@ -132,15 +132,17 @@ footer{text-align:center;padding:28px;font-family:'Rajdhani',sans-serif;font-siz
   z-index:6;
 }
 .rune-sym {
-  width:28px;
-  height:28px;
+  width:30px;
+  height:30px;
   display:flex;
   align-items:center;
   justify-content:center;
-  opacity:0.75;
+  opacity:0.85;
   transition:opacity .3s;
   flex-shrink:0;
   cursor:pointer;
+  background:rgba(0,0,0,.5);
+  border-radius:4px;
 }
 .dcard:hover .rune-sym { opacity:1; }
 </style>
@@ -184,6 +186,15 @@ const IMGS={azir:'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/
 const TILES={azir:'https://ddragon.leagueoflegends.com/cdn/img/champion/tiles/Azir_0.jpg',volibear:'https://ddragon.leagueoflegends.com/cdn/img/champion/tiles/Volibear_0.jpg',missfortune:'https://ddragon.leagueoflegends.com/cdn/img/champion/tiles/MissFortune_0.jpg',draven:'https://ddragon.leagueoflegends.com/cdn/img/champion/tiles/Draven_0.jpg',lucian:'https://ddragon.leagueoflegends.com/cdn/img/champion/tiles/Lucian_0.jpg',sett:'https://ddragon.leagueoflegends.com/cdn/img/champion/tiles/Sett_0.jpg',ahri:'https://ddragon.leagueoflegends.com/cdn/img/champion/tiles/Ahri_0.jpg',teemo:'https://ddragon.leagueoflegends.com/cdn/img/champion/tiles/Teemo_0.jpg'};
 const CLRS=['#c8a84b','#5b9bd5','#e8404a','#8b5cf6','#2a7a4a','#e07030','#ff69b4'];
 const RSYM={C:'○',U:'◆',R:'★',E:'◈',S:'✦'};
+const DCOL={
+  Fury:'rgba(229,57,53,.6)',
+  Body:'rgba(245,124,0,.6)',
+  Calm:'rgba(67,160,71,.6)',
+  Order:'rgba(249,168,37,.6)',
+  Mind:'rgba(30,136,229,.6)',
+  Chaos:'rgba(142,36,170,.6)',
+  Neutral:'rgba(100,100,100,.5)',
+};
 let active=null,atab='abc';
 function esc(s){return(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/[\r\n]+/g,' ')}
 
@@ -268,6 +279,7 @@ function renderDetail(key){
       <span class="c-qty">x${c.qty}</span>
       <span class="c-rar r${c.rarity}">${RSYM[c.rarity]||'·'}</span>
       <span class="c-name">${c.name}</span>
+      <span style="font-family:'Rajdhani',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.06em;padding:1px 5px;border-radius:2px;background:${DCOL[c.domain]||'rgba(255,255,255,.08)'};color:#fff;opacity:.8;flex-shrink:0">${c.type||''}</span>
       <span class="c-cost">${c.cost}/${c.might}</span>
     </div>`).join('');
 
@@ -276,6 +288,7 @@ function renderDetail(key){
       <span class="c-qty">x${c.qty}</span>
       <span class="c-rar r${c.rarity}">${RSYM[c.rarity]||'·'}</span>
       <span class="c-name">${c.name}</span>
+      <span style="font-family:'Rajdhani',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.06em;padding:1px 5px;border-radius:2px;background:${DCOL[c.domain]||'rgba(255,255,255,.08)'};color:#fff;opacity:.8;flex-shrink:0">${c.type||''}</span>
       <span class="c-cost">${c.cost}/${c.might}</span>
     </div>`).join('');
 
