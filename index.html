@@ -278,7 +278,10 @@ function renderDetail(key){
     <!-- 1. NAME + DESCRIPTION -->
     <div style="padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.06)">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
-        <h2 style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.2rem,3.5vw,2rem);color:var(--dac-c,var(--gold));line-height:1">${d.name}</h2>
+        <div style="display:flex;align-items:center;gap:8px">
+          <h2 style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.2rem,3.5vw,2rem);color:var(--dac-c,var(--gold));line-height:1">${d.name}</h2>
+          <div style="display:flex;gap:4px">${(DECK_RUNES[d.key]||[]).map(r=>{const ri=RUNE_INFO[r]||{};return`<img src="${ri.img||''}" title="${r}" style="width:18px;height:18px;object-fit:contain;filter:drop-shadow(0 0 3px ${ri.color||'#aaa'})" onclick="showCard('${(RUNE_CIDS||{})[r]||''}')">`;}).join('')}</div>
+        </div>
         <span style="font-family:'Rajdhani',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--dac-c,var(--gold));opacity:.65">${d.style}</span>
       </div>
       <p style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;color:var(--txt);line-height:1.55">${d.tagline}</p>
