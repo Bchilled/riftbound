@@ -326,9 +326,17 @@ function renderDetail(key){
       </div>
     </div>
 
-    <!-- SYNERGY BLURB -->
+    <!-- SYNERGY BLURB + RUNES -->
     <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.06);border-top:1px solid rgba(255,255,255,.06)">
-      <p style="font-family:'Rajdhani',sans-serif;font-size:.95rem;color:var(--txt);line-height:1.6;font-style:italic">${d.synergy||''}</p>
+      <p style="font-family:'Rajdhani',sans-serif;font-size:.95rem;color:var(--txt);line-height:1.6;font-style:italic;margin-bottom:14px">${d.synergy||''}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${d.runes.map(r=>{
+        const dom=r.replace(/\d+x |\(.*?\)/g,'').trim();
+        const ri=RUNE_INFO[dom]||{color:'#aaa',img:''};
+        return `<div style="display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.4);border:1px solid ${ri.color}55;border-radius:4px;padding:6px 10px">
+          <img src="${ri.img}" style="width:20px;height:20px;object-fit:contain;filter:drop-shadow(0 0 3px ${ri.color})">
+          <span style="font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.1em;color:${ri.color};text-transform:uppercase">${r}</span>
+        </div>`;
+      }).join('')}</div>
     </div>
 
     <!-- 3. FULL DECKLIST — collapsed -->
