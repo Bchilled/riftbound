@@ -77,9 +77,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#07080f}
 #abcd-N{font-family:'Cinzel',serif;font-size:clamp(1rem,2.8vw,1.7rem);letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-top:12px}
 
 /* TITLE CARD */
-#title-card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:80;opacity:0;transition:opacity .8s;pointer-events:none}
-#title-card.on{opacity:1}
-#title-card h1{font-family:'Cinzel Decorative',serif;font-size:clamp(2rem,6vw,4.5rem);background:linear-gradient(180deg,#fff9e8,#c8a84b 50%,#7a5c18);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.12em}
+
 
 /* PROGRESS */
 #prog{position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,.04);z-index:200}
@@ -99,9 +97,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#07080f}
 <div class="bg on" id="bg-dark"></div>
 <div class="bg" id="bg-combat"></div>
 <div class="bg" id="bg-score"></div>
-
-<!-- TITLE -->
-<div id="title-card"><h1>How to Play</h1></div>
 
 <!-- PLAYMAT -->
 <div id="mat-wrap">
@@ -147,9 +142,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#07080f}
 const AC={A:'#c8a84b',B:'#1E88E5',C:'#E53935',D:'#43A047'};
 
 const BEATS=[
-  {t:'title',dur:3000},
-
-  // GOAL
   {t:'text',head:'How to Play',body:'First to 8 points wins.',dur:4500,bg:'dark',hi:['s8']},
   {t:'text',head:'Scoring',body:'You get a point by conquering a battlefield with a unit.\n\nYou get another point for holding it during upkeep.',dur:6000,bg:'dark',hi:['z-bf','s1','s2']},
 
@@ -215,14 +207,7 @@ function play(i){
   idx=i;
   const b=BEATS[i];
   setProgress((elapsed/total)*100);
-  if(b.t==='title'){
-    hideAbcd();clearText();
-    document.getElementById('mat-wrap').classList.remove('on');
-    const tc=document.getElementById('title-card');
-    tc.classList.add('on');
-    timer=setTimeout(()=>{tc.classList.remove('on');elapsed+=b.dur;play(i+1)},b.dur);
-    return;
-  }
+
   if(b.t==='abcd'){
     document.getElementById('mat-wrap').classList.add('on');
     showAbcd(b.letter,b.name,b.color);
@@ -249,7 +234,6 @@ function restart(){
   document.getElementById('btn-p').textContent='Pause';
   hideAbcd();clearText();
   document.getElementById('mat-wrap').classList.remove('on');
-  document.getElementById('title-card').classList.remove('on');
   document.querySelectorAll('.mz,.stc').forEach(z=>z.classList.remove('hi'));
   setProgress(0);setTimeout(()=>play(0),400);
 }
