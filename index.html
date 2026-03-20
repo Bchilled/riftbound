@@ -132,13 +132,14 @@ footer{text-align:center;padding:28px;font-family:'Rajdhani',sans-serif;font-siz
   z-index:6;
 }
 .rune-sym {
-  width:26px;
-  height:26px;
-  border-radius:50%;
+  width:28px;
+  height:28px;
+  border-radius:4px;
   overflow:hidden;
-  opacity:0.75;
+  opacity:0.8;
   transition:opacity .3s;
   background:#0a0a0a;
+  flex-shrink:0;
 }
 .dcard:hover .rune-sym { opacity:1; }
 </style>
@@ -207,13 +208,17 @@ const DECK_RUNES = {
   teemo:  ['Mind','Chaos'],
 };
 
+const RUNE_CIDS={Fury:'OGN-007',Calm:'OGN-042',Mind:'OGN-089',Body:'OGN-126',Chaos:'OGN-166',Order:'OGN-214'};
+const RUNE_POS={Fury:'0%',Calm:'20%',Mind:'40%',Body:'60%',Chaos:'80%',Order:'100%'};
+const SYM_IMG='https://i0.wp.com/riftboundsymbols.com/wp-content/uploads/2026/03/Domains-symbols-combined.png?resize=700%2C477&ssl=1';
 function runeSymbols(key) {
   const runes = DECK_RUNES[key] || [];
   return '<div class="rune-symbols">' + runes.map(r => {
     const ri = RUNE_INFO[r];
-    const pct = (ri.idx / 5 * 100).toFixed(1);
-    return `<div class="rune-sym" style="border:1.5px solid ${ri.color};box-shadow:0 0 6px ${ri.color}88">
-      <div style="width:100%;height:100%;background:url('${RUNE_SYM_IMG}') ${pct}% center/600% auto;filter:drop-shadow(0 0 2px ${ri.color})"></div>
+    const pos = RUNE_POS[r]||'0%';
+    const cid = RUNE_CIDS[r]||'';
+    return `<div class="rune-sym" style="border:1.5px solid ${ri.color};box-shadow:0 0 8px ${ri.color}77;cursor:pointer;background:rgba(0,0,0,.6)" onclick="event.stopPropagation();showCard('${cid}')">
+      <div style="width:100%;height:100%;background:url('${SYM_IMG}') ${pos} center/600% auto"></div>
     </div>`;
   }).join('') + '</div>';
 }
@@ -365,7 +370,8 @@ function switchTab(key,tab){atab=tab;renderDetail(key)}
 const CARD_CDN='https://cdn.piltoverarchive.com/cards/';
 function showCard(cid){
   if(!cid)return;
-  document.getElementById('co-img').src=CARD_CDN+cid+'.webp';
+  const src=cid.startsWith('http')?cid:CARD_CDN+cid+'.webp';
+  document.getElementById('co-img').src=src;
   document.getElementById('card-overlay').classList.add('on');
 }
 function closeCard(){document.getElementById('card-overlay').classList.remove('on')}
