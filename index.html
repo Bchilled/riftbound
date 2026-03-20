@@ -140,8 +140,8 @@ footer{text-align:center;padding:28px;font-family:'Rajdhani',sans-serif;font-siz
   opacity:0.75;
   transition:opacity .3s;
   flex-shrink:0;
+  cursor:pointer;
 }
-.rune-sym svg{width:22px;height:22px;filter:drop-shadow(0 0 4px currentColor)}
 .dcard:hover .rune-sym { opacity:1; }
 </style>
 </head>
@@ -189,12 +189,12 @@ function esc(s){return(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;').repla
 
 
 const RUNE_INFO = {
-  Fury:  { color:'#E53935', sym:`<svg viewBox="0 0 24 24"><path d="M12 2L8 10h3L7 22l10-12h-4z" fill="#E53935"/></svg>` },
-  Calm:  { color:'#43A047', sym:`<svg viewBox="0 0 24 24"><path d="M12 3 Q18 6 18 12 Q18 19 12 21 Q8 18 7 12 Q7 6 12 3Z M9 12 Q12 8 15 12 Q12 17 9 12Z" fill="#43A047"/></svg>` },
-  Mind:  { color:'#1E88E5', sym:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="#1E88E5" stroke-width="2"/><circle cx="12" cy="12" r="2.5" fill="#1E88E5"/><line x1="12" y1="2" x2="12" y2="22" stroke="#1E88E5" stroke-width="1.5"/><line x1="2" y1="12" x2="22" y2="12" stroke="#1E88E5" stroke-width="1.5"/></svg>` },
-  Body:  { color:'#F57C00', sym:`<svg viewBox="0 0 24 24"><path d="M12 3L21 12L12 21L3 12Z" fill="#F57C00"/><path d="M12 7L17 12L12 17L7 12Z" fill="#0a0a0a"/></svg>` },
-  Chaos: { color:'#8E24AA', sym:`<svg viewBox="0 0 24 24"><path d="M12 4 C16 4 20 7 20 12 C20 17 16 20 11 20 C13 17 13 14 11 12 C9 10 6 10 4 12 C4 7 8 4 12 4Z" fill="#8E24AA"/><circle cx="12" cy="12" r="2" fill="#8E24AA"/></svg>` },
-  Order: { color:'#F9A825', sym:`<svg viewBox="0 0 24 24"><path d="M12 2L14.5 9H22L16 13.5L18.5 21L12 16.5L5.5 21L8 13.5L2 9H9.5Z" fill="#F9A825"/></svg>` },
+  Fury:  { color:'#E53935', img:'https://cdn.piltoverarchive.com/icons/fury.webp' },
+  Calm:  { color:'#43A047', img:'https://cdn.piltoverarchive.com/icons/calm.webp' },
+  Mind:  { color:'#1E88E5', img:'https://cdn.piltoverarchive.com/icons/mind.webp' },
+  Body:  { color:'#F57C00', img:'https://cdn.piltoverarchive.com/icons/body.webp' },
+  Chaos: { color:'#8E24AA', img:'https://cdn.piltoverarchive.com/icons/chaos.webp' },
+  Order: { color:'#F9A825', img:'https://cdn.piltoverarchive.com/icons/order.webp' },
 };
 
 const DECK_RUNES = {
@@ -214,7 +214,9 @@ function runeSymbols(key) {
   return '<div class="rune-symbols">' + runes.map(r => {
     const ri = RUNE_INFO[r];
     const cid = RUNE_CIDS[r]||'';
-    return `<div class="rune-sym" style="box-shadow:0 0 8px ${ri.color}88;cursor:pointer" onclick="event.stopPropagation();showCard('${cid}')">${ri.sym}</div>`;
+    return `<div class="rune-sym" onclick="event.stopPropagation();showCard('${cid}')">
+      <img src="${ri.img}" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 4px ${ri.color})">
+    </div>`;
   }).join('') + '</div>';
 }
 
