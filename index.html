@@ -325,16 +325,27 @@ function renderDetail(key){
         <span class="carr" style="color:var(--txt3);font-size:.7rem">▼</span>
       </div>
       <div style="display:none;padding:0 20px 20px">
-        <div style="font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin-bottom:10px">Turn by Turn</div>
-        <div id="turn-blocks">${d.turn_order.split('\n').map(line=>{
-  const parts=line.split('|');
-  const turn=parts[0].replace(/^T(\d)/,'Turn $1').replace(/^T(\d+\+)/,'Turn $1');
-  const bullets=parts.slice(1);
-  return `<div style="margin-bottom:14px">
-    <div style="font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin-bottom:5px">${turn}</div>
-    ${bullets.map(b=>`<div style="font-family:'Rajdhani',sans-serif;font-size:.96rem;color:var(--txt);line-height:1.6;padding-left:12px;border-left:2px solid rgba(200,168,75,.25);margin-bottom:3px">— ${b}</div>`).join('')}
-  </div>`;
-}).join('')}</div>
+        <!-- SIMPLE -->
+        <p style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;color:var(--txt);line-height:1.75;margin-bottom:16px">${d.simple_strategy||''}</p>
+        <!-- ADVANCED -->
+        <div style="border:1px solid rgba(200,168,75,.25);border-radius:2px;overflow:hidden">
+          <div style="padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:rgba(200,168,75,.08)"
+            onclick="const b=this.nextElementSibling;b.style.display=b.style.display==='none'?'block':'none';this.querySelector('.adv-lbl').textContent=b.style.display==='none'?'▶  Show Turn by Turn':'▼  Hide Turn by Turn'">
+            <div style="font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dac-c,var(--gold))">Advanced — Turn by Turn</div>
+            <span class="adv-lbl" style="font-family:'Rajdhani',sans-serif;font-size:.85rem;color:var(--dac-c,var(--gold))">▶  Show Turn by Turn</span>
+          </div>
+          <div style="display:none;padding:14px">
+            ${d.turn_order.split('\n').map(line=>{
+              const parts=line.split('|');
+              const turn=parts[0].replace(/^T(\d)/,'Turn $1').replace(/^T(\d+\+)/,'Turn $1+').replace(/-/g,'–');
+              const bullets=parts.slice(1);
+              return `<div style="margin-bottom:14px">
+                <div style="font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin-bottom:5px">${turn}</div>
+                ${bullets.map(b=>`<div style="font-family:'Rajdhani',sans-serif;font-size:.96rem;color:var(--txt);line-height:1.6;padding-left:10px;border-left:2px solid rgba(200,168,75,.2);margin-bottom:4px">— ${b}</div>`).join('')}
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
         <div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:18px"></div>
         <div class="abc-grid">${abcHTML}</div>
         <div style="height:1px;background:rgba(255,255,255,.07);margin:18px 0"></div>
