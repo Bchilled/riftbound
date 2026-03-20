@@ -134,13 +134,14 @@ footer{text-align:center;padding:28px;font-family:'Rajdhani',sans-serif;font-siz
 .rune-sym {
   width:28px;
   height:28px;
-  border-radius:4px;
-  overflow:hidden;
-  opacity:0.8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0.75;
   transition:opacity .3s;
-  background:#0a0a0a;
   flex-shrink:0;
 }
+.rune-sym svg{width:22px;height:22px;filter:drop-shadow(0 0 4px currentColor)}
 .dcard:hover .rune-sym { opacity:1; }
 </style>
 </head>
@@ -188,14 +189,13 @@ function esc(s){return(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;').repla
 
 
 const RUNE_INFO = {
-  Fury:  { color:'#E53935', idx:0 },
-  Calm:  { color:'#43A047', idx:1 },
-  Mind:  { color:'#1E88E5', idx:2 },
-  Body:  { color:'#F57C00', idx:3 },
-  Chaos: { color:'#8E24AA', idx:4 },
-  Order: { color:'#F9A825', idx:5 },
+  Fury:  { color:'#E53935', sym:`<svg viewBox="0 0 24 24"><path d="M12 2L8 10h3L7 22l10-12h-4z" fill="#E53935"/></svg>` },
+  Calm:  { color:'#43A047', sym:`<svg viewBox="0 0 24 24"><path d="M12 3 Q18 6 18 12 Q18 19 12 21 Q8 18 7 12 Q7 6 12 3Z M9 12 Q12 8 15 12 Q12 17 9 12Z" fill="#43A047"/></svg>` },
+  Mind:  { color:'#1E88E5', sym:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="#1E88E5" stroke-width="2"/><circle cx="12" cy="12" r="2.5" fill="#1E88E5"/><line x1="12" y1="2" x2="12" y2="22" stroke="#1E88E5" stroke-width="1.5"/><line x1="2" y1="12" x2="22" y2="12" stroke="#1E88E5" stroke-width="1.5"/></svg>` },
+  Body:  { color:'#F57C00', sym:`<svg viewBox="0 0 24 24"><path d="M12 3L21 12L12 21L3 12Z" fill="#F57C00"/><path d="M12 7L17 12L12 17L7 12Z" fill="#0a0a0a"/></svg>` },
+  Chaos: { color:'#8E24AA', sym:`<svg viewBox="0 0 24 24"><path d="M12 4 C16 4 20 7 20 12 C20 17 16 20 11 20 C13 17 13 14 11 12 C9 10 6 10 4 12 C4 7 8 4 12 4Z" fill="#8E24AA"/><circle cx="12" cy="12" r="2" fill="#8E24AA"/></svg>` },
+  Order: { color:'#F9A825', sym:`<svg viewBox="0 0 24 24"><path d="M12 2L14.5 9H22L16 13.5L18.5 21L12 16.5L5.5 21L8 13.5L2 9H9.5Z" fill="#F9A825"/></svg>` },
 };
-const RUNE_SYM_IMG='https://i0.wp.com/riftboundsymbols.com/wp-content/uploads/2026/03/Domains-symbols-combined.png?resize=700%2C477&ssl=1';
 
 const DECK_RUNES = {
   azir:   ['Calm','Order'],
@@ -209,17 +209,12 @@ const DECK_RUNES = {
 };
 
 const RUNE_CIDS={Fury:'OGN-007',Calm:'OGN-042',Mind:'OGN-089',Body:'OGN-126',Chaos:'OGN-166',Order:'OGN-214'};
-const RUNE_POS={Fury:'0%',Calm:'20%',Mind:'40%',Body:'60%',Chaos:'80%',Order:'100%'};
-const SYM_IMG='assets/runes.png';
 function runeSymbols(key) {
   const runes = DECK_RUNES[key] || [];
   return '<div class="rune-symbols">' + runes.map(r => {
     const ri = RUNE_INFO[r];
-    const pos = RUNE_POS[r]||'0%';
     const cid = RUNE_CIDS[r]||'';
-    return `<div class="rune-sym" style="border:1.5px solid ${ri.color};box-shadow:0 0 8px ${ri.color}77;cursor:pointer;background:rgba(0,0,0,.6)" onclick="event.stopPropagation();showCard('${cid}')">
-      <div style="width:100%;height:100%;background:url('${SYM_IMG}') ${pos} center/600% auto"></div>
-    </div>`;
+    return `<div class="rune-sym" style="box-shadow:0 0 8px ${ri.color}88;cursor:pointer" onclick="event.stopPropagation();showCard('${cid}')">${ri.sym}</div>`;
   }).join('') + '</div>';
 }
 
@@ -343,23 +338,15 @@ function renderDetail(key){
       <div style="display:none;padding:0 20px 20px">
         <p style="font-family:'Rajdhani',sans-serif;font-size:1rem;color:var(--txt);line-height:1.7;border-left:3px solid var(--dac-c,var(--gold));padding-left:14px;margin-bottom:18px">${d.how_it_plays}</p>
         <div style="font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin-bottom:10px">Early · Mid · Late</div>
-        <p style="white-space:pre-line;font-family:'Rajdhani',sans-serif;font-size:.96rem;color:var(--txt);line-height:1.7">${d.turn_order}</p>
-      </div>
-    </div>
-
-    <!-- 5. ABCDEFG — collapsed -->
-    <div>
-      <div class="chdr" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.carr').textContent=this.nextElementSibling.style.display==='none'?'▼':'▲'">
-        <span style="font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt2)">A · B · C · D</span>
-        <span class="carr" style="color:var(--txt3);font-size:.7rem">▼</span>
-      </div>
-      <div style="display:none;padding:0 20px 20px">
+        <p style="white-space:pre-line;font-family:'Rajdhani',sans-serif;font-size:.96rem;color:var(--txt);line-height:1.7;margin-bottom:20px">${d.turn_order}</p>
+        <div style="height:1px;background:rgba(255,255,255,.07);margin-bottom:18px"></div>
         <div class="abc-grid">${abcHTML}</div>
         <div style="height:1px;background:rgba(255,255,255,.07);margin:18px 0"></div>
-        <div style="font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin-bottom:10px;opacity:.7">This Deck</div>
         <div class="abc-grid">${efgHTML}</div>
       </div>
     </div>
+
+
 
   </div>`;
 }
