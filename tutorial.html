@@ -28,16 +28,38 @@ html,body{width:100%;height:100%;overflow:hidden;background:#07080f}
 #txt-b.on{opacity:1;transform:translateY(0)}
 
 /* PLAYMAT */
-#mat-wrap{
+#board-wrap{
   position:absolute;left:50%;
-  top:clamp(180px,36%,260px);
+  top:clamp(170px,34%,240px);
   transform:translateX(-50%);
   width:min(680px,94vw);
-  bottom:36px;
+  bottom:32px;
+  display:flex;flex-direction:column;gap:5px;
   opacity:0;transition:opacity .8s;
   pointer-events:none;
 }
-#mat-wrap.on{opacity:1}
+#board-wrap.on{opacity:1}
+
+/* BATTLEFIELD ZONE - shared center, horizontal cards */
+#bf-zone{
+  display:flex;gap:8px;justify-content:center;flex-shrink:0;
+  padding:0 30px;
+}
+.bf-card-slot{
+  flex:1;max-width:280px;height:clamp(40px,7vw,58px);
+  flex-direction:row;align-items:center;justify-content:flex-start;
+  gap:8px;padding:6px 10px;
+}
+.bf-h-card{
+  width:clamp(50px,9vw,72px);height:clamp(32px,5.5vw,46px);
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+  border:1px solid rgba(200,168,75,.3);border-radius:3px;
+  flex-shrink:0;
+}
+
+#mat-wrap{
+  flex:1;min-height:0;
+}
 #mat{
   display:flex;flex-direction:row;gap:4px;
   background:linear-gradient(160deg,#070a10,#0a0d1a);
@@ -217,7 +239,7 @@ const BEATS = [
 let idx = 0;
 
 function clearHi(){
-  document.querySelectorAll('.mz,.stc').forEach(z=>{
+  document.querySelectorAll('.mz,.stc,.bf-card-slot').forEach(z=>{
     z.classList.remove('hi','hi-blue','hi-red','hi-green','hi-purple');
   });
 }
@@ -265,6 +287,7 @@ function scoreAnimate(){
 
   // Highlight battlefield zone
   document.getElementById('z-bf').classList.add('hi');
+  document.getElementById('z-bf2').classList.add('hi');
 
   // Animate a unit moving to battlefield at score 1
   setTimeout(()=>{
@@ -294,10 +317,10 @@ function scoreAnimate(){
   ids.slice(4).forEach((id,i)=>{
     setTimeout(()=>{
       const el=document.getElementById(id);
-      el.style.borderColor='#22c55e';
-      el.style.color='#22c55e';
-      el.style.background='rgba(34,197,94,.12)';
-      el.style.boxShadow='0 0 10px rgba(34,197,94,.3)';
+      el.style.borderColor='#c8a84b';
+      el.style.color='#c8a84b';
+      el.style.background='rgba(200,168,75,.15)';
+      el.style.boxShadow='0 0 10px rgba(200,168,75,.4)';
     }, 400 + (4+i)*1800);
   });
 }
@@ -307,7 +330,7 @@ function play(i){
   idx=i;
   const b=BEATS[i];
   document.getElementById('prog-bar').style.width=((i/BEATS.length)*100)+'%';
-  document.getElementById('mat-wrap').classList.add('on');
+  document.getElementById('board-wrap').classList.add('on');
 
   if(b.abcd){
     hideAbcd();
@@ -347,7 +370,7 @@ function restart(){
   idx=0;
   hideAbcd();
   clearHi();
-  document.getElementById('mat-wrap').classList.remove('on');
+  document.getElementById('board-wrap').classList.remove('on');
   document.getElementById('prog-bar').style.width='0%';
   document.getElementById('tap-hint').style.display='block';
   setTimeout(()=>play(0),300);
