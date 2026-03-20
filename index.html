@@ -134,14 +134,13 @@ footer{text-align:center;padding:28px;font-family:'Rajdhani',sans-serif;font-siz
 .rune-sym {
   width:26px;
   height:26px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  opacity:0.7;
+  border-radius:50%;
+  overflow:hidden;
+  opacity:0.75;
   transition:opacity .3s;
+  background:#0a0a0a;
 }
 .dcard:hover .rune-sym { opacity:1; }
-.rune-sym svg { width:20px; height:20px; filter:drop-shadow(0 0 4px currentColor) drop-shadow(0 1px 2px rgba(0,0,0,.9)); }
 </style>
 </head>
 <body>
@@ -188,13 +187,14 @@ function esc(s){return(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;').repla
 
 
 const RUNE_INFO = {
-  Fury:  { color:'#E53935', bg:'rgba(229,57,53,.25)',  svg:'<path d="M8 2 L5 8 L8 7 L5 14 L11 6 L8 7 Z" fill="currentColor"/>' },
-  Body:  { color:'#F57C00', bg:'rgba(245,124,0,.25)',  svg:'<path d="M8 3 C5 3 3 5.5 3 8 C3 10.5 5 12 8 13 C11 12 13 10.5 13 8 C13 5.5 11 3 8 3 Z M6 7 L8 5 L10 7 L9 9 L7 9 Z" fill="currentColor"/>' },
-  Calm:  { color:'#43A047', bg:'rgba(67,160,71,.25)',  svg:'<path d="M8 3 Q12 5 12 8 Q12 12 8 13 Q5 11 4 8 Q4 5 8 3 Z M6 8 Q8 6 10 8 Q8 11 6 8 Z" fill="currentColor"/>' },
-  Order: { color:'#F9A825', bg:'rgba(249,168,37,.25)', svg:'<path d="M8 2 L9.5 6 L14 6 L10.5 9 L12 13 L8 10.5 L4 13 L5.5 9 L2 6 L6.5 6 Z" fill="currentColor"/>' },
-  Mind:  { color:'#1E88E5', bg:'rgba(30,136,229,.25)', svg:'<ellipse cx="8" cy="8" rx="5" ry="3" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><line x1="8" y1="2" x2="8" y2="14" stroke="currentColor" stroke-width="1"/>' },
-  Chaos: { color:'#8E24AA', bg:'rgba(142,36,170,.25)', svg:'<path d="M8 3 Q11 5 13 8 Q11 12 8 13 Q7 10 9 8 Q7 6 5 7 Q5 4 8 3 Z M5 9 Q6 12 8 13 Q6 12 5 9 Z" fill="currentColor"/>' },
+  Fury:  { color:'#E53935', idx:0 },
+  Calm:  { color:'#43A047', idx:1 },
+  Mind:  { color:'#1E88E5', idx:2 },
+  Body:  { color:'#F57C00', idx:3 },
+  Chaos: { color:'#8E24AA', idx:4 },
+  Order: { color:'#F9A825', idx:5 },
 };
+const RUNE_SYM_IMG='https://i0.wp.com/riftboundsymbols.com/wp-content/uploads/2026/03/Domains-symbols-combined.png?resize=700%2C477&ssl=1';
 
 const DECK_RUNES = {
   azir:   ['Calm','Order'],
@@ -211,8 +211,9 @@ function runeSymbols(key) {
   const runes = DECK_RUNES[key] || [];
   return '<div class="rune-symbols">' + runes.map(r => {
     const ri = RUNE_INFO[r];
-    return `<div class="rune-sym" style="color:${ri.color};background:${ri.bg}">
-      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">${ri.svg}</svg>
+    const pct = (ri.idx / 5 * 100).toFixed(1);
+    return `<div class="rune-sym" style="border:1.5px solid ${ri.color};box-shadow:0 0 6px ${ri.color}88">
+      <div style="width:100%;height:100%;background:url('${RUNE_SYM_IMG}') ${pct}% center/600% auto;filter:drop-shadow(0 0 2px ${ri.color})"></div>
     </div>`;
   }).join('') + '</div>';
 }
