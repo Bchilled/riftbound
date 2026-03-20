@@ -2,1228 +2,267 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Riftbound — Choose Your Champion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --sfd-dark: #0d0f1a;
-    --sfd-darker: #07080f;
-    --sfd-mid: #161926;
-    --sfd-border: #2a2f45;
-    --sfd-gold: #c8a84b;
-    --sfd-gold-light: #e8c96a;
-    --sfd-blue: #1e3a5f;
-    --ogn-dark: #0f1a0f;
-    --ogn-teal: #1a3a3a;
-    --ogn-accent: #2a7a4a;
-    --text-primary: #e8e4d8;
-    --text-secondary: #9a9080;
-    --text-muted: #5a5550;
-  }
-
-  * { margin:0; padding:0; box-sizing:border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'Rajdhani', sans-serif;
-    background: var(--sfd-darker);
-    color: var(--text-primary);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ===== HERO SECTION ===== */
-  .hero {
-    position: relative;
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    overflow: hidden;
-    background: 
-      radial-gradient(ellipse at 50% 0%, rgba(200,168,75,0.12) 0%, transparent 60%),
-      radial-gradient(ellipse at 20% 80%, rgba(30,58,95,0.3) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 80%, rgba(42,122,74,0.2) 0%, transparent 50%),
-      var(--sfd-darker);
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: 
-      repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(200,168,75,0.03) 80px, rgba(200,168,75,0.03) 81px),
-      repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(200,168,75,0.03) 80px, rgba(200,168,75,0.03) 81px);
-    pointer-events: none;
-  }
-
-  .site-title {
-    padding: 40px 20px 20px;
-    text-align: center;
-    position: relative;
-    z-index: 10;
-  }
-
-  .site-title h1 {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: clamp(2rem, 6vw, 5rem);
-    font-weight: 900;
-    background: linear-gradient(180deg, #fff9e8 0%, var(--sfd-gold) 40%, #8a6a20 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: 0.15em;
-    text-shadow: none;
-    line-height: 1;
-  }
-
-  .site-title .subtitle {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(0.8rem, 2vw, 1.1rem);
-    color: var(--text-secondary);
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    margin-top: 8px;
-  }
-
-  .divider-line {
-    width: min(600px, 80vw);
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--sfd-gold), transparent);
-    margin: 16px auto;
-  }
-
-  /* ===== CHOOSE TEXT ===== */
-  .choose-banner {
-    position: relative;
-    z-index: 10;
-    text-align: center;
-    padding: 10px 20px;
-    margin-bottom: 10px;
-  }
-
-  .choose-banner h2 {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: clamp(1.4rem, 4vw, 3rem);
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-
-  /* ===== 8-DECK GRID ===== */
-  .deck-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 3px;
-    width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 10px;
-    position: relative;
-    z-index: 10;
-  }
-
-  .deck-card {
-    position: relative;
-    aspect-ratio: 3/4;
-    cursor: pointer;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.05);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: var(--sfd-dark);
-  }
-
-  .deck-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      180deg,
-      transparent 30%,
-      rgba(0,0,0,0.4) 60%,
-      rgba(0,0,0,0.9) 100%
-    );
-    z-index: 2;
-    transition: opacity 0.4s;
-  }
-
-  .deck-card:hover::before,
-  .deck-card.active::before {
-    background: linear-gradient(
-      180deg,
-      rgba(0,0,0,0.1) 0%,
-      rgba(0,0,0,0.3) 50%,
-      rgba(0,0,0,0.95) 100%
-    );
-  }
-
-  /* Accent border glow on hover/active */
-  .deck-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 2px solid transparent;
-    transition: all 0.3s;
-    z-index: 3;
-    pointer-events: none;
-  }
-
-  .deck-card:hover::after,
-  .deck-card.active::after {
-    border-color: var(--deck-accent);
-    box-shadow: inset 0 0 30px rgba(var(--deck-accent-rgb), 0.15), 0 0 20px rgba(var(--deck-accent-rgb), 0.3);
-  }
-
-  /* Champion image */
-  .deck-card-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top center;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s;
-    filter: saturate(0.7) brightness(0.8);
-  }
-
-  .deck-card:hover .deck-card-img,
-  .deck-card.active .deck-card-img {
-    transform: scale(1.05);
-    filter: saturate(1.1) brightness(1.0);
-  }
-
-  /* Card content overlay */
-  .deck-card-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 12px;
-    z-index: 4;
-  }
-
-  .deck-name {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(0.9rem, 2vw, 1.3rem);
-    font-weight: 700;
-    color: #fff;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
-    line-height: 1;
-    margin-bottom: 3px;
-  }
-
-  .deck-style-tag {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: clamp(0.6rem, 1.2vw, 0.8rem);
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border-radius: 2px;
-    display: inline-block;
-    margin-bottom: 4px;
-  }
-
-  .deck-tagline {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: clamp(0.55rem, 1vw, 0.75rem);
-    color: rgba(255,255,255,0.6);
-    font-weight: 400;
-    display: none;
-  }
-
-  .deck-card:hover .deck-tagline,
-  .deck-card.active .deck-tagline {
-    display: block;
-  }
-
-  .deck-colors {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: clamp(0.5rem, 0.9vw, 0.65rem);
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.45);
-    font-weight: 400;
-  }
-
-  /* Active highlight bar */
-  .deck-card-active-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--deck-accent);
-    transform: scaleX(0);
-    transition: transform 0.3s;
-    z-index: 5;
-    transform-origin: left;
-  }
-
-  .deck-card.active .deck-card-active-bar {
-    transform: scaleX(1);
-  }
-
-  /* ===== HOW TO PLAY BANNER ===== */
-  .how-to-play-banner {
-    width: 100%;
-    max-width: 1400px;
-    margin: 3px auto 0;
-    padding: 0 10px;
-    position: relative;
-    z-index: 10;
-  }
-
-  .how-to-play-inner {
-    background: linear-gradient(135deg, #0a0f1a 0%, #111827 50%, #0a1a0a 100%);
-    border: 1px solid rgba(200,168,75,0.2);
-    padding: 24px 32px;
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    cursor: pointer;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .how-to-play-inner::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, rgba(200,168,75,0.05), transparent, rgba(200,168,75,0.05));
-    pointer-events: none;
-  }
-
-  .how-to-play-inner:hover {
-    border-color: rgba(200,168,75,0.5);
-    background: linear-gradient(135deg, #0d1220 0%, #141e2e 50%, #0d1f0d 100%);
-  }
-
-  .htp-icon {
-    font-size: 2.5rem;
-    filter: drop-shadow(0 0 10px var(--sfd-gold));
-    flex-shrink: 0;
-  }
-
-  .htp-text h3 {
-    font-family: 'Cinzel', serif;
-    font-size: 1.2rem;
-    color: var(--sfd-gold);
-    letter-spacing: 0.15em;
-    margin-bottom: 4px;
-  }
-
-  .htp-text p {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    letter-spacing: 0.05em;
-  }
-
-  .htp-arrow {
-    margin-left: auto;
-    font-size: 1.5rem;
-    color: var(--sfd-gold);
-    transition: transform 0.3s;
-  }
-
-  .how-to-play-inner.expanded .htp-arrow {
-    transform: rotate(90deg);
-  }
-
-  .htp-content {
-    display: none;
-    padding: 0 32px 24px;
-    background: linear-gradient(135deg, #0a0f1a, #111827, #0a1a0a);
-    border: 1px solid rgba(200,168,75,0.2);
-    border-top: none;
-  }
-
-  .htp-content.visible {
-    display: block;
-  }
-
-  .htp-steps {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-    padding-top: 20px;
-  }
-
-  .htp-step {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .htp-step-letter {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 1.8rem;
-    font-weight: 900;
-    color: var(--sfd-gold);
-    line-height: 1;
-    flex-shrink: 0;
-    width: 32px;
-    text-align: center;
-    text-shadow: 0 0 20px rgba(200,168,75,0.5);
-  }
-
-  .htp-step-body h4 {
-    font-family: 'Cinzel', serif;
-    font-size: 0.85rem;
-    color: var(--text-primary);
-    letter-spacing: 0.1em;
-    margin-bottom: 4px;
-  }
-
-  .htp-step-body p {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
-
-  /* ===== DECK DETAIL PANEL ===== */
-  .deck-detail {
-    display: none;
-    width: 100%;
-    max-width: 1400px;
-    margin: 3px auto 0;
-    padding: 0 10px 40px;
-    position: relative;
-    z-index: 10;
-    animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .deck-detail.visible {
-    display: block;
-  }
-
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .detail-inner {
-    background: linear-gradient(135deg, #0a0f1a 0%, var(--sfd-mid) 100%);
-    border: 1px solid var(--detail-accent, rgba(200,168,75,0.3));
-    overflow: hidden;
-    position: relative;
-  }
-
-  .detail-inner::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--detail-accent-color, var(--sfd-gold));
-  }
-
-  .detail-header {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 24px;
-    padding: 24px;
-    align-items: start;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-
-  .detail-legend-img {
-    width: 80px;
-    height: 110px;
-    object-fit: cover;
-    object-position: top;
-    border: 2px solid var(--detail-accent-color, var(--sfd-gold));
-    flex-shrink: 0;
-  }
-
-  .detail-title h2 {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: clamp(1.2rem, 3vw, 2rem);
-    font-weight: 700;
-    color: var(--detail-accent-color, var(--sfd-gold));
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-
-  .detail-title .detail-subtitle {
-    font-family: 'Cinzel', serif;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-
-  .detail-title .detail-how {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.95rem;
-    color: var(--text-primary);
-    line-height: 1.6;
-    max-width: 600px;
-  }
-
-  .detail-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: flex-end;
-    flex-shrink: 0;
-  }
-
-  .meta-rank {
-    font-size: 1.5rem;
-    letter-spacing: 2px;
-  }
-
-  .meta-score {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    letter-spacing: 0.1em;
-    text-align: right;
-  }
-
-  .meta-colors {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    color: var(--detail-accent-color, var(--sfd-gold));
-    text-transform: uppercase;
-  }
-
-  /* Detail Tabs */
-  .detail-tabs {
-    display: flex;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    overflow-x: auto;
-  }
-
-  .detail-tab {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 14px 20px;
-    cursor: pointer;
-    color: var(--text-muted);
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-    white-space: nowrap;
-    background: none;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-  }
-
-  .detail-tab:hover {
-    color: var(--text-primary);
-  }
-
-  .detail-tab.active {
-    color: var(--detail-accent-color, var(--sfd-gold));
-    border-bottom-color: var(--detail-accent-color, var(--sfd-gold));
-  }
-
-  .detail-tab-content {
-    display: none;
-    padding: 24px;
-  }
-
-  .detail-tab-content.active {
-    display: block;
-    animation: fadeIn 0.3s ease;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  /* ABCDEFG */
-  .abcdefg-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 12px;
-  }
-
-  .abc-step {
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-    padding: 14px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-  }
-
-  .abc-letter {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 2rem;
-    font-weight: 900;
-    line-height: 1;
-    flex-shrink: 0;
-    width: 36px;
-    text-align: center;
-    text-shadow: 0 0 20px currentColor;
-  }
-
-  .abc-body {
-    flex: 1;
-  }
-
-  .abc-phase {
-    font-family: 'Cinzel', serif;
-    font-size: 0.8rem;
-    letter-spacing: 0.12em;
-    color: var(--text-primary);
-    margin-bottom: 4px;
-  }
-
-  .abc-desc {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.88rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
-
-  /* Strategy */
-  .strategy-block {
-    margin-bottom: 20px;
-  }
-
-  .strategy-block h4 {
-    font-family: 'Cinzel', serif;
-    font-size: 0.85rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--detail-accent-color, var(--sfd-gold));
-    margin-bottom: 10px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-
-  .strategy-block p {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 1rem;
-    color: var(--text-primary);
-    line-height: 1.7;
-  }
-
-  /* Decklist */
-  .decklist-section h4 {
-    font-family: 'Cinzel', serif;
-    font-size: 0.85rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--detail-accent-color, var(--sfd-gold));
-    margin-bottom: 12px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-
-  .card-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 4px;
-    margin-bottom: 24px;
-  }
-
-  .card-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 10px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.04);
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-  }
-
-  .card-row:hover {
-    background: rgba(255,255,255,0.07);
-    border-color: var(--detail-accent-color, rgba(200,168,75,0.3));
-  }
-
-  .card-qty {
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--detail-accent-color, var(--sfd-gold));
-    width: 20px;
-    flex-shrink: 0;
-    text-align: center;
-  }
-
-  .card-rar {
-    font-size: 0.6rem;
-    width: 14px;
-    flex-shrink: 0;
-    text-align: center;
-    opacity: 0.7;
-  }
-
-  .card-name {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 500;
-    color: var(--text-primary);
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .card-cost {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    flex-shrink: 0;
-  }
-
-  /* Card tooltip */
-  .card-tooltip {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    background: #0d0f1a;
-    border: 1px solid var(--sfd-gold);
-    padding: 12px 16px;
-    max-width: 280px;
-    pointer-events: none;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.8);
-  }
-
-  .card-tooltip.visible {
-    display: block;
-  }
-
-  .tooltip-name {
-    font-family: 'Cinzel', serif;
-    font-size: 0.85rem;
-    color: var(--sfd-gold);
-    margin-bottom: 6px;
-  }
-
-  .tooltip-stats {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-  }
-
-  .tooltip-ability {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.82rem;
-    color: var(--text-primary);
-    line-height: 1.5;
-  }
-
-  /* Legend/Champion cards in legend zone */
-  .zone-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .zone-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--detail-accent-color, rgba(200,168,75,0.3));
-    padding: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .zone-card:hover {
-    background: rgba(255,255,255,0.06);
-  }
-
-  .zone-card-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--detail-accent-color, var(--sfd-gold));
-    margin-bottom: 6px;
-    opacity: 0.7;
-  }
-
-  .zone-card-name {
-    font-family: 'Cinzel', serif;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-    margin-bottom: 6px;
-  }
-
-  .zone-card-ability {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
-
-  /* Rarity colors */
-  .rar-C { color: #aaa; }
-  .rar-U { color: #5b9bd5; }
-  .rar-R { color: #c8a84b; }
-  .rar-E { color: #c87cff; }
-  .rar-S { color: #ff6b6b; }
-
-  /* ===== FOOTER ===== */
-  footer {
-    text-align: center;
-    padding: 30px;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    letter-spacing: 0.1em;
-    border-top: 1px solid rgba(200,168,75,0.1);
-    margin-top: 40px;
-  }
-
-  /* ===== MOBILE ===== */
-  @media (max-width: 768px) {
-    .deck-grid {
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(4, 1fr);
-    }
-
-    .detail-header {
-      grid-template-columns: 1fr;
-    }
-
-    .detail-legend-img {
-      display: none;
-    }
-
-    .detail-meta {
-      flex-direction: row;
-      align-items: center;
-    }
-
-    .htp-steps {
-      grid-template-columns: 1fr;
-    }
-
-    .how-to-play-inner {
-      padding: 16px;
-      gap: 16px;
-    }
-
-    .card-list {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .deck-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2px;
-    }
-
-    .deck-card-content {
-      padding: 8px;
-    }
-
-    .detail-tabs {
-      font-size: 0.75rem;
-    }
-
-    .detail-tab {
-      padding: 10px 12px;
-    }
-  }
-
-  /* Loading skeleton */
-  .img-placeholder {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #1a1f2e 0%, #2a3040 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 2rem;
-    color: rgba(255,255,255,0.15);
-  }
+:root{--bg:#07080f;--mid:#0d0f1a;--panel:#111520;--border:rgba(255,255,255,.06);--gold:#c8a84b;--txt:#e8e4d8;--txt2:#9a9080;--txt3:#5a5550}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden}
+.page{min-height:100vh;background:radial-gradient(ellipse at 50% 0%,rgba(200,168,75,.1) 0%,transparent 55%),radial-gradient(ellipse at 15% 70%,rgba(30,58,95,.25) 0%,transparent 45%),radial-gradient(ellipse at 85% 70%,rgba(42,122,74,.18) 0%,transparent 45%),var(--bg);position:relative}
+.page::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:repeating-linear-gradient(0deg,transparent,transparent 80px,rgba(200,168,75,.025) 80px,rgba(200,168,75,.025) 81px),repeating-linear-gradient(90deg,transparent,transparent 80px,rgba(200,168,75,.025) 80px,rgba(200,168,75,.025) 81px)}
+/* HEADER */
+.hd{text-align:center;padding:36px 20px 16px;position:relative;z-index:10}
+.hd h1{font-family:'Cinzel Decorative',serif;font-size:clamp(2rem,6vw,4.8rem);font-weight:900;line-height:1;background:linear-gradient(180deg,#fff9e8 0%,var(--gold) 45%,#7a5c18 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.15em}
+.hd-sub{font-family:'Cinzel',serif;font-size:clamp(.75rem,1.8vw,1rem);color:var(--txt2);letter-spacing:.4em;text-transform:uppercase;margin-top:7px}
+.div-line{width:min(500px,75vw);height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:14px auto}
+.choose-txt{font-family:'Cinzel Decorative',serif;font-size:clamp(1.3rem,4vw,2.8rem);font-weight:700;color:var(--txt);letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px}
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;width:100%;max-width:1400px;margin:0 auto;padding:0 10px;position:relative;z-index:10}
+.dcard{position:relative;aspect-ratio:3/4;cursor:pointer;overflow:hidden;border:1px solid rgba(255,255,255,.05);background:var(--mid);transition:all .4s cubic-bezier(.4,0,.2,1)}
+.dcard::before{content:'';position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,transparent 25%,rgba(0,0,0,.5) 60%,rgba(0,0,0,.93) 100%);transition:background .4s}
+.dcard:hover::before,.dcard.on::before{background:linear-gradient(180deg,rgba(0,0,0,.02) 0%,rgba(0,0,0,.22) 50%,rgba(0,0,0,.95) 100%)}
+.dcard::after{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;border:2px solid transparent;transition:all .3s}
+.dcard:hover::after,.dcard.on::after{border-color:var(--ac);box-shadow:0 0 20px rgba(0,0,0,.15)}
+.dcard-bar{position:absolute;top:0;left:0;right:0;height:3px;background:var(--ac);transform:scaleX(0);transform-origin:left;transition:transform .35s;z-index:5}
+.dcard.on .dcard-bar{transform:scaleX(1)}
+.dcard-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .6s cubic-bezier(.4,0,.2,1),filter .4s;filter:saturate(.75) brightness(.8)}
+.dcard.rc .dcard-img{object-position:right top}
+.dcard:hover .dcard-img,.dcard.on .dcard-img{transform:scale(1.06);filter:saturate(1.1) brightness(1.0)}
+.dcard-body{position:absolute;bottom:0;left:0;right:0;padding:11px;z-index:4}
+.dcard-tag{font-family:'Rajdhani',sans-serif;font-size:clamp(.5rem,1vw,.72rem);font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:2px 8px;border-radius:2px;display:inline-block;margin-bottom:3px}
+.dcard-name{font-family:'Cinzel',serif;font-size:clamp(.85rem,2vw,1.35rem);font-weight:700;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.9);line-height:1;margin-bottom:3px}
+.dcard-tagline{font-family:'Rajdhani',sans-serif;font-size:clamp(.52rem,.95vw,.72rem);color:rgba(255,255,255,.55);display:none}
+.dcard:hover .dcard-tagline,.dcard.on .dcard-tagline{display:block}
+.dcard-colors{font-family:'Rajdhani',sans-serif;font-size:clamp(.46rem,.85vw,.62rem);letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.38)}
+/* HTP */
+.htp-wrap{width:100%;max-width:1400px;margin:3px auto 0;padding:0 10px;position:relative;z-index:10}
+.htp-btn{display:flex;align-items:center;gap:18px;padding:18px 26px;width:100%;background:linear-gradient(135deg,#090d18,#101622 60%,#090f09);border:1px solid rgba(200,168,75,.18);cursor:pointer;transition:border-color .3s;position:relative;overflow:hidden;text-align:left}
+.htp-btn:hover{border-color:rgba(200,168,75,.45)}
+.htp-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(200,168,75,.03),transparent,rgba(200,168,75,.03));pointer-events:none}
+.htp-icon{font-size:1.9rem;flex-shrink:0}
+.htp-txt h3{font-family:'Cinzel',serif;font-size:clamp(.85rem,2vw,1.15rem);color:var(--gold);letter-spacing:.1em;margin-bottom:3px}
+.htp-txt p{font-family:'Rajdhani',sans-serif;font-size:.88rem;color:var(--txt2)}
+.htp-arr{margin-left:auto;font-size:1.1rem;color:var(--gold);transition:transform .3s;flex-shrink:0}
+.htp-btn.open .htp-arr{transform:rotate(90deg)}
+.htp-body{display:none;padding:6px 26px 26px;background:linear-gradient(135deg,#090d18,#101622 60%,#090f09);border:1px solid rgba(200,168,75,.18);border-top:none}
+.htp-body.open{display:block;animation:fadeIn .3s ease}
+.abcd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:12px}
+.abcd-row{display:flex;gap:12px;align-items:flex-start;padding:13px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.055)}
+.abcd-ltr{font-family:'Cinzel Decorative',serif;font-size:2.1rem;font-weight:900;line-height:1;flex-shrink:0;width:34px;text-align:center;text-shadow:0 0 18px currentColor}
+.abcd-bd h4{font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.1em;color:var(--txt);margin-bottom:3px}
+.abcd-bd p{font-family:'Rajdhani',sans-serif;font-size:.87rem;color:var(--txt2);line-height:1.55}
+/* DETAIL */
+.detail{display:none;width:100%;max-width:1400px;margin:3px auto 0;padding:0 10px 50px;position:relative;z-index:10}
+.detail.open{display:block;animation:slideDown .4s cubic-bezier(.4,0,.2,1)}
+.d-wrap{background:linear-gradient(135deg,#090d18,var(--panel));border:1px solid var(--dac,rgba(200,168,75,.28));position:relative}
+.d-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--dac-c,var(--gold))}
+.d-hdr{display:grid;grid-template-columns:100px 1fr;gap:22px;padding:22px;border-bottom:1px solid var(--border);align-items:start}
+.d-img{width:100px;height:138px;object-fit:cover;object-position:center top;border:2px solid var(--dac-c,var(--gold))}
+.d-img.rc{object-position:right top}
+.d-hdr-r h2{font-family:'Cinzel Decorative',serif;font-size:clamp(1.1rem,3vw,1.9rem);color:var(--dac-c,var(--gold));line-height:1;margin-bottom:5px}
+.d-sub{font-family:'Cinzel',serif;font-size:.8rem;color:var(--txt2);letter-spacing:.2em;text-transform:uppercase;margin-bottom:9px}
+.d-how{font-family:'Rajdhani',sans-serif;font-size:.97rem;color:var(--txt);line-height:1.65;max-width:700px}
+.d-tabs{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.d-tabs::-webkit-scrollbar{display:none}
+.d-tab{font-family:'Rajdhani',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:13px 17px;cursor:pointer;color:var(--txt3);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none}
+.d-tab:hover{color:var(--txt)}
+.d-tab.on{color:var(--dac-c,var(--gold));border-bottom-color:var(--dac-c,var(--gold))}
+.d-pnl{display:none;padding:22px}
+.d-pnl.on{display:block;animation:fadeIn .3s ease}
+/* ABC per-deck */
+.abc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:9px}
+.abc-row{display:flex;gap:11px;padding:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05)}
+.abc-ltr{font-family:'Cinzel Decorative',serif;font-size:1.85rem;line-height:1;flex-shrink:0;width:30px;text-align:center;text-shadow:0 0 14px currentColor}
+.abc-bd h4{font-family:'Cinzel',serif;font-size:.77rem;letter-spacing:.09em;color:var(--txt);margin-bottom:3px}
+.abc-bd p{font-family:'Rajdhani',sans-serif;font-size:.85rem;color:var(--txt2);line-height:1.52}
+/* STRATEGY */
+.s-blk{margin-bottom:20px}
+.s-blk h4{font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.07)}
+.s-blk p{font-family:'Rajdhani',sans-serif;font-size:.98rem;color:var(--txt);line-height:1.68}
+/* ZONES */
+.zone-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:9px;margin-bottom:14px}
+.zcard{padding:13px;background:rgba(255,255,255,.03);border:1px solid var(--dac-c,rgba(200,168,75,.28));cursor:pointer;transition:background .2s}
+.zcard:hover{background:rgba(255,255,255,.06)}
+.zcard-lbl{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dac-c,var(--gold));opacity:.7;margin-bottom:4px}
+.zcard-name{font-family:'Cinzel',serif;font-size:.86rem;color:var(--txt);margin-bottom:4px}
+.zcard-ab{font-family:'Rajdhani',sans-serif;font-size:.79rem;color:var(--txt2);line-height:1.48}
+/* DECKLIST */
+.dl-hdr{font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dac-c,var(--gold));margin-bottom:9px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,.07)}
+.dl-sub{font-family:'Rajdhani',sans-serif;font-size:.78rem;color:var(--txt3);margin-bottom:9px;letter-spacing:.05em}
+.dl-sec{margin-bottom:22px}
+.rune-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.rune-pill{font-family:'Cinzel',serif;font-size:.76rem;padding:5px 13px;border:1px solid var(--dac-c,rgba(200,168,75,.4));color:var(--dac-c,var(--gold));letter-spacing:.09em;background:rgba(0,0,0,.3)}
+.card-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:3px}
+.crow{display:flex;align-items:center;gap:7px;padding:7px 9px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);cursor:pointer;transition:all .2s}
+.crow:hover{background:rgba(255,255,255,.07);border-color:var(--dac-c,rgba(200,168,75,.28))}
+.c-qty{font-family:'Cinzel',serif;font-size:.71rem;font-weight:700;color:var(--dac-c,var(--gold));width:17px;text-align:center;flex-shrink:0}
+.c-rar{font-size:.6rem;width:13px;flex-shrink:0;text-align:center;opacity:.8}
+.c-name{font-family:'Rajdhani',sans-serif;font-size:.87rem;font-weight:500;color:var(--txt);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c-cost{font-family:'Rajdhani',sans-serif;font-size:.68rem;color:var(--txt3);flex-shrink:0}
+.rC{color:#aaa}.rU{color:#5b9bd5}.rR{color:#c8a84b}.rE{color:#c87cff}.rS{color:#ff6b6b}
+.bf-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px}
+.bf-row{display:flex;flex-direction:column;gap:4px;padding:10px 12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);cursor:pointer;transition:background .2s}
+.bf-row:hover{background:rgba(255,255,255,.06)}
+.bf-name{font-family:'Cinzel',serif;font-size:.82rem;color:var(--txt)}
+.bf-ab{font-family:'Rajdhani',sans-serif;font-size:.78rem;color:var(--txt2);line-height:1.45}
+/* TOOLTIP */
+.tt{display:none;position:fixed;z-index:9999;background:#0d0f1a;border:1px solid var(--gold);padding:11px 15px;max-width:270px;pointer-events:none;box-shadow:0 8px 28px rgba(0,0,0,.85)}
+.tt.on{display:block}
+.tt-name{font-family:'Cinzel',serif;font-size:.83rem;color:var(--gold);margin-bottom:5px}
+.tt-stats{font-family:'Rajdhani',sans-serif;font-size:.73rem;color:var(--txt3);margin-bottom:7px}
+.tt-ab{font-family:'Rajdhani',sans-serif;font-size:.81rem;color:var(--txt);line-height:1.5}
+@keyframes slideDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+footer{text-align:center;padding:28px;font-family:'Rajdhani',sans-serif;font-size:.73rem;color:var(--txt3);letter-spacing:.1em;border-top:1px solid rgba(200,168,75,.08);margin-top:30px}
+@media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}.d-hdr{grid-template-columns:1fr}.d-img{display:none}.abc-grid,.abcd-grid{grid-template-columns:1fr}.card-list{grid-template-columns:1fr 1fr}.bf-list,.zone-row{grid-template-columns:1fr}}
+@media(max-width:480px){.grid{gap:2px}.d-tab{padding:11px 12px;font-size:.75rem}.card-list{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="site-title">
-    <h1>RIFTBOUND</h1>
-    <div class="divider-line"></div>
-    <p class="subtitle">War Table — Origins &amp; Spiritforged</p>
-  </div>
-
-  <div class="choose-banner">
-    <h2>Choose Your Champion</h2>
-  </div>
-
-  <!-- 8-DECK GRID -->
-  <div class="deck-grid" id="deckGrid"></div>
-
-  <!-- HOW TO PLAY BANNER -->
-  <div class="how-to-play-banner">
-    <div class="how-to-play-inner" id="htpToggle" onclick="toggleHTP()">
-      <div class="htp-icon">⚔️</div>
-      <div class="htp-text">
-        <h3>How to Play — The A B C D E F G Turn Structure</h3>
-        <p>Every turn in Riftbound follows the same 7-phase sequence. Learn this and you'll never be lost.</p>
-      </div>
-      <div class="htp-arrow">▶</div>
-    </div>
-    <div class="htp-content" id="htpContent">
-      <div class="htp-steps">
-        <div class="htp-step">
-          <div class="htp-step-letter">A</div>
-          <div class="htp-step-body">
-            <h4>AWAKEN</h4>
-            <p>All exhausted units and legends ready. This is your free reset — every unit is ready to act again.</p>
-          </div>
-        </div>
-        <div class="htp-step">
-          <div class="htp-step-letter">B</div>
-          <div class="htp-step-body">
-            <h4>BEGINNING</h4>
-            <p>Score points for held battlefields. If your unit holds a field alone — score 1 point. First to 8 points wins.</p>
-          </div>
-        </div>
-        <div class="htp-step">
-          <div class="htp-step-letter">C</div>
-          <div class="htp-step-body">
-            <h4>CHANNEL</h4>
-            <p>Draw runes from your 12-card rune deck. Runes are your energy — you need them to play cards.</p>
-          </div>
-        </div>
-        <div class="htp-step">
-          <div class="htp-step-letter">D</div>
-          <div class="htp-step-body">
-            <h4>DRAW</h4>
-            <p>Draw 1 card from your main deck. Some cards and abilities let you draw more.</p>
-          </div>
-        </div>
-        <div class="htp-step">
-          <div class="htp-step-letter">E</div>
-          <div class="htp-step-body">
-            <h4>ENGAGE</h4>
-            <p>Play cards from your hand. Units, spells, gear — spend runes to play them to your base or battlefields.</p>
-          </div>
-        </div>
-        <div class="htp-step">
-          <div class="htp-step-letter">F</div>
-          <div class="htp-step-body">
-            <h4>FIGHT</h4>
-            <p>Move units from your base to battlefields and declare attacks. Units fight if both sides have units there.</p>
-          </div>
-        </div>
-        <div class="htp-step">
-          <div class="htp-step-letter">G</div>
-          <div class="htp-step-body">
-            <h4>GO TO END</h4>
-            <p>Combat resolves. Units that dealt enough damage conquer the field. Conquered fields score points. End your turn.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- DECK DETAIL PANEL -->
-  <div class="deck-detail" id="deckDetail"></div>
-
-</section>
-
-<!-- TOOLTIP -->
-<div class="card-tooltip" id="cardTooltip">
-  <div class="tooltip-name" id="ttName"></div>
-  <div class="tooltip-stats" id="ttStats"></div>
-  <div class="tooltip-ability" id="ttAbility"></div>
+<div class="page">
+<div class="hd">
+  <h1>RIFTBOUND</h1>
+  <div class="div-line"></div>
+  <p class="hd-sub">War Table &nbsp;·&nbsp; Origins &amp; Spiritforged</p>
+  <p class="choose-txt" style="margin-top:18px">Choose Your Champion</p>
 </div>
-
-<footer>
-  RIFTBOUND WAR TABLE &nbsp;·&nbsp; Origins &amp; Spiritforged &nbsp;·&nbsp; 8 Decks &nbsp;·&nbsp; All rights to card content belong to Riot Games
-</footer>
+<div class="grid" id="grid"></div>
+<div class="htp-wrap">
+  <button class="htp-btn" id="htpBtn" onclick="toggleHTP()">
+    <span class="htp-icon">⚔️</span>
+    <div class="htp-txt">
+      <h3>How to Play — The Turn Structure</h3>
+      <p>Every turn in Riftbound follows the same sequence. Click to learn the 4 core phases.</p>
+    </div>
+    <span class="htp-arr">▶</span>
+  </button>
+  <div class="htp-body" id="htpBody">
+    <div class="abcd-grid">
+      <div class="abcd-row"><div class="abcd-ltr" style="color:#c8a84b">A</div><div class="abcd-bd"><h4>AWAKEN &amp; BEGINNING</h4><p>All exhausted units and your legend ready up. Then score points for any battlefields your units are holding alone. First to 8 points wins.</p></div></div>
+      <div class="abcd-row"><div class="abcd-ltr" style="color:#5b9bd5">B</div><div class="abcd-bd"><h4>CHANNEL &amp; DRAW</h4><p>Draw runes from your 12-card rune deck — these are your energy to play cards. Then draw 1 card from your main deck.</p></div></div>
+      <div class="abcd-row"><div class="abcd-ltr" style="color:#e8404a">C</div><div class="abcd-bd"><h4>PLAY &amp; DEPLOY</h4><p>Spend runes to play units, spells, and gear. Units go to your base first, then move to battlefields. Reactions can be played any time — even on your opponent's turn.</p></div></div>
+      <div class="abcd-row"><div class="abcd-ltr" style="color:#2a7a4a">D</div><div class="abcd-bd"><h4>FIGHT &amp; CONQUER</h4><p>Attack with your units. If yours deal more damage, you conquer the field. Conquered fields score points if you hold them next turn. Pass turn to opponent.</p></div></div>
+    </div>
+  </div>
+</div>
+<div class="detail" id="detail"></div>
+</div>
+<div class="tt" id="tt"><div class="tt-name" id="ttN"></div><div class="tt-stats" id="ttS"></div><div class="tt-ab" id="ttA"></div></div>
+<footer>RIFTBOUND WAR TABLE &nbsp;·&nbsp; Origins &amp; Spiritforged &nbsp;·&nbsp; 8 Decks &nbsp;·&nbsp; Card content © Riot Games</footer>
 
 <script>
-// ============================================================
-// DECK DATA
-// ============================================================
-const DECK_DATA = [{"key": "azir", "name": "Azir", "legend_cid": "SFD-197", "legend_name": "Azir - Emperor of the Sands", "legend_ability": "Your Sand Soldiers have [WEAPONMASTER].  1, Exhaust: Play a 2 Might Sand Soldier unit token to your base. Use only if you've played an Equipment this turn.", "champion_cid": "SFD-177", "champion_name": "Azir - Sovereign", "champion_cost": "4", "champion_might": "4", "champion_ability": "[ACCELERATE] (You may pay 1 and Order as an additional cost to have me enter ready.) When I attack, you may move any number of your token units to this battlefield.", "champion_key": "azir", "colors": "Calm+Order", "style": "Go Wide", "tagline": "Token Flood", "accent": "#C8A84B", "bg": "#1a2a1a", "abcdefg": ["A — AWAKEN: Ready all units. Note which Sand Soldiers are positioned.", "B — BEGINNING: Score held fields. Legend plays a free Sand Soldier.", "C — CHANNEL: Draw Calm+Order runes.", "D — DRAW: Draw 1. Soldiers inherit WEAPONMASTER from legend.", "E — EQUIP: Attach gear to a Soldier on arrival at 1 rune less.", "F — FIELD: Send Soldier wave to both fields. Arise! creates 4 Soldiers at once.", "G — GO: Attack with everything. Grand Strategem gives all units +5M."], "how_it_plays": "Flood both fields with Sand Soldiers. Every turn the legend makes a free Soldier. Gear attaches at 1 rune less. Arise! creates 4 Soldiers simultaneously. Grand Strategem turns your army into a 7M wall. Nobody can block everyone.", "turn_order": "Turns 1-3: Play cheap units, hold fields. Turns 4-5: Arise! for 4 Soldiers. Turn 6+: Grand Strategem, attack with full board. Win by making too many threats to answer.", "rank": "★★★", "sim_score": 48, "main_cards": [{"cid": "SFD-153", "qty": 3, "name": "Eye of the Herald", "cost": "1", "might": 0, "rarity": "C", "type": "Gear", "domain": "Order", "ability": "[EQUIP Order] (Order: Attach this to a unit you control.) When I move, play a 1 Might Recruit unit token here."}, {"cid": "SFD-033", "qty": 3, "name": "Doran's Shield", "cost": "1", "might": "0", "rarity": "C", "type": "Gear", "domain": "Calm", "ability": "[EQUIP Calm] (Calm: Attach this to a unit you control.)  TANK (I must be assigned combat damage first.) +1 Might"}, {"cid": "SFD-042", "qty": 3, "name": "Brutalizer", "cost": "2", "might": 0, "rarity": "U", "type": "Gear", "domain": "Calm", "ability": "[EQUIP Calm]  (Calm: Attach this to a unit you control.)  If this was attached to me this turn, I have an additional +2 Might.   +1 Might."}, {"cid": "SFD-051", "qty": 1, "name": "Guardian Angel", "cost": "2", "might": "0", "rarity": "R", "type": "Gear", "domain": "Calm", "ability": "[EQUIP Calm] (Calm: Attach this to a unit you control.) If I would die, kill Guardian Angel instead. Heal me, Exhaust me, and recall me. Might +1"}, {"cid": "SFD-172", "qty": 1, "name": "Sacred Shears", "cost": "2", "might": 0, "rarity": "R", "type": "Gear", "domain": "Order", "ability": "[EQUIP Order] (Order: Attach this to a unit you control.)  [DEATHKNELL] - Draw 1. (When I die, get the effect.)  +1 Might"}, {"cid": "SFD-031", "qty": 3, "name": "Desert's Call", "cost": "2", "might": 0, "rarity": "C", "type": "Spell", "domain": "Calm", "ability": "[REPEAT 2] (You may pay the additional cost to repeat this spell's effect) Play a 2 Might Sand Soldier unit token."}, {"cid": "SFD-043", "qty": 3, "name": "Emperor's Divide", "cost": "2", "might": 0, "rarity": "U", "type": "Spell", "domain": "Calm", "ability": "[HIDDEN] (Hide for now Rune to react with later for 0.) [ACTION] (Play on your turn or in showdowns.) Move any number of friendly units at a battlefield on their base."}, {"cid": "SFD-034", "qty": 1, "name": "Feral Strength", "cost": "2", "might": "0", "rarity": "C", "type": "Spell", "domain": "Calm", "ability": "REACTION (Play any time, even before spells and abilities resolve.)  [REPEAT 2] (You may pay the additional cost to repeat this spell's effect.)  Give a unit +2 Might this turn."}, {"cid": "OGN-209", "qty": 2, "name": "Cull the Weak", "cost": "2", "might": "0", "rarity": "C", "type": "Spell", "domain": "Order", "ability": "Each player kills one of their units."}, {"cid": "OGN-213", "qty": 2, "name": "Hidden Blade", "cost": "2", "might": "0", "rarity": "C", "type": "Spell", "domain": "Order", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.) ACTION (Play on your turn or in showdowns.) Kill a unit at a battlefield. Its controller draws 2."}, {"cid": "SFD-163", "qty": 2, "name": "Deathgrip", "cost": "2", "might": 0, "rarity": "U", "type": "Spell", "domain": "Order", "ability": "[REACTION] (Play any time, even before spells and abilities resolve) Kill a friendly unit to give +Might equal to its Might to another friendly unit this turn. Draw 1."}, {"cid": "OGN-058", "qty": 3, "name": "Discipline", "cost": "2", "might": "0", "rarity": "U", "type": "Spell", "domain": "Calm", "ability": "REACTION (Play any time, even before spells and abilities resolve.)Give a unit +2 Might this turn. Draw 1."}, {"cid": "SFD-154", "qty": 3, "name": "Guards!", "cost": "3", "might": 0, "rarity": "C", "type": "Spell", "domain": "Order", "ability": "[HIDDEN] (Hide now for Rune to react with later for 0.) Play a 2 Might Sand Soldier unit token. You may pay Order to ready it."}, {"cid": "SFD-039", "qty": 3, "name": "Royal Entourage", "cost": "3", "might": "4", "rarity": "C", "type": "Unit", "domain": "Calm", "ability": "When you play me, ready or exhaust a legend."}, {"cid": "SFD-038", "qty": 3, "name": "Ribbon Dancer", "cost": "3", "might": "3", "rarity": "C", "type": "Unit", "domain": "Calm", "ability": "When I move to a battlefield, give another friendly unit +1 Might this turn."}, {"cid": "SFD-161", "qty": 3, "name": "B.F. Sword", "cost": "4", "might": "0", "rarity": "U", "type": "Gear", "domain": "Order", "ability": "[EQUIP Order] (Order: Attach this to a unit you control.) +3 Might"}, {"cid": "SFD-198", "qty": 1, "name": "Arise!", "cost": "6", "might": 0, "rarity": "E", "type": "Signature Spell", "domain": "Calm;Order", "ability": "Play a 2 Might Sand Soldier unit token for each Equipment you control. Then ready two of them."}], "sb_cards": [{"cid": "OGN-072", "qty": 1, "name": "Solari Shrine", "cost": "3", "might": "0", "rarity": "R", "ability": "When you kill a stunned enemy unit, you may exhaust this to draw 1."}, {"cid": "OGN-220", "qty": 1, "name": "Facebreaker", "cost": "2", "might": "0", "rarity": "U", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.) ACTION (Play on your turn or in showdowns.) Stun a friendly unit and an enemy unit at the same battlefield. (They don't deal combat damage this turn.)"}, {"cid": "SFD-032", "qty": 2, "name": "Disarming Rake", "cost": "3", "might": "2", "rarity": "C", "ability": "When you play me, you may kill a gear."}, {"cid": "SFD-157", "qty": 2, "name": "Royal Guard", "cost": "4", "might": "2", "rarity": "U", "ability": "When you play me, play a 2 Might Sand Soldier unit token here."}, {"cid": "SFD-159", "qty": 2, "name": "Trusty Ramhound", "cost": "2", "might": "2", "rarity": "C", "ability": "While you have another unit here, I have +1 Might."}]}, {"key": "voli", "name": "Volibear", "legend_cid": "OGN-249", "legend_name": "Volibear - Relentless Storm", "legend_ability": "When you play a MIGHTY unit, you may exhaust me to channel 1 rune exhausted. (A unit is Mighty while it has 5+ Might)", "champion_cid": "OGN-041", "champion_name": "Volibear - Furious", "champion_cost": "10", "champion_might": "9", "champion_ability": "DEFLECT 2 (Opponents must play 2 Power to choose me with a spell or ability.)When I attack, deal 5 damage split among any number of enemy units here.", "champion_key": "volibear", "colors": "Fury+Body", "style": "Go Big", "tagline": "9M Dragon Ramp", "accent": "#5B9BD5", "bg": "#0a1628", "abcdefg": ["A — AWAKEN: Ready dragon. Check rune count.", "B — BEGINNING: Score. Legend channels rune when you play a MIGHTY unit.", "C — CHANNEL: Draw Fury+Body runes. Build toward 9 runes.", "D — DRAW: Draw 1. Herald of Scales reduces dragon costs by 2.", "E — ESTABLISH: Play ramp units early. Every MIGHTY unit = free rune from legend.", "F — FIELD: Raging Firebrand (6M) + Stormbringer (costs 1) = teleport dragon dealing 9.", "G — GO: Dragon hits open field. Deals 3 to all enemy units on attack."], "how_it_plays": "Ramp runes for 5 turns then deploy the 9M dragon. Stormbringer combo teleports it dealing 9 damage on arrival. Herald of Scales reduces costs. Nothing survives a 9M DEFLECT body.", "turn_order": "Turns 1-4: Ramp with cheap Fury+Body units. Turn 5: Raging Firebrand. Turn 6: Stormbringer combo. Turn 7+: Dragon dominates both fields.", "rank": "★★", "sim_score": 12, "main_cards": [{"cid": "OGN-134", "qty": 3, "name": "Mobilize", "cost": "2", "might": "0", "rarity": "C", "type": "Spell", "domain": "Body", "ability": "Channel 1 rune exhausted. If you can't, draw 1."}, {"cid": "OGN-129", "qty": 3, "name": "Confront", "cost": "2", "might": "0", "rarity": "C", "type": "Spell", "domain": "Body", "ability": "ACTION (Play on your turn or in showdowns.) Units you play this turn enter ready. Draw 1."}, {"cid": "OGN-033", "qty": 3, "name": "Shakedown", "cost": "2", "might": "0", "rarity": "R", "type": "Spell", "domain": "Fury", "ability": "REACTION (Play any time, even before spells and abilities resolve.) Choose an enemy unit. Deal 6 to it unless its controller has you draw 2."}, {"cid": "OGN-024", "qty": 2, "name": "Void Seeker", "cost": "3", "might": "0", "rarity": "U", "type": "Spell", "domain": "Fury", "ability": "ACTION (Play on your turn or in showdowns.)Deal 4 to a unit at a battlefield. Draw 1."}, {"cid": "OGN-138", "qty": 3, "name": "Catalyst of Aeons", "cost": "4", "might": "0", "rarity": "U", "type": "Spell", "domain": "Body", "ability": "Channel 2 runes exhausted. If you couldn't channel 2 runes this way, draw 1."}, {"cid": "OGN-140", "qty": 3, "name": "Herald of Scales", "cost": "4", "might": "3", "rarity": "U", "type": "Unit", "domain": "Body", "ability": "Your Dragons' Energy costs are reduced by 2, to a minimum of 1."}, {"cid": "OGN-001", "qty": 3, "name": "Blazing Scorcher", "cost": "5", "might": "5", "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "ACCELERATE (You may pay 1 Fury as an additional cost to have me enter ready.)"}, {"cid": "OGN-131", "qty": 3, "name": "Dune Drake", "cost": "5", "might": "5", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "When I attack, give me +2 Might if there is a ready enemy unit here."}, {"cid": "OGN-031", "qty": 3, "name": "Raging Firebrand", "cost": "6", "might": "4", "rarity": "R", "type": "Unit", "domain": "Fury", "ability": "When you play me, the next spell you play this turn costs 5 less."}, {"cid": "OGN-250", "qty": 3, "name": "Stormbringer", "cost": "6", "might": "0", "rarity": "E", "type": "Signature Spell", "domain": "Fury;Body", "ability": "Choose a friendly unit in your base. Deal damage equal to its Might to all enemy units at a battlefield, then move your unit there."}, {"cid": "SFD-021", "qty": 3, "name": "Ferrous Forerunner", "cost": "6", "might": "6", "rarity": "R", "type": "Unit", "domain": "Fury", "ability": "[DEATHKNELL] — Play two 3 Might Mech unit tokens to your base. (When I die, get the effect.)"}, {"cid": "SFD-094", "qty": 3, "name": "Direwing", "cost": "7", "might": "7", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "I enter ready if you control another Dragon."}, {"cid": "OGN-038", "qty": 3, "name": "Kadregrin the Infernal", "cost": "9", "might": "9", "rarity": "E", "type": "Unit", "domain": "Fury", "ability": "When you play me, draw 1 for each of your MIGHTY units. (A unit is Mighty while it has 5+ Might.)"}, {"cid": "OGN-041", "qty": 2, "name": "Volibear - Furious", "cost": "10", "might": "9", "rarity": "E", "type": "Champion Unit", "domain": "Fury", "ability": "DEFLECT 2 (Opponents must play 2 Power to choose me with a spell or ability.)When I attack, deal 5 damage split among any number of enemy units here."}], "sb_cards": [{"cid": "OGN-014", "qty": 2, "name": "Sky Splitter", "cost": "8", "might": "0", "rarity": "C", "ability": "ACTION (Play on your turn or in showdowns.) This spell's Energy cost is reduced by the highest Might among units you control.  Deal 5 to a unit at a battlefield."}, {"cid": "OGN-022", "qty": 2, "name": "Thermo Beam", "cost": "5", "might": "0", "rarity": "U", "ability": "ACTION (Play on your turn or in showdowns.) Kill all gear."}, {"cid": "OGN-128", "qty": 1, "name": "Challenge", "cost": "2", "might": "0", "rarity": "C", "ability": "ACTION (Play on your turn or in showdowns.)Choose a friendly unit and an enemy unit. They deal damage equal to their Mights to each other."}, {"cid": "OGN-145", "qty": 3, "name": "Unyielding Spirit", "cost": "1", "might": "0", "rarity": "U", "ability": "REACTION (Play at any time, even before spells and abilities resolve.)Prevent all spell and ability damage this turn."}]}, {"key": "mf", "name": "Miss Fortune", "legend_cid": "OGN-267", "legend_name": "Miss Fortune - Bounty Hunter", "legend_ability": "Exhaust: Give a unit GANKING this turn. (It can move from battlefield to battlefield.)", "champion_cid": "OGN-193", "champion_name": "Miss Fortune - Buccaneer", "champion_cost": "4", "champion_might": "4", "champion_ability": "You may play me to an open battlefield.Friendly units may be played to open battlefields.", "champion_key": "missfortune", "colors": "Body+Chaos", "style": "Go Sneaky", "tagline": "GANKING Scorer", "accent": "#E8404A", "bg": "#1a0a10", "abcdefg": ["A — AWAKEN: Ready units. Note which have GANKING.", "B — BEGINNING: Score. Trinity Force passive = hold a field = score 1 point.", "C — CHANNEL: Draw Body+Chaos runes.", "D — DRAW: Draw 1. Legend gives GANKING for free.", "E — ENGAGE: Move GANKING units between fields. Legend exhaust = free GANKING.", "F — FIELD: Ride the Wind = conquer → ready → GANKING → conquer again same turn.", "G — GO: Score two fields in one turn. Trinity Force holder = passive point per turn."], "how_it_plays": "Play mobile units that slide between fields. Legend gives GANKING for free each turn. Ride the Wind readies a unit after conquering — it conquers again. Trinity Force scores a passive point every turn you hold.", "turn_order": "Turns 1-3: Build mobile units. Turn 4: Trinity Force on a GANKING unit. Turn 5+: Double conquer every turn. Win on points before they can respond.", "rank": "★★", "sim_score": 23, "main_cards": [{"cid": "SFD-095", "qty": 2, "name": "Doran's Blade", "cost": "2", "might": "2", "rarity": "C", "type": "Gear", "domain": "Body", "ability": "[EQUIP Body] (Body: Attach this to a unit you control.) +2 Might"}, {"cid": "OGN-173", "qty": 3, "name": "Ride The Wind", "cost": "2", "might": "0", "rarity": "C", "type": "Spell", "domain": "Chaos", "ability": "ACTION (Play on your turn or in showdowns.)Move a friendly unit and ready it."}, {"cid": "SFD-130", "qty": 3, "name": "Treasure Hunter", "cost": "2", "might": "1", "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "When I move, play a Gold gear token exhausted."}, {"cid": "OGN-168", "qty": 3, "name": "Fight or Flight", "cost": "2", "might": "0", "rarity": "C", "type": "Spell", "domain": "Chaos", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.) ACTION (Play on your turn or in showdowns.) Move a unit from a battlefield to its base."}, {"cid": "SFD-129", "qty": 2, "name": "Temptation", "cost": "2", "might": 0, "rarity": "C", "type": "Spell", "domain": "Chaos", "ability": "[REPEAT 2] (You may pay the additional cost to repeat this spell's effect.)  Move an enemy unit to a location where there's a unit with the same controller."}, {"cid": "OGN-136", "qty": 2, "name": "Pit Rookie", "cost": "2", "might": "2", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "When you play me, buff another friendly unit. (If it doesn't have a buff, it gets +1 Might buff.)"}, {"cid": "SFD-133", "qty": 3, "name": "Boots of Swiftness", "cost": "3", "might": "2", "rarity": "U", "type": "Gear", "domain": "Chaos", "ability": "[EQUIP Chaos]  (Chaos: Attach this to a unit you control.)  [GANKING] (I can move from battlefield to battlefield)"}, {"cid": "SFD-123", "qty": 3, "name": "Corrupt Enforcer", "cost": "3", "might": "4", "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "When I move to a battlefield, discard 1.  When I win combat, draw 1."}, {"cid": "OGN-193", "qty": 3, "name": "Miss Fortune - Buccaneer", "cost": "4", "might": "4", "rarity": "R", "type": "Champion Unit", "domain": "Chaos", "ability": "You may play me to an open battlefield.Friendly units may be played to open battlefields."}, {"cid": "SFD-137", "qty": 3, "name": "Harpoon Squad", "cost": "4", "might": "4", "rarity": "U", "type": "Unit", "domain": "Chaos", "ability": "When I move from a battlefield, give me +2 might this turn."}, {"cid": "SFD-125", "qty": 3, "name": "Fae Porter", "cost": "4", "might": "4", "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "When I move to a battlefield, you may pay Chaos to move a unit you control to the same battlefield."}, {"cid": "SFD-093", "qty": 3, "name": "Dauntless Vanguard", "cost": "4", "might": "4", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "You may play me to an occupied enemy battlefield."}, {"cid": "SFD-115", "qty": 3, "name": "Trinity Force", "cost": "4", "might": "0", "rarity": "R", "type": "Gear", "domain": "Body", "ability": "[EQUIP Body] (Body: Attach this to a unit you control.) When I hold, score 1 point. +2 Might"}, {"cid": "OGN-180", "qty": 1, "name": "Fading Memories", "cost": "4", "might": "0", "rarity": "U", "type": "Spell", "domain": "Chaos", "ability": "Give a unit at a battlefield or a gear TEMPORARY. (Kill it at the start of its controller's Beginning Phase, before.)"}, {"cid": "OGN-125", "qty": 3, "name": "Bilgewater Bully", "cost": "6", "might": "6", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "While I'm buffed, I have GANKING. (I can move from battlefield to battlefield.)"}], "sb_cards": [{"cid": "OGN-148", "qty": 2, "name": "Anivia - Primal", "cost": "7", "might": "8", "rarity": "R", "ability": "When I attack, deal 3 to all enemy units here."}, {"cid": "OGN-180", "qty": 1, "name": "Fading Memories", "cost": "4", "might": "0", "rarity": "U", "ability": "Give a unit at a battlefield or a gear TEMPORARY. (Kill it at the start of its controller's Beginning Phase, before.)"}, {"cid": "OGN-182", "qty": 2, "name": "Scrapheap", "cost": "2", "might": "0", "rarity": "U", "ability": "When this is played, discarded, or killed, draw 1."}, {"cid": "OGN-201", "qty": 1, "name": "Invert Timelines", "cost": "3", "might": "0", "rarity": "E", "ability": "Each player discards their hand, then draws 4."}, {"cid": "SFD-104", "qty": 2, "name": "Petricite Monument", "cost": "2", "might": 0, "rarity": "U", "ability": "[TEMPORARY] (Kill this at the start of its controller's Beginning Phase, before scoring.) Friendly units have [DEFLECT]. (Opponents must pay Rune to choose them with a spell or ability.)"}]}, {"key": "draven", "name": "Draven", "legend_cid": "SFD-185", "legend_name": "Draven - Glorious Executioner", "legend_ability": "When you win a combat, draw 1. (You win if only your units remain after combat.)", "champion_cid": "SFD-020", "champion_name": "Draven - Vanquisher", "champion_cost": "4", "champion_might": "4", "champion_ability": "When I win a combat, play a Gold gear token exhausted. When I attack or defend, you may pay Fury. If you do, give me +2 Might this turn.", "champion_key": "draven", "colors": "Fury+Chaos", "style": "Dominator", "tagline": "Win = Draw", "accent": "#D4AF37", "bg": "#1a0a00", "abcdefg": ["A — AWAKEN: Ready everything. Count cards in hand.", "B — BEGINNING: Score. Every combat win drew a card last turn.", "C — CHANNEL: Draw Fury+Body runes.", "D — DRAW: Draw 1 + any combat wins from last turn.", "E — EQUIP: Raging Soul discarded = free 5M ASSAULT+GANKING unit.", "F — FIELD: Minotaur Reckoner = units cannot retreat. Brynhir = opponents cannot play cards.", "G — GO: Win combat. Draw card. Play drawn card. Win again."], "how_it_plays": "Every combat win draws a card. Chemtech Enforcer discards Flame Chompers to replay free. Brynhir stops opponent from playing cards. Minotaur Reckoner traps their units. Snowball that never stops.", "turn_order": "Turns 1-3: Aggressive small units. Turn 4: Minotaur Reckoner. Turn 5: Brynhir lockout. Turn 6+: Unstoppable card advantage engine.", "rank": "★★★", "sim_score": 69, "main_cards": [{"cid": "SFD-003", "qty": 3, "name": "Blood Rush", "cost": "1", "might": 0, "rarity": "C", "type": "Spell", "domain": "Fury", "ability": "[ACTION] (Play on your turn or in showdowns.)  [REPEAT 1]  (You may pay the additional cost to repeat this spell's effect.)  Give a unit [ASSAULT 2]. (+2  while it's an attacker.)"}, {"cid": "OGN-003", "qty": 3, "name": "Chemtech Enforcer", "cost": "2", "might": "2", "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "ASSAULT (+2 Might while I'm an attacker.) When you play me, discard 1."}, {"cid": "OGN-008", "qty": 2, "name": "Get Excited!", "cost": "2", "might": "0", "rarity": "C", "type": "Spell", "domain": "Fury", "ability": "ACTION (Play on your turn or in showdowns.) Discard 1. Deal its Energy cost as damage to a unit at a battlefield. (Ignore its Power cost.)"}, {"cid": "SFD-001", "qty": 3, "name": "Against the Odds", "cost": "2", "might": "0", "rarity": "C", "type": "Spell", "domain": "Fury", "ability": "[REACTION] (Play any time, even before spells and abilities resolve.) Give a friendly unit at a battlefield +2 Might this turn for each enemy unit there."}, {"cid": "SFD-013", "qty": 2, "name": "Blast Corps Cadet", "cost": "2", "might": "2", "rarity": "U", "type": "Unit", "domain": "Fury", "ability": "You may pay 1 and Fury as an additional cost to play me.  When you play me, if you paid the additional cost, deal 2 to a unit at a battlefield."}, {"cid": "OGN-006", "qty": 3, "name": "Flame Chompers", "cost": "3", "might": "3", "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "When you discard me, you may pay 1 Fury to play me."}, {"cid": "OGN-016", "qty": 3, "name": "Dangerous Duo", "cost": "3", "might": "3", "rarity": "U", "type": "Unit", "domain": "Fury", "ability": "LEGION - When you play me, give a unit +2 Might this turn. (Get the effect if you've played another card this turn.)"}, {"cid": "SFD-006", "qty": 3, "name": "Eager Drakehound", "cost": "3", "might": "3", "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "I enter ready."}, {"cid": "SFD-011", "qty": 1, "name": "Angle Shot", "cost": "3", "might": 0, "rarity": "U", "type": "Spell", "domain": "Fury", "ability": "[REACTION] (Play any time, even before spells and abilities resolve.)  Choose a unit and an Equipment with the same controller. Attach that Equipment to that unit or detach that Equipment from that unit. Draw 1."}, {"cid": "OGN-012", "qty": 2, "name": "Noxus Hopeful", "cost": "4", "might": "4", "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "LEGION - I cost 2 less. (Get the effect if you've played another card this turn.)"}, {"cid": "OGN-015", "qty": 1, "name": "Captain Farron", "cost": "4", "might": "5", "rarity": "U", "type": "Unit", "domain": "Fury", "ability": "Other friendly units here have ASSAULT.  (+1 Might while they're attackers.)"}, {"cid": "OGN-019", "qty": 3, "name": "Raging Soul", "cost": "4", "might": "4", "rarity": "U", "type": "Unit", "domain": "Fury", "ability": "If you've discarded a card this turn, I have ASSAULT and GANKING. (+1 Might while I'm an attacker. I can move from battlefield to battlefield.)"}, {"cid": "SFD-012", "qty": 3, "name": "Battering Ram", "cost": "5", "might": "5", "rarity": "U", "type": "Unit", "domain": "Fury", "ability": "I cost 1 less for each card you've played this turn, to a minimum of 1."}, {"cid": "SFD-014", "qty": 3, "name": "Minotaur Reckoner", "cost": "5", "might": "5", "rarity": "U", "type": "Unit", "domain": "Fury", "ability": "Units can't move to base."}, {"cid": "OGN-026", "qty": 1, "name": "Brynhir Thundersong", "cost": "6", "might": "5", "rarity": "R", "type": "Unit", "domain": "Fury", "ability": "When you play me, opponents can't play cards this turn."}, {"cid": "SFD-002", "qty": 3, "name": "Armed Assailant", "cost": "6", "might": "6", "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "[ACCELERATE] (You may pay 1 and Fury as an additional cost to have me enter ready.) [WEAPONMASTER] (When you play me, you may [EQUIP] one of your Equipment to me for 1 Rune less, even if it's already attached.)"}, {"cid": "OGN-034", "qty": 1, "name": "Tryndamere - Barbarian", "cost": "7", "might": "8", "rarity": "R", "type": "Champion Unit", "domain": "Fury", "ability": "When I conquer after an attack, if you assigned 5 or more excess damage to enemy units, you score 1 point."}], "sb_cards": [{"cid": "OGN-002", "qty": 1, "name": "Brazen Buccaneer", "cost": "6", "might": "5", "rarity": "C", "ability": "As you play me, you may discard a card as an additional cost. If you do, reduce my cost by 2."}, {"cid": "OGN-011", "qty": 1, "name": "Magma Wurm", "cost": "8", "might": "8", "rarity": "C", "ability": "Other friendly units enter ready."}, {"cid": "OGN-014", "qty": 1, "name": "Sky Splitter", "cost": "8", "might": "0", "rarity": "C", "ability": "ACTION (Play on your turn or in showdowns.) This spell's Energy cost is reduced by the highest Might among units you control.  Deal 5 to a unit at a battlefield."}, {"cid": "OGN-030", "qty": 1, "name": "Jinx - Demolitionist", "cost": "3", "might": "4", "rarity": "R", "ability": "ACCELERATE (You may pay 1 Fury as an additional cost to have me enter ready.)ASSAULT 2 (+2 Might while I'm an attacker.)When you play me, discard 2."}, {"cid": "OGN-185", "qty": 2, "name": "Traveling Merchant", "cost": "2", "might": "2", "rarity": "U", "ability": "When I move, discard 1, then draw 1."}, {"cid": "SFD-009", "qty": 2, "name": "Serrated Dirk", "cost": "1", "might": 0, "rarity": "C", "ability": "[EQUIP Fury] (Fury: Attach this to a unit you control.)  [ASSAULT 2] (+2 Might while I'm attacking.)  Might +0"}]}, {"key": "lucian", "name": "Lucian", "legend_cid": "SFD-183", "legend_name": "Lucian - Purifier", "legend_ability": "Your Equipment each give [ASSAULT]. (+1 Might while equipped unit is an attacker.)", "champion_cid": "SFD-116", "champion_name": "Yone - Blademaster", "champion_cost": "5", "champion_might": "5", "champion_ability": "[WEAPONMASTER] (When you play me, you may [EQUIP] one of your Equipment to me for Rune less, even if it's already attached.) When I conquer an open battlefield, deal damage equal to my Might to an enemy unit in a base.", "champion_key": "lucian", "colors": "Fury+Body", "style": "The Armory", "tagline": "Gear ASSAULT Stack", "accent": "#C0C0C0", "bg": "#0a0a1a", "abcdefg": ["A — AWAKEN: Ready all carriers. Count gear attached.", "B — BEGINNING: Score. Note ASSAULT values from equipped gear.", "C — CHANNEL: Draw Fury+Body runes.", "D — DRAW: Draw 1. Yordle Explorer draws extra on 2+ rune plays.", "E — EQUIP: Play WEAPONMASTER unit → equip gear at 1 rune less on entry.", "F — FIELD: Stack Hexdrinker+LongSword+Dirk = +4M base + ASSAULT 6 while attacking.", "G — GO: Strike Down = equipped unit deals its Might as direct damage. Kills anything."], "how_it_plays": "Every piece of gear gives ASSAULT from the legend. Stack 5 gears on one unit = +5M + ASSAULT 5. That unit attacks as 15M+. Strike Down lets it deal 15 damage directly without combat. Akshan steals their gear.", "turn_order": "Turns 1-2: Veteran Poro with gear. Turns 3-4: Yone with full stack. Turn 5: Strike Down their biggest threat. Turn 6+: Akshan steals their weapons.", "rank": "★★", "sim_score": 14, "main_cards": [{"cid": "SFD-009", "qty": 1, "name": "Serrated Dirk", "cost": "1", "might": 0, "rarity": "C", "type": "Gear", "domain": "Fury", "ability": "[EQUIP Fury] (Fury: Attach this to a unit you control.)  [ASSAULT 2] (+2 Might while I'm attacking.)  Might +0"}, {"cid": "SFD-108", "qty": 3, "name": "Warmog's Armor", "cost": "1", "might": "0", "rarity": "U", "type": "Gear", "domain": "Body", "ability": "[EQUIP Body] (Body: Attach this to a unit you control.) When I conquer, buff me. (If I don't have a buff, I get a +1 Might buff.)+1 Might"}, {"cid": "SFD-097", "qty": 3, "name": "Punch First", "cost": "1", "might": "0", "rarity": "C", "type": "Spell", "domain": "Body", "ability": "[ACTION] (Play on your turn or in showdowns.) Give a unit +5 Might this turn."}, {"cid": "SFD-022", "qty": 2, "name": "Long Sword", "cost": "2", "might": "0", "rarity": "R", "type": "Gear", "domain": "Fury", "ability": "[QUICK-DRAW] (This has REACTION. When you play it, attach it to a unit you control.) [EQUIP Fury] (Fury: Attach this to a unit you control.)  Might +2"}, {"cid": "SFD-095", "qty": 1, "name": "Doran's Blade", "cost": "2", "might": "2", "rarity": "C", "type": "Gear", "domain": "Body", "ability": "[EQUIP Body] (Body: Attach this to a unit you control.) +2 Might"}, {"cid": "SFD-102", "qty": 3, "name": "Hexdrinker", "cost": "2", "might": 0, "rarity": "U", "type": "Gear", "domain": "Body", "ability": "[EQUIP Body] (Body: Attach this to a unit you control.) [DEFLECT] (Opponents must pay Rune to choose me with a spell or ability.) +1 Might"}, {"cid": "SFD-099", "qty": 3, "name": "Veteran Poro", "cost": "2", "might": "2", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "[WEAPONMASTER] (When you play me, you may [EQUIP] one of your Equipment to me for Rune less, even if it's already attached.)"}, {"cid": "SFD-106", "qty": 3, "name": "Show of Strength", "cost": "2", "might": 0, "rarity": "U", "type": "Spell", "domain": "Body", "ability": "[REACTION] (Play any time, even before spells and abilities resolve.) Draw 1 for each of your [MIGHTY] units. (A unit is Mighty while it has 5+ Might)"}, {"cid": "SFD-113", "qty": 2, "name": "Lucian - Merciless", "cost": "3", "might": "3", "rarity": "R", "type": "Champion Unit", "domain": "Body", "ability": "[WEAPONMASTER] (When you play me, you may [Equip] one of your Equipment to me for 1 Rune less, even if it's already attached.) The first time I conquer each turn, ready me."}, {"cid": "SFD-008", "qty": 3, "name": "Sentinel Adept", "cost": "3", "might": "3", "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "[WEAPONMASTER] (When you play me, you may [Equip] one of your Equipment to me for 1 Rune less, even if it's already attached.)"}, {"cid": "SFD-107", "qty": 3, "name": "Strike Down", "cost": "3", "might": 0, "rarity": "U", "type": "Spell", "domain": "Body", "ability": "Choose an equipped friendly unit. It deals damage equal to its Might to an enemy unit. Then detach an Equipment from it."}, {"cid": "SFD-096", "qty": 3, "name": "Laurent Bladekeeper", "cost": "3", "might": "3", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "[GANKING] (I can move from battlefield to battlefield.)"}, {"cid": "OGN-132", "qty": 1, "name": "First Mate", "cost": "3", "might": "3", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "When you play me, ready another unit."}, {"cid": "SFD-109", "qty": 3, "name": "Akshan - Mischievous", "cost": "4", "might": "4", "rarity": "R", "type": "Champion Unit", "domain": "Body", "ability": "[WEAPONMASTER] You may pay Body Body as an additional cost to play me. When you play me, if you paid the additional cost, move an enemy gear to your base. You control it until I leave the board. If it's an Equipment, attach it to me."}, {"cid": "SFD-116", "qty": 3, "name": "Yone - Blademaster", "cost": "5", "might": "5", "rarity": "R", "type": "Champion Unit", "domain": "Body", "ability": "[WEAPONMASTER] (When you play me, you may [EQUIP] one of your Equipment to me for Rune less, even if it's already attached.) When I conquer an open battlefield, deal damage equal to my Might to an enemy unit in a base."}, {"cid": "SFD-092", "qty": 3, "name": "Combat Chef", "cost": "5", "might": "5", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "[WEAPONMASTER] (When you play me, you may [EQUIP] One of your Equipment to me for Rune less, even if it's already attached.)"}], "sb_cards": [{"cid": "OGN-022", "qty": 1, "name": "Thermo Beam", "cost": "5", "might": "0", "rarity": "U", "ability": "ACTION (Play on your turn or in showdowns.) Kill all gear."}, {"cid": "OGN-132", "qty": 1, "name": "First Mate", "cost": "3", "might": "3", "rarity": "C", "ability": "When you play me, ready another unit."}, {"cid": "OGN-157", "qty": 3, "name": "Udyr - Wildman", "cost": "6", "might": "6", "rarity": "R", "ability": "Spend my buff: Choose one you've not chosen turn —•Deal 2 to a unit at a battlefield.•Stun a unit at a battlefield•Ready me.•Give me GANKING this turn."}, {"cid": "SFD-005", "qty": 2, "name": "Detonate", "cost": "1", "might": 0, "rarity": "C", "ability": "Kill a gear. Its controller draws 2."}, {"cid": "SFD-030", "qty": 1, "name": "Skyfall of Areion", "cost": "3", "might": 0, "rarity": "E", "ability": "[EQUIP 1, Fury] (1, Fury: Attach this to a unit you control.) My hold effects are also conquer effects, and vice verse. Might +2"}]}, {"key": "sett", "name": "Sett", "legend_cid": "OGN-269", "legend_name": "Sett - The Boss", "legend_ability": "When a buffed unit you control would die, you may pay rune and exhaust me to spend its buff and recall it exhausted instead. (Send it to base. This isn't a move.) When you conquer, ready me.", "champion_cid": "SFD-110", "champion_name": "Fiora - Peerless", "champion_cost": "3", "champion_might": "3", "champion_ability": "When I attack or defend one on one, double my Might this combat.", "champion_key": "sett", "colors": "Body+Order", "style": "The Undying", "tagline": "Units Never Die", "accent": "#8B5CF6", "bg": "#0a0a1a", "abcdefg": ["A — AWAKEN: Ready all units. Check which have buffs — Sett can save those.", "B — BEGINNING: Score. Every conquest readied Sett last turn.", "C — CHANNEL: Draw Body+Order runes.", "D — DRAW: Draw 1. Buhru Captain draws or buffs on play.", "E — EXHAUST: React with Sett when opponent removes your buffed unit. Pay 1 rune = unit recalled to base.", "F — FIELD: Fae Dragon buffs 4 units at once. Wildclaw Shaman spends buff = enters ready.", "G — GO: Overt Operation spends ALL buffs = ALL units ready simultaneously. Attack everything."], "how_it_plays": "Your units do not die. When a buffed unit would die, pay 1 rune and exhaust Sett — it goes home instead. Opponent wastes removal. Overt Operation readies your entire board at once for a final strike.", "turn_order": "Turns 1-3: Buff every unit you can. Turns 4-5: Sett saves key units, conquer to ready Sett. Turn 6: Overt Operation, attack with everything simultaneously.", "rank": "★★★", "sim_score": 61, "main_cards": [{"cid": "SFD-098", "qty": 3, "name": "Sea Monkey", "cost": "2", "might": "2", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "You may pay 1 as an additional cost to play me. When you play me, if you paid the additional cost, buff me. (Give me a +1 Might Buff if I don't already have one.)"}, {"cid": "SFD-007", "qty": 2, "name": "Gem Jammer", "cost": "2", "might": "2", "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "When you play me, give a unit [GANKING] this turn. (It can move from battlefield to battlefield)"}, {"cid": "SFD-167", "qty": 3, "name": "Unsung Hero", "cost": "2", "might": "2", "rarity": "U", "type": "Unit", "domain": "Order", "ability": "[DEATHKNELL] — If I was [MIGHTY], draw 2. (When I die, get the effect. I'm Mighty while I have 5+ Might.)"}, {"cid": "OGN-216", "qty": 3, "name": "Soaring Scout", "cost": "2", "might": "1", "rarity": "C", "type": "Unit", "domain": "Order", "ability": "DEATHKNELL - Channel 1 rune exhausted. (When I die, get the effect.)"}, {"cid": "OGN-228", "qty": 2, "name": "Vanguard Helm", "cost": "2", "might": "0", "rarity": "U", "type": "Gear", "domain": "Order", "ability": "When a buffed friendly unit dies, buff another friendly unit. (If it doesn't have a buff, it gets a +1 Might buff.)"}, {"cid": "OGN-146", "qty": 2, "name": "Wallop", "cost": "2", "might": "0", "rarity": "U", "type": "Spell", "domain": "Body", "ability": "ACTION (Play on your turn or in showdowns.) As you play this, you may spend a buff as an additional cost. If you do, ignore this spell's cost. Ready a unit."}, {"cid": "OGN-128", "qty": 1, "name": "Challenge", "cost": "2", "might": "0", "rarity": "C", "type": "Spell", "domain": "Body", "ability": "ACTION (Play on your turn or in showdowns.)Choose a friendly unit and an enemy unit. They deal damage equal to their Mights to each other."}, {"cid": "SFD-091", "qty": 3, "name": "Buhru Captain", "cost": "3", "might": "3", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "When you play me, you may draw 1 or buff me. (To buff a unit, give it a +1 Might buff if it doesn't already have one.)"}, {"cid": "OGN-135", "qty": 2, "name": "Pakaa Cub", "cost": "3", "might": "3", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.)"}, {"cid": "SFD-110", "qty": 2, "name": "Fiora - Peerless", "cost": "3", "might": "3", "rarity": "R", "type": "Champion Unit", "domain": "Body", "ability": "When I attack or defend one on one, double my Might this combat."}, {"cid": "OGN-024", "qty": 1, "name": "Void Seeker", "cost": "3", "might": "0", "rarity": "U", "type": "Spell", "domain": "Fury", "ability": "ACTION (Play on your turn or in showdowns.)Deal 4 to a unit at a battlefield. Draw 1."}, {"cid": "OGN-147", "qty": 3, "name": "Wildclaw Shaman", "cost": "4", "might": "3", "rarity": "U", "type": "Unit", "domain": "Body", "ability": "When you play me, you may spend a buff to buff me and ready me. (If I don't have a buff, I get a +1 Might buff.)"}, {"cid": "SFD-100", "qty": 3, "name": "Yordle Explorer", "cost": "4", "might": "4", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "When you play a card with Power cost 2 Runes or more, draw 1."}, {"cid": "OGN-153", "qty": 3, "name": "Overt Operation", "cost": "5", "might": "0", "rarity": "R", "type": "Spell", "domain": "Body", "ability": "ACTION (play on your turn or in showdowns.) For each friendly unit, you may spend its buff to ready it. Then buff all friendly units. (Each one that doesn't have a buff gets a +1 Might buff.)"}, {"cid": "SFD-101", "qty": 3, "name": "Fae Dragon", "cost": "7", "might": "7", "rarity": "U", "type": "Unit", "domain": "Body", "ability": "When you play me, buff up to four friendly units. (Give each one a +1 Might buff if it doesn't have one.) When you spend a buff, play a Gold gear token exhausted."}, {"cid": "SFD-103", "qty": 3, "name": "Jaull-Fish", "cost": "7", "might": "6", "rarity": "C", "type": "Unit", "domain": "Body", "ability": "[ACCELERATE] (You may pay 1 Body as an additional cost to have me enter ready.) I cost 2 less for each of your [MIGHTY] units. A unit is Mighty while it has 5+ Might.)"}, {"cid": "OGN-011", "qty": 1, "name": "Magma Wurm", "cost": "8", "might": "8", "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "Other friendly units enter ready."}], "sb_cards": [{"cid": "OGN-011", "qty": 1, "name": "Magma Wurm", "cost": "8", "might": "8", "rarity": "C", "ability": "Other friendly units enter ready."}, {"cid": "OGN-128", "qty": 1, "name": "Challenge", "cost": "2", "might": "0", "rarity": "C", "ability": "ACTION (Play on your turn or in showdowns.)Choose a friendly unit and an enemy unit. They deal damage equal to their Mights to each other."}, {"cid": "OGN-137", "qty": 1, "name": "Stormclaw Ursine", "cost": "7", "might": "6", "rarity": "C", "ability": "TANK (I must be assigned combat damage first.) When you play me, channel 1 rune exhausted."}, {"cid": "OGN-149", "qty": 1, "name": "Carnivorous Snapvine", "cost": "5", "might": "6", "rarity": "R", "ability": "When you play me, choose an enemy unit at a battlefield. We deal damage equal to our Mights to each other."}, {"cid": "OGN-151", "qty": 1, "name": "Lee Sin - Centered", "cost": "6", "might": "6", "rarity": "R", "ability": "ACCELERATE (You may pay 1 body as an additional cost to have me enter ready.)Other buffed friendly units at my battlefield have +2 Might."}, {"cid": "OGN-154", "qty": 1, "name": "Primal Strength", "cost": "4", "might": "0", "rarity": "R", "ability": "ACTION (Play on your turn or in showdowns.) Give a unit +7 Might this turn."}, {"cid": "OGN-158", "qty": 1, "name": "Volibear - Imposing", "cost": "12", "might": "10", "rarity": "R", "ability": "SHIELD 3 (+3 Might while I'm a defender.)TANK (I must be assigned combat damage first.)When an opponent moves to a battlefield other than mine, draw 1. (Bases are not battlefields.)"}, {"cid": "SFD-105", "qty": 1, "name": "Ruin Runner", "cost": "6", "might": "5", "rarity": "U", "ability": "I can't be chosen by enemy spells and abilities."}]}, {"key": "ahri", "name": "Ahri", "legend_cid": "OGN-255", "legend_name": "Ahri - Nine-Tailed Fox", "legend_ability": "When an enemy unit attacks a battlefield you control, give it -1 Might this turn, to a minimum of 1 Might.", "champion_cid": "OGN-119", "champion_name": "Ahri - Inquisitive", "champion_cost": "3", "champion_might": "3", "champion_ability": "When I attack or defend, give an enemy unit here -2 Might this turn, to a minimum of 1 Might.", "champion_key": "ahri", "colors": "Calm+Mind", "style": "The Weakener", "tagline": "Debuff Control", "accent": "#FF69B4", "bg": "#0a0010", "abcdefg": ["A — AWAKEN: Ready all. Smoke Screen and Orb of Regret ready here.", "B — BEGINNING: Score. Count how many debuff tools you have ready.", "C — CHANNEL: Draw Calm+Mind runes. Hold Stupefy and Frigid Touch as reactions.", "D — DRAW: Draw 1. Consult Past hidden = draw 2 any time.", "E — EXHAUST: Smoke Screen = -1M. Orb of Regret = -1M. Both free every turn.", "F — FIELD: Eager Apprentice at a field = spells cost 1 less. Stack Ravenbloom Student.", "G — GO: React Stupefy (-1M draw 1) then Frigid Touch (-4M). Their dragon attacks as 3M. Your Poro kills it."], "how_it_plays": "Every attacker is weakened before combat. Stack -1M (legend) + -2M (Ahri) + -4M (Frigid Touch) = their 9M dragon attacks as 2M. Ravenbloom Student grows from every spell. Breakneck Mech finishes from nowhere.", "turn_order": "Turns 1-3: Deploy Smoke Screen, Orb of Regret, hold reactions. Turn 4: Eager Apprentice at field. Turn 5: Ravenbloom grows from spell chain. Turn 6+: Breakneck Mech hits both fields.", "rank": "★★★", "sim_score": 42, "main_cards": [{"cid": "SFD-086", "qty": 3, "name": "World Atlas", "cost": "0", "might": "0", "rarity": "R", "type": "Gear", "domain": "Mind", "ability": "[EQUIP Mind] (Mind: Attach this to a unit you control.) When I hold, play two Gold gear tokens exhausted. +2 Might"}, {"cid": "OGN-095", "qty": 3, "name": "Stupefy", "cost": "1", "might": "0", "rarity": "C", "type": "Spell", "domain": "Mind", "ability": "REACTION (Play any time, even before spells and abilities resolve.) Give a unit -1 Might this turn, to a minimum of 1 Might. Draw 1."}, {"cid": "OGN-090", "qty": 1, "name": "Orb of Regret", "cost": "1", "might": "0", "rarity": "C", "type": "Gear", "domain": "Mind", "ability": "Exhaust: Give a unit -1 Might this turn, to a minimum of 1 Might."}, {"cid": "SFD-063", "qty": 3, "name": "Chemtech Cask", "cost": "1", "might": 0, "rarity": "C", "type": "Gear", "domain": "Calm", "ability": "When you play a spell on an opponent's turn, you may exhaust me to play a Gold gear token exhausted."}, {"cid": "SFD-066", "qty": 3, "name": "Frigid Touch", "cost": "2", "might": 0, "rarity": "C", "type": "Spell", "domain": "Mind", "ability": "[REACTION] (Play any time, even before spells and abilities resolve.)  [REPEAT 2] (You may pay the additional cost to repeat this spell's effect.)  Give a unit -2 Might this turn."}, {"cid": "OGN-093", "qty": 3, "name": "Smoke Screen", "cost": "2", "might": "0", "rarity": "C", "type": "Spell", "domain": "Mind", "ability": "Exhaust: Give a unit -1 Might this turn, to a minimum of 1 Might."}, {"cid": "SFD-040", "qty": 3, "name": "Thwonk!", "cost": "2", "might": 0, "rarity": "C", "type": "Spell", "domain": "Calm", "ability": "[ACTION] (Play on your turn or in showdowns.)  [REPEAT]  (You may pay the additional cost to repeat this spell's effect.)  Stun an attacking unit. (It doesn't deal combat damage this turn.)"}, {"cid": "OGN-103", "qty": 3, "name": "Ravenbloom Student", "cost": "2", "might": "2", "rarity": "U", "type": "Unit", "domain": "Mind", "ability": "When you play a spell, give me +1 Might this turn."}, {"cid": "OGN-052", "qty": 3, "name": "Stalwart Poro", "cost": "2", "might": "2", "rarity": "C", "type": "Unit", "domain": "Calm", "ability": "SHIELD (+1 Might while I'm a defender.)"}, {"cid": "OGN-084", "qty": 3, "name": "Eager Apprentice", "cost": "3", "might": "3", "rarity": "C", "type": "Unit", "domain": "Mind", "ability": "While I'm at a battlefield, the Energy costs for spells you play is reduced by 1, to a minimum of 1."}, {"cid": "OGN-055", "qty": 3, "name": "Wielder of Water", "cost": "3", "might": "2", "rarity": "C", "type": "Unit", "domain": "Calm", "ability": "While I'm attacking or defending alone, I have +2 Might."}, {"cid": "SFD-067", "qty": 3, "name": "Frostcoat Cub", "cost": "3", "might": "3", "rarity": "C", "type": "Unit", "domain": "Mind", "ability": "You may pay Mind as an additional cost to play me. When you play me, if you paid the additional cost, give a unit -2 Might this turn."}, {"cid": "OGN-083", "qty": 3, "name": "Consult the Past", "cost": "4", "might": "0", "rarity": "C", "type": "Spell", "domain": "Mind", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.) REACTION (Play any time, even before spells and abilities resolve.) Draw 2."}, {"cid": "SFD-071", "qty": 3, "name": "Breakneck Mech", "cost": "8", "might": "7", "rarity": "U", "type": "Unit", "domain": "Calm", "ability": "Your Mechs have [DEFLECT] and [GANKING]. (Opponents must pay 1 Rune to choose us with a spell or ability. We can move from battlefield to battlefield.)  I enter ready if you control another Mech."}], "sb_cards": [{"cid": "OGN-065", "qty": 2, "name": "Wizened Elder", "cost": "4", "might": "4", "rarity": "U", "ability": "While I'm buffed, I have an additional +1 Might."}, {"cid": "OGN-105", "qty": 1, "name": "Singularity", "cost": "6", "might": "0", "rarity": "U", "ability": "Deal 6 to each of up to two units."}, {"cid": "SFD-037", "qty": 2, "name": "Navori Scout", "cost": "4", "might": "4", "rarity": "C", "ability": "[DEFLECT] (Opponents must pay Rune to choose me with a spell or ability.)"}, {"cid": "SFD-045", "qty": 2, "name": "Not So Fast", "cost": "2", "might": "0", "rarity": "U", "ability": "[REACTION] (Play any time, even before spells and abilities resolve.) Counter an enemy spell or ability that chooses a friendly unit or gear."}, {"cid": "SFD-072", "qty": 1, "name": "Dropboarder", "cost": "4", "might": "4", "rarity": "U", "ability": "When you play me, if you control two or more gear, ready me."}]}, {"key": "teemo", "name": "Teemo", "legend_cid": "OGN-263", "legend_name": "Teemo - Swift Scout", "legend_ability": "You may pay 1 to hide a card with HIDDEN instead of rune. 1, Exhaust: Put a Teemo unit you own into your hand from your Champion Zone or the board.", "champion_cid": "OGN-197", "champion_name": "Teemo - Scout", "champion_cost": "2", "champion_might": "1", "champion_ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.)When you play me, give me +3 Might this turn.", "champion_key": "teemo", "colors": "Mind+Chaos", "style": "The Thief", "tagline": "Bounce Steal Swap", "accent": "#00CC66", "bg": "#001a0a", "abcdefg": ["A — AWAKEN: Ready all. Check facedown cards — Mushroom Pouch draws 1 now.", "B — BEGINNING: Score. Count hidden cards for Ember Monk math.", "C — CHANNEL: Draw Mind+Chaos runes. Hold Gust and Switcheroo.", "D — DRAW: Draw 1. Stacked Deck filters top 3.", "E — EXHAUST: Hide Switcheroo, Windsinger, Wages of Pain facedown.", "F — FIELD: Play Teemo Scout from hidden = enters as 4M surprise. Legend recycles him back.", "G — GO: When their unit attacks — react Blastcone (-2M) then Switcheroo (swap Might). Their dragon becomes 2M. Late game: Possession. Take their best unit."], "how_it_plays": "Never let them build a board. Bounce everything with Rebuke, Gust, Windsinger. When they commit — Switcheroo from hidden swaps their best unit's Might with your weakest. Possession permanently steals their unit.", "turn_order": "Turns 1-3: Bounce their threats, build facedown engine. Turn 4: Ember Monk + all hidden plays = massive attacker. Turn 5: Zaunite Bouncer resets their board. Turn 6+: Possession.", "rank": "★★★", "sim_score": 44, "main_cards": [{"cid": "OGN-169", "qty": 3, "name": "Gust", "cost": "1", "might": "0", "rarity": "C", "type": "Spell", "domain": "Chaos", "ability": "REACTION (Play any time, even before spells and abilities resolve.) Return a unit at a battlefield with 3 Might or less to its owner's hand."}, {"cid": "OGN-183", "qty": 1, "name": "Stacked Deck", "cost": "1", "might": "0", "rarity": "U", "type": "Spell", "domain": "Chaos", "ability": "ACTION (Play on your turn or in showdowns.)Look at the top 3 cards of your Main Deck. Put 1 into your hand and recycle the rest."}, {"cid": "SFD-145", "qty": 3, "name": "Switcheroo", "cost": "2", "might": 0, "rarity": "R", "type": "Spell", "domain": "Chaos", "ability": "[HIDDEN] (Hide now for 1 Rune to reach later for 0.) [ACTION] {Play on your turn or in showdowns.) Swap the Might of two units at the same battlefield this turn."}, {"cid": "OGN-172", "qty": 3, "name": "Rebuke", "cost": "2", "might": "0", "rarity": "C", "type": "Spell", "domain": "Chaos", "ability": "ACTION (Play on your turn or in showdowns.) Return a unit at a battlefield to its owner's hand."}, {"cid": "SFD-138", "qty": 3, "name": "Windsinger", "cost": "2", "might": "1", "rarity": "U", "type": "Unit", "domain": "Chaos", "ability": "[HIDDEN]  (Hide now for 1 Rune to reach later for 0.)  When you play me, you may return another unit at a battlefield with 3 Might or less to its owner's hand."}, {"cid": "OGN-097", "qty": 3, "name": "Blastcone Fae", "cost": "2", "might": "2", "rarity": "U", "type": "Unit", "domain": "Mind", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.) When you play me, give a unit -2 Might this turn, to a minimum of 1 Might."}, {"cid": "OGN-101", "qty": 2, "name": "Mushroom Pouch", "cost": "2", "might": "0", "rarity": "U", "type": "Gear", "domain": "Mind", "ability": "At the start of your Beginning Phase, if you control a facedown card at a battlefield, draw 1."}, {"cid": "SFD-069", "qty": 3, "name": "Plundering Poro", "cost": "2", "might": "2", "rarity": "C", "type": "Unit", "domain": "Mind", "ability": "When I conquer, play a Gold gear token exhausted."}, {"cid": "SFD-070", "qty": 3, "name": "Wages of Pain", "cost": "3", "might": 0, "rarity": "C", "type": "Spell", "domain": "Mind", "ability": "[HIDDEN] (Hide now for 1 Rune to react with later for 0.)  [ACTION] (Play on your turn or in showdowns.)  Deal 3 to a unit at a battlefield. Play a Gold gear token exhausted."}, {"cid": "SFD-121", "qty": 2, "name": "Black Market Broker", "cost": "3", "might": "3", "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "When you play a card from face down, play a gold gear token exhausted."}, {"cid": "OGN-165", "qty": 1, "name": "Cemetery Attendant", "cost": "3", "might": "3", "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "When you play me, return a unit from your trash to your hand."}, {"cid": "OGN-188", "qty": 3, "name": "Zaunite Bouncer", "cost": "4", "might": "2", "rarity": "U", "type": "Unit", "domain": "Chaos", "ability": "When you play me, return another unit at a battlefield to its owner's hand."}, {"cid": "OGN-167", "qty": 2, "name": "Ember Monk", "cost": "4", "might": "4", "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "When you play a card from HIDDEN, give me +2 Might this turn."}, {"cid": "OGN-178", "qty": 2, "name": "Undercover Agent", "cost": "5", "might": "5", "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "DEATHKNELL - Discard 2, then draw 2. (When I die, get the effect.)"}, {"cid": "SFD-127", "qty": 3, "name": "Master Bingwen", "cost": "6", "might": "6", "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "[WEAPONMASTER] (When you play me, you may [EQUIP] one of your Equipment to me for 1 Rune less, even if it's already attached.)"}, {"cid": "OGN-203", "qty": 2, "name": "Possession", "cost": "8", "might": "0", "rarity": "E", "type": "Spell", "domain": "Chaos", "ability": "ACTION (Play on your turn or in showdowns.)Choose an enemy unit at a battlefield. Take control of it and recall it. (Send it to your base. This isn't a move.)"}, {"cid": "OGN-195", "qty": 1, "name": "Rhasa the Sunderer", "cost": "10", "might": "6", "rarity": "R", "type": "Unit", "domain": "Chaos", "ability": "I cost 1 less for each card in your trash."}], "sb_cards": [{"cid": "OGN-118", "qty": 1, "name": "Wraith of Echoes", "cost": "6", "might": "5", "rarity": "R", "ability": "The first time a friendly unit dies each turn, draw 1."}, {"cid": "OGN-121", "qty": 1, "name": "Teemo - Strategist", "cost": "2", "might": "2", "rarity": "E", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.) When I defend or I'm played from HIDDEN, reveal the top 5 cards of your Main Deck. Deal 1 to an enemy unit here for each card with , then recycle them."}, {"cid": "OGN-182", "qty": 1, "name": "Scrapheap", "cost": "2", "might": "0", "rarity": "U", "ability": "When this is played, discarded, or killed, draw 1."}, {"cid": "OGN-185", "qty": 1, "name": "Traveling Merchant", "cost": "2", "might": "2", "rarity": "U", "ability": "When I move, discard 1, then draw 1."}, {"cid": "SFD-077", "qty": 2, "name": "Rocket Barrage", "cost": "4", "might": "0", "rarity": "U", "ability": "[REPEAT 4 Mind] (You may pay the additional cost to repeat this spell's effect, and may make different choices.) Choose one — • Deal 4 to a unit in a base. • Kill a gear."}, {"cid": "SFD-082", "qty": 1, "name": "Ezreal - Dashing", "cost": "4", "might": "3", "rarity": "R", "ability": "When I attack or defend, deal damage equal to my Might to an enemy unit here. I don't deal combat damage. Mind: [ACTION] — Move me to your base."}, {"cid": "SFD-136", "qty": 1, "name": "Hard Bargain", "cost": "2", "might": 0, "rarity": "U", "ability": "[REACTION] (Play any time, even before spells and abilities resolve.)  [REPEAT 2] (You may pay the additional cost to repeat this spell's effect.)  Counter a spell unless its controller pays 2."}]}];
+const DECKS=[{"key": "azir", "name": "Azir", "legend_cid": "SFD-197", "legend_name": "Azir - Emperor of the Sands", "legend_ability": "Your Sand Soldiers have [WEAPONMASTER].  1, Exhaust: Play a 2 Might Sand Soldier unit token to your base. Use only if you've played an Equipment this turn.", "champion_cid": "SFD-177", "champion_name": "Azir - Sovereign", "champion_cost": "4", "champion_might": "4", "champion_ability": "[ACCELERATE] (You may pay 1 and Order as an additional cost to have me enter ready.) When I attack, you may move any number of your token units to this battlefield.", "champion_key": "azir", "right_crop": true, "colors": "Calm+Order", "style": "Go Wide", "tagline": "Token Flood", "accent": "#C8A84B", "runes": ["6x Calm (Green)", "6x Order (Yellow)"], "battlefields": [{"cid": "SFD-207", "name": "Emperor's Dais", "ability": "When you conquer here, you may pay 1 and return a unit you control here to its owner's hand. If you do, play a 2 Might Sand Soldier unit token here."}, {"cid": "SFD-210", "name": "Hall of Legends", "ability": "When you conquer here, you may pay 1 to ready your legend."}, {"cid": "OGN-293", "name": "The Grand Plaza", "ability": "When you hold here, if you have 7+ units here, you win the game."}], "abcdefg": [{"letter": "A", "phase": "A", "desc": "Awaken — All your units ready up."}, {"letter": "B", "phase": "B", "desc": "Beginning — Score your held fields."}, {"letter": "C", "phase": "C", "desc": "Channel — Draw your runes."}, {"letter": "D", "phase": "D", "desc": "Draw — Pull a card from your main deck."}, {"letter": "E", "phase": "E", "desc": "Equip and Play — Deploy your hand."}, {"letter": "F", "phase": "F", "desc": "Field — Move Soldiers to battlefields."}, {"letter": "G", "phase": "G", "desc": "Go — Attack and conquer."}], "how_it_plays": "Flood both fields with Sand Soldiers. Every turn the legend makes a free Soldier for free. Arise! creates 4 Soldiers at once. Grand Strategem gives your whole army +5M. Nobody can block everyone.", "turn_order": "Turns 1-3: Play cheap units, hold fields. Turns 4-5: Arise! for 4 Soldiers. Turn 6+: Grand Strategem, attack with full board.", "main_cards": [{"cid": "SFD-198", "qty": 1, "name": "Arise!", "cost": 6, "might": 0, "rarity": "E", "type": "Signature Spell", "domain": "Calm;Order", "ability": "Play a 2 Might Sand Soldier unit token for each Equipment you control. Then ready two of them."}, {"cid": "SFD-051", "qty": 1, "name": "Guardian Angel", "cost": 2, "might": 0, "rarity": "R", "type": "Gear", "domain": "Calm", "ability": "[EQUIP Calm] (Calm: Attach this to a unit you control.) If I would die, kill Guardian Angel instead. Heal me, Exhaust me, and recall me. Might +1"}, {"cid": "SFD-172", "qty": 1, "name": "Sacred Shears", "cost": 2, "might": 0, "rarity": "R", "type": "Gear", "domain": "Order", "ability": "[EQUIP Order] (Order: Attach this to a unit you control.)  [DEATHKNELL] - Draw 1. (When I die, get the effect.)  +1 Might"}, {"cid": "SFD-042", "qty": 3, "name": "Brutalizer", "cost": 2, "might": 0, "rarity": "U", "type": "Gear", "domain": "Calm", "ability": "[EQUIP Calm]  (Calm: Attach this to a unit you control.)  If this was attached to me this turn, I have an additional +2 Might.   +1 Might."}, {"cid": "SFD-043", "qty": 3, "name": "Emperor's Divide", "cost": 2, "might": 0, "rarity": "U", "type": "Spell", "domain": "Calm", "ability": "[HIDDEN] (Hide for now Rune to react with later for 0.) [ACTION] (Play on your turn or in showdowns.) Move any number of friendly units at a battlefield on their base."}, {"cid": "SFD-163", "qty": 2, "name": "Deathgrip", "cost": 2, "might": 0, "rarity": "U", "type": "Spell", "domain": "Order", "ability": "[REACTION] (Play any time, even before spells and abilities resolve) Kill a friendly unit to give +Might equal to its Might to another friendly unit this turn. Draw 1."}, {"cid": "OGN-058", "qty": 3, "name": "Discipline", "cost": 2, "might": 0, "rarity": "U", "type": "Spell", "domain": "Calm", "ability": "REACTION (Play any time, even before spells and abilities resolve.)Give a unit +2 Might this turn. Draw 1."}, {"cid": "SFD-161", "qty": 3, "name": "B.F. Sword", "cost": 4, "might": 0, "rarity": "U", "type": "Gear", "domain": "Order", "ability": "[EQUIP Order] (Order: Attach this to a unit you control.) +3 Might"}, {"cid": "SFD-153", "qty": 3, "name": "Eye of the Herald", "cost": 1, "might": 0, "rarity": "C", "type": "Gear", "domain": "Order", "ability": "[EQUIP Order] (Order: Attach this to a unit you control.) When I move, play a 1 Might Recruit unit token here."}, {"cid": "SFD-033", "qty": 3, "name": "Doran's Shield", "cost": 1, "might": 0, "rarity": "C", "type": "Gear", "domain": "Calm", "ability": "[EQUIP Calm] (Calm: Attach this to a unit you control.)  TANK (I must be assigned combat damage first.) +1 Might"}, {"cid": "SFD-031", "qty": 3, "name": "Desert's Call", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Calm", "ability": "[REPEAT 2] (You may pay the additional cost to repeat this spell's effect) Play a 2 Might Sand Soldier unit token."}, {"cid": "SFD-034", "qty": 1, "name": "Feral Strength", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Calm", "ability": "REACTION (Play any time, even before spells and abilities resolve.)  [REPEAT 2] (You may pay the additional cost to repeat this spell's effect.)  Give a unit +2 Might this turn."}, {"cid": "OGN-209", "qty": 2, "name": "Cull the Weak", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Order", "ability": "Each player kills one of their units."}, {"cid": "OGN-213", "qty": 2, "name": "Hidden Blade", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Order", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.) ACTION (Play on your turn or in showdowns.) Kill a unit at a battlefield. Its controller draws 2."}, {"cid": "SFD-154", "qty": 3, "name": "Guards!", "cost": 3, "might": 0, "rarity": "C", "type": "Spell", "domain": "Order", "ability": "[HIDDEN] (Hide now for Rune to react with later for 0.) Play a 2 Might Sand Soldier unit token. You may pay Order to ready it."}, {"cid": "SFD-039", "qty": 3, "name": "Royal Entourage", "cost": 3, "might": 4, "rarity": "C", "type": "Unit", "domain": "Calm", "ability": "When you play me, ready or exhaust a legend."}, {"cid": "SFD-038", "qty": 3, "name": "Ribbon Dancer", "cost": 3, "might": 3, "rarity": "C", "type": "Unit", "domain": "Calm", "ability": "When I move to a battlefield, give another friendly unit +1 Might this turn."}], "sb_cards": [{"cid": "OGN-072", "qty": 1, "name": "Solari Shrine", "cost": 3, "might": 0, "rarity": "R", "type": "Gear", "domain": "Calm", "ability": "When you kill a stunned enemy unit, you may exhaust this to draw 1."}, {"cid": "OGN-220", "qty": 1, "name": "Facebreaker", "cost": 2, "might": 0, "rarity": "U", "type": "Spell", "domain": "Order", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.) ACTION (Play on your turn or in showdowns.) Stun a friendly unit and an enemy unit at the same battlefield. (They don't deal combat damage this turn.)"}, {"cid": "SFD-157", "qty": 2, "name": "Royal Guard", "cost": 4, "might": 2, "rarity": "U", "type": "Unit", "domain": "Order", "ability": "When you play me, play a 2 Might Sand Soldier unit token here."}, {"cid": "SFD-159", "qty": 2, "name": "Trusty Ramhound", "cost": 2, "might": 2, "rarity": "C", "type": "Unit", "domain": "Order", "ability": "While you have another unit here, I have +1 Might."}, {"cid": "SFD-032", "qty": 2, "name": "Disarming Rake", "cost": 3, "might": 2, "rarity": "C", "type": "Unit", "domain": "Calm", "ability": "When you play me, you may kill a gear."}]}, {"key": "voli", "name": "Volibear", "legend_cid": "OGN-249", "legend_name": "Volibear - Relentless Storm", "legend_ability": "When you play a MIGHTY unit, you may exhaust me to channel 1 rune exhausted. (A unit is Mighty while it has 5+ Might)", "champion_cid": "OGN-041", "champion_name": "Volibear - Furious", "champion_cost": "10", "champion_might": "9", "champion_ability": "DEFLECT 2 (Opponents must play 2 Power to choose me with a spell or ability.)When I attack, deal 5 damage split among any number of enemy units here.", "champion_key": "volibear", "right_crop": false, "colors": "Fury+Body", "style": "Go Big", "tagline": "9M Dragon", "accent": "#5B9BD5", "runes": ["6x Fury (Red)", "6x Body (Orange)"], "battlefields": [{"cid": "SFD-218", "name": "Sunken Temple", "ability": "When you conquer here with one or more [MIGHTY] units, you may pay 1 to draw 1. (A unit is Mighty while it has 5+ .)"}, {"cid": "OGN-289", "name": "Targon's Peak", "ability": "When you conquer here, ready 2 runes at the end of this turn"}, {"cid": "OGN-294", "name": "Trifarian War Camp", "ability": "Units here have +1 Might. (This includes attackers.)"}], "abcdefg": [{"letter": "A", "phase": "A", "desc": "Awaken — Everything readies."}, {"letter": "B", "phase": "B", "desc": "Beginning — Score your held fields."}, {"letter": "C", "phase": "C", "desc": "Channel — Draw your runes."}, {"letter": "D", "phase": "D", "desc": "Draw — Pull a card."}, {"letter": "E", "phase": "E", "desc": "Establish — Play ramp units."}, {"letter": "F", "phase": "F", "desc": "Field — Hold ground until the dragon."}, {"letter": "G", "phase": "G", "desc": "Go — Dragon dominates."}], "how_it_plays": "Ramp runes for 5 turns then deploy the 9M dragon. Stormbringer combo teleports it dealing 9 damage on arrival. Herald of Scales reduces dragon costs. Nothing survives a 9M DEFLECT body.", "turn_order": "Turns 1-4: Ramp with cheap units. Turn 5: Raging Firebrand. Turn 6: Stormbringer combo. Turn 7+: Dragon dominates.", "main_cards": [{"cid": "OGN-250", "qty": 3, "name": "Stormbringer", "cost": 6, "might": 0, "rarity": "E", "type": "Signature Spell", "domain": "Fury;Body", "ability": "Choose a friendly unit in your base. Deal damage equal to its Might to all enemy units at a battlefield, then move your unit there."}, {"cid": "OGN-038", "qty": 3, "name": "Kadregrin the Infernal", "cost": 9, "might": 9, "rarity": "E", "type": "Unit", "domain": "Fury", "ability": "When you play me, draw 1 for each of your MIGHTY units. (A unit is Mighty while it has 5+ Might.)"}, {"cid": "OGN-041", "qty": 2, "name": "Volibear - Furious", "cost": 10, "might": 9, "rarity": "E", "type": "Champion Unit", "domain": "Fury", "ability": "DEFLECT 2 (Opponents must play 2 Power to choose me with a spell or ability.)When I attack, deal 5 damage split among any number of enemy units here."}, {"cid": "OGN-033", "qty": 3, "name": "Shakedown", "cost": 2, "might": 0, "rarity": "R", "type": "Spell", "domain": "Fury", "ability": "REACTION (Play any time, even before spells and abilities resolve.) Choose an enemy unit. Deal 6 to it unless its controller has you draw 2."}, {"cid": "OGN-031", "qty": 3, "name": "Raging Firebrand", "cost": 6, "might": 4, "rarity": "R", "type": "Unit", "domain": "Fury", "ability": "When you play me, the next spell you play this turn costs 5 less."}, {"cid": "SFD-021", "qty": 3, "name": "Ferrous Forerunner", "cost": 6, "might": 6, "rarity": "R", "type": "Unit", "domain": "Fury", "ability": "[DEATHKNELL] — Play two 3 Might Mech unit tokens to your base. (When I die, get the effect.)"}, {"cid": "OGN-024", "qty": 2, "name": "Void Seeker", "cost": 3, "might": 0, "rarity": "U", "type": "Spell", "domain": "Fury", "ability": "ACTION (Play on your turn or in showdowns.)Deal 4 to a unit at a battlefield. Draw 1."}, {"cid": "OGN-138", "qty": 3, "name": "Catalyst of Aeons", "cost": 4, "might": 0, "rarity": "U", "type": "Spell", "domain": "Body", "ability": "Channel 2 runes exhausted. If you couldn't channel 2 runes this way, draw 1."}, {"cid": "OGN-140", "qty": 3, "name": "Herald of Scales", "cost": 4, "might": 3, "rarity": "U", "type": "Unit", "domain": "Body", "ability": "Your Dragons' Energy costs are reduced by 2, to a minimum of 1."}, {"cid": "OGN-134", "qty": 3, "name": "Mobilize", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Body", "ability": "Channel 1 rune exhausted. If you can't, draw 1."}, {"cid": "OGN-129", "qty": 3, "name": "Confront", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Body", "ability": "ACTION (Play on your turn or in showdowns.) Units you play this turn enter ready. Draw 1."}, {"cid": "OGN-001", "qty": 3, "name": "Blazing Scorcher", "cost": 5, "might": 5, "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "ACCELERATE (You may pay 1 Fury as an additional cost to have me enter ready.)"}, {"cid": "OGN-131", "qty": 3, "name": "Dune Drake", "cost": 5, "might": 5, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "When I attack, give me +2 Might if there is a ready enemy unit here."}, {"cid": "SFD-094", "qty": 3, "name": "Direwing", "cost": 7, "might": 7, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "I enter ready if you control another Dragon."}], "sb_cards": [{"cid": "OGN-145", "qty": 3, "name": "Unyielding Spirit", "cost": 1, "might": 0, "rarity": "U", "type": "Spell", "domain": "Body", "ability": "REACTION (Play at any time, even before spells and abilities resolve.)Prevent all spell and ability damage this turn."}, {"cid": "OGN-022", "qty": 2, "name": "Thermo Beam", "cost": 5, "might": 0, "rarity": "U", "type": "Spell", "domain": "Fury", "ability": "ACTION (Play on your turn or in showdowns.) Kill all gear."}, {"cid": "OGN-128", "qty": 1, "name": "Challenge", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Body", "ability": "ACTION (Play on your turn or in showdowns.)Choose a friendly unit and an enemy unit. They deal damage equal to their Mights to each other."}, {"cid": "OGN-014", "qty": 2, "name": "Sky Splitter", "cost": 8, "might": 0, "rarity": "C", "type": "Spell", "domain": "Fury", "ability": "ACTION (Play on your turn or in showdowns.) This spell's Energy cost is reduced by the highest Might among units you control.  Deal 5 to a unit at a battlefield."}]}, {"key": "mf", "name": "Miss Fortune", "legend_cid": "OGN-267", "legend_name": "Miss Fortune - Bounty Hunter", "legend_ability": "Exhaust: Give a unit GANKING this turn. (It can move from battlefield to battlefield.)", "champion_cid": "OGN-193", "champion_name": "Miss Fortune - Buccaneer", "champion_cost": "4", "champion_might": "4", "champion_ability": "You may play me to an open battlefield.Friendly units may be played to open battlefields.", "champion_key": "missfortune", "right_crop": true, "colors": "Body+Chaos", "style": "Go Sneaky", "tagline": "GANKING Scorer", "accent": "#E8404A", "runes": ["6x Body (Orange)", "6x Chaos (Purple)"], "battlefields": [{"cid": "OGN-297", "name": "Windswept Hillock", "ability": "Units here have GANKING. (They can move from battlefield to battlefield.)"}, {"cid": "OGN-277", "name": "Back-Alley Bar", "ability": "When a unit moves from here, give it +1 Might this turn."}, {"cid": "OGN-286", "name": "Reckoner's Arena", "ability": "When you hold this, activate the conquer abilities of units here."}], "abcdefg": [{"letter": "A", "phase": "A", "desc": "Awaken — Everything readies."}, {"letter": "B", "phase": "B", "desc": "Beginning — Score and check Trinity Force."}, {"letter": "C", "phase": "C", "desc": "Channel — Draw your runes."}, {"letter": "D", "phase": "D", "desc": "Draw — Pull a card."}, {"letter": "E", "phase": "E", "desc": "Engage — Play units and give them GANKING."}, {"letter": "F", "phase": "F", "desc": "Field — Move and threaten both fields."}, {"letter": "G", "phase": "G", "desc": "Go — Score the points they can't answer."}], "how_it_plays": "Play mobile units that slide between fields. Legend gives GANKING for free each turn. Ride the Wind readies a unit after conquering so it conquers again. Trinity Force scores a passive point every turn you hold.", "turn_order": "Turns 1-3: Build mobile units. Turn 4: Trinity Force on a GANKING unit. Turn 5+: Double conquer every turn.", "main_cards": [{"cid": "OGN-193", "qty": 3, "name": "Miss Fortune - Buccaneer", "cost": 4, "might": 4, "rarity": "R", "type": "Champion Unit", "domain": "Chaos", "ability": "You may play me to an open battlefield.Friendly units may be played to open battlefields."}, {"cid": "SFD-115", "qty": 3, "name": "Trinity Force", "cost": 4, "might": 0, "rarity": "R", "type": "Gear", "domain": "Body", "ability": "[EQUIP Body] (Body: Attach this to a unit you control.) When I hold, score 1 point. +2 Might"}, {"cid": "SFD-133", "qty": 3, "name": "Boots of Swiftness", "cost": 3, "might": 2, "rarity": "U", "type": "Gear", "domain": "Chaos", "ability": "[EQUIP Chaos]  (Chaos: Attach this to a unit you control.)  [GANKING] (I can move from battlefield to battlefield)"}, {"cid": "SFD-137", "qty": 3, "name": "Harpoon Squad", "cost": 4, "might": 4, "rarity": "U", "type": "Unit", "domain": "Chaos", "ability": "When I move from a battlefield, give me +2 might this turn."}, {"cid": "OGN-180", "qty": 1, "name": "Fading Memories", "cost": 4, "might": 0, "rarity": "U", "type": "Spell", "domain": "Chaos", "ability": "Give a unit at a battlefield or a gear TEMPORARY. (Kill it at the start of its controller's Beginning Phase, before.)"}, {"cid": "SFD-095", "qty": 2, "name": "Doran's Blade", "cost": 2, "might": 2, "rarity": "C", "type": "Gear", "domain": "Body", "ability": "[EQUIP Body] (Body: Attach this to a unit you control.) +2 Might"}, {"cid": "OGN-173", "qty": 3, "name": "Ride The Wind", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Chaos", "ability": "ACTION (Play on your turn or in showdowns.)Move a friendly unit and ready it."}, {"cid": "SFD-130", "qty": 3, "name": "Treasure Hunter", "cost": 2, "might": 1, "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "When I move, play a Gold gear token exhausted."}, {"cid": "OGN-168", "qty": 3, "name": "Fight or Flight", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Chaos", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.) ACTION (Play on your turn or in showdowns.) Move a unit from a battlefield to its base."}, {"cid": "SFD-129", "qty": 2, "name": "Temptation", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Chaos", "ability": "[REPEAT 2] (You may pay the additional cost to repeat this spell's effect.)  Move an enemy unit to a location where there's a unit with the same controller."}, {"cid": "OGN-136", "qty": 2, "name": "Pit Rookie", "cost": 2, "might": 2, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "When you play me, buff another friendly unit. (If it doesn't have a buff, it gets +1 Might buff.)"}, {"cid": "SFD-123", "qty": 3, "name": "Corrupt Enforcer", "cost": 3, "might": 4, "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "When I move to a battlefield, discard 1.  When I win combat, draw 1."}, {"cid": "SFD-125", "qty": 3, "name": "Fae Porter", "cost": 4, "might": 4, "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "When I move to a battlefield, you may pay Chaos to move a unit you control to the same battlefield."}, {"cid": "SFD-093", "qty": 3, "name": "Dauntless Vanguard", "cost": 4, "might": 4, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "You may play me to an occupied enemy battlefield."}, {"cid": "OGN-125", "qty": 3, "name": "Bilgewater Bully", "cost": 6, "might": 6, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "While I'm buffed, I have GANKING. (I can move from battlefield to battlefield.)"}], "sb_cards": [{"cid": "OGN-201", "qty": 1, "name": "Invert Timelines", "cost": 3, "might": 0, "rarity": "E", "type": "Spell", "domain": "Chaos", "ability": "Each player discards their hand, then draws 4."}, {"cid": "OGN-148", "qty": 2, "name": "Anivia - Primal", "cost": 7, "might": 8, "rarity": "R", "type": "Champion Unit", "domain": "Body", "ability": "When I attack, deal 3 to all enemy units here."}, {"cid": "OGN-182", "qty": 2, "name": "Scrapheap", "cost": 2, "might": 0, "rarity": "U", "type": "Gear", "domain": "Chaos", "ability": "When this is played, discarded, or killed, draw 1."}, {"cid": "SFD-104", "qty": 2, "name": "Petricite Monument", "cost": 2, "might": 0, "rarity": "U", "type": "Gear", "domain": "Body", "ability": "[TEMPORARY] (Kill this at the start of its controller's Beginning Phase, before scoring.) Friendly units have [DEFLECT]. (Opponents must pay Rune to choose them with a spell or ability.)"}, {"cid": "OGN-180", "qty": 1, "name": "Fading Memories", "cost": 4, "might": 0, "rarity": "U", "type": "Spell", "domain": "Chaos", "ability": "Give a unit at a battlefield or a gear TEMPORARY. (Kill it at the start of its controller's Beginning Phase, before.)"}]}, {"key": "draven", "name": "Draven", "legend_cid": "SFD-185", "legend_name": "Draven - Glorious Executioner", "legend_ability": "When you win a combat, draw 1. (You win if only your units remain after combat.)", "champion_cid": "SFD-020", "champion_name": "Draven - Vanquisher", "champion_cost": "4", "champion_might": "4", "champion_ability": "When I win a combat, play a Gold gear token exhausted. When I attack or defend, you may pay Fury. If you do, give me +2 Might this turn.", "champion_key": "draven", "right_crop": true, "colors": "Fury+Chaos", "style": "Dominator", "tagline": "Win = Draw", "accent": "#D4AF37", "runes": ["6x Fury (Red)", "6x Chaos (Purple)"], "battlefields": [{"cid": "OGN-295", "name": "Vilemaw's Lair", "ability": "Units can't move from here to base."}, {"cid": "OGN-298", "name": "Zaun Warrens", "ability": "When you conquer here, discard 1, then draw 1."}, {"cid": "SFD-211", "name": "Marai Spire", "ability": "While you control this battlefield, friendly [REPEAT] costs cost 1 less."}], "abcdefg": [{"letter": "A", "phase": "A", "desc": "Awaken — Everything readies."}, {"letter": "B", "phase": "B", "desc": "Beginning — Score your held fields."}, {"letter": "C", "phase": "C", "desc": "Channel — Draw your runes."}, {"letter": "D", "phase": "D", "desc": "Draw — Pull a card."}, {"letter": "E", "phase": "E", "desc": "Execute — Play your threats."}, {"letter": "F", "phase": "F", "desc": "Field — Lock them down."}, {"letter": "G", "phase": "G", "desc": "Go — Win combat, draw, repeat."}], "how_it_plays": "Every combat win draws a card. Chemtech Enforcer discards Flame Chompers to replay free. Brynhir stops opponent from playing cards. Minotaur Reckoner traps their units. A snowball that never stops.", "turn_order": "Turns 1-3: Aggressive small units. Turn 4: Minotaur Reckoner. Turn 5: Brynhir lockout. Turn 6+: Unstoppable card advantage.", "main_cards": [{"cid": "OGN-026", "qty": 1, "name": "Brynhir Thundersong", "cost": 6, "might": 5, "rarity": "R", "type": "Unit", "domain": "Fury", "ability": "When you play me, opponents can't play cards this turn."}, {"cid": "OGN-034", "qty": 1, "name": "Tryndamere - Barbarian", "cost": 7, "might": 8, "rarity": "R", "type": "Champion Unit", "domain": "Fury", "ability": "When I conquer after an attack, if you assigned 5 or more excess damage to enemy units, you score 1 point."}, {"cid": "SFD-013", "qty": 2, "name": "Blast Corps Cadet", "cost": 2, "might": 2, "rarity": "U", "type": "Unit", "domain": "Fury", "ability": "You may pay 1 and Fury as an additional cost to play me.  When you play me, if you paid the additional cost, deal 2 to a unit at a battlefield."}, {"cid": "OGN-016", "qty": 3, "name": "Dangerous Duo", "cost": 3, "might": 3, "rarity": "U", "type": "Unit", "domain": "Fury", "ability": "LEGION - When you play me, give a unit +2 Might this turn. (Get the effect if you've played another card this turn.)"}, {"cid": "SFD-011", "qty": 1, "name": "Angle Shot", "cost": 3, "might": 0, "rarity": "U", "type": "Spell", "domain": "Fury", "ability": "[REACTION] (Play any time, even before spells and abilities resolve.)  Choose a unit and an Equipment with the same controller. Attach that Equipment to that unit or detach that Equipment from that unit. Draw 1."}, {"cid": "OGN-015", "qty": 1, "name": "Captain Farron", "cost": 4, "might": 5, "rarity": "U", "type": "Unit", "domain": "Fury", "ability": "Other friendly units here have ASSAULT.  (+1 Might while they're attackers.)"}, {"cid": "OGN-019", "qty": 3, "name": "Raging Soul", "cost": 4, "might": 4, "rarity": "U", "type": "Unit", "domain": "Fury", "ability": "If you've discarded a card this turn, I have ASSAULT and GANKING. (+1 Might while I'm an attacker. I can move from battlefield to battlefield.)"}, {"cid": "SFD-012", "qty": 3, "name": "Battering Ram", "cost": 5, "might": 5, "rarity": "U", "type": "Unit", "domain": "Fury", "ability": "I cost 1 less for each card you've played this turn, to a minimum of 1."}, {"cid": "SFD-014", "qty": 3, "name": "Minotaur Reckoner", "cost": 5, "might": 5, "rarity": "U", "type": "Unit", "domain": "Fury", "ability": "Units can't move to base."}, {"cid": "SFD-003", "qty": 3, "name": "Blood Rush", "cost": 1, "might": 0, "rarity": "C", "type": "Spell", "domain": "Fury", "ability": "[ACTION] (Play on your turn or in showdowns.)  [REPEAT 1]  (You may pay the additional cost to repeat this spell's effect.)  Give a unit [ASSAULT 2]. (+2  while it's an attacker.)"}, {"cid": "OGN-003", "qty": 3, "name": "Chemtech Enforcer", "cost": 2, "might": 2, "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "ASSAULT (+2 Might while I'm an attacker.) When you play me, discard 1."}, {"cid": "OGN-008", "qty": 2, "name": "Get Excited!", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Fury", "ability": "ACTION (Play on your turn or in showdowns.) Discard 1. Deal its Energy cost as damage to a unit at a battlefield. (Ignore its Power cost.)"}, {"cid": "SFD-001", "qty": 3, "name": "Against the Odds", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Fury", "ability": "[REACTION] (Play any time, even before spells and abilities resolve.) Give a friendly unit at a battlefield +2 Might this turn for each enemy unit there."}, {"cid": "OGN-006", "qty": 3, "name": "Flame Chompers", "cost": 3, "might": 3, "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "When you discard me, you may pay 1 Fury to play me."}, {"cid": "SFD-006", "qty": 3, "name": "Eager Drakehound", "cost": 3, "might": 3, "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "I enter ready."}, {"cid": "OGN-012", "qty": 2, "name": "Noxus Hopeful", "cost": 4, "might": 4, "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "LEGION - I cost 2 less. (Get the effect if you've played another card this turn.)"}, {"cid": "SFD-002", "qty": 3, "name": "Armed Assailant", "cost": 6, "might": 6, "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "[ACCELERATE] (You may pay 1 and Fury as an additional cost to have me enter ready.) [WEAPONMASTER] (When you play me, you may [EQUIP] one of your Equipment to me for 1 Rune less, even if it's already attached.)"}], "sb_cards": [{"cid": "OGN-030", "qty": 1, "name": "Jinx - Demolitionist", "cost": 3, "might": 4, "rarity": "R", "type": "Champion Unit", "domain": "Fury", "ability": "ACCELERATE (You may pay 1 Fury as an additional cost to have me enter ready.)ASSAULT 2 (+2 Might while I'm an attacker.)When you play me, discard 2."}, {"cid": "OGN-185", "qty": 2, "name": "Traveling Merchant", "cost": 2, "might": 2, "rarity": "U", "type": "Unit", "domain": "Chaos", "ability": "When I move, discard 1, then draw 1."}, {"cid": "SFD-009", "qty": 2, "name": "Serrated Dirk", "cost": 1, "might": 0, "rarity": "C", "type": "Gear", "domain": "Fury", "ability": "[EQUIP Fury] (Fury: Attach this to a unit you control.)  [ASSAULT 2] (+2 Might while I'm attacking.)  Might +0"}, {"cid": "OGN-002", "qty": 1, "name": "Brazen Buccaneer", "cost": 6, "might": 5, "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "As you play me, you may discard a card as an additional cost. If you do, reduce my cost by 2."}, {"cid": "OGN-014", "qty": 1, "name": "Sky Splitter", "cost": 8, "might": 0, "rarity": "C", "type": "Spell", "domain": "Fury", "ability": "ACTION (Play on your turn or in showdowns.) This spell's Energy cost is reduced by the highest Might among units you control.  Deal 5 to a unit at a battlefield."}, {"cid": "OGN-011", "qty": 1, "name": "Magma Wurm", "cost": 8, "might": 8, "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "Other friendly units enter ready."}]}, {"key": "lucian", "name": "Lucian", "legend_cid": "SFD-183", "legend_name": "Lucian - Purifier", "legend_ability": "Your Equipment each give [ASSAULT]. (+1 Might while equipped unit is an attacker.)", "champion_cid": "SFD-116", "champion_name": "Yone - Blademaster", "champion_cost": "5", "champion_might": "5", "champion_ability": "[WEAPONMASTER] (When you play me, you may [EQUIP] one of your Equipment to me for Rune less, even if it's already attached.) When I conquer an open battlefield, deal damage equal to my Might to an enemy unit in a base.", "champion_key": "lucian", "right_crop": true, "colors": "Fury+Body", "style": "The Armory", "tagline": "Gear ASSAULT", "accent": "#C0C0C0", "runes": ["6x Fury (Red)", "6x Body (Orange)"], "battlefields": [{"cid": "SFD-208", "name": "Forge of the Fluft", "ability": "While you control this battlefield, friendly legends have \"Exhaust: Attach an Equipment you control to a unit you control.\""}, {"cid": "SFD-213", "name": "Ornn's Forge", "ability": "While you control this battlefield, the first friendly non-token gear played each turn costs 1 less."}, {"cid": "SFD-221", "name": "Veiled Temple", "ability": "When you conquer here, you may ready a friendly gear. If it's an Equipment, you may detach it."}], "abcdefg": [{"letter": "A", "phase": "A", "desc": "Awaken — All carriers ready."}, {"letter": "B", "phase": "B", "desc": "Beginning — Score your held fields."}, {"letter": "C", "phase": "C", "desc": "Channel — Draw your runes."}, {"letter": "D", "phase": "D", "desc": "Draw — Pull a card."}, {"letter": "E", "phase": "E", "desc": "Equip — Play a WEAPONMASTER unit."}, {"letter": "F", "phase": "F", "desc": "Field — Send the loaded carrier in."}, {"letter": "G", "phase": "G", "desc": "Go — Attack the open field."}], "how_it_plays": "Every piece of gear gives ASSAULT from the legend. Stack 5 gears on one unit = +5M + ASSAULT 5 while attacking. Strike Down lets your loaded unit deal its full Might as direct damage. Kills anything without combat.", "turn_order": "Turns 1-2: Veteran Poro with gear. Turns 3-4: Yone with full stack. Turn 5: Strike Down their biggest threat.", "main_cards": [{"cid": "SFD-022", "qty": 2, "name": "Long Sword", "cost": 2, "might": 0, "rarity": "R", "type": "Gear", "domain": "Fury", "ability": "[QUICK-DRAW] (This has REACTION. When you play it, attach it to a unit you control.) [EQUIP Fury] (Fury: Attach this to a unit you control.)  Might +2"}, {"cid": "SFD-113", "qty": 2, "name": "Lucian - Merciless", "cost": 3, "might": 3, "rarity": "R", "type": "Champion Unit", "domain": "Body", "ability": "[WEAPONMASTER] (When you play me, you may [Equip] one of your Equipment to me for 1 Rune less, even if it's already attached.) The first time I conquer each turn, ready me."}, {"cid": "SFD-109", "qty": 3, "name": "Akshan - Mischievous", "cost": 4, "might": 4, "rarity": "R", "type": "Champion Unit", "domain": "Body", "ability": "[WEAPONMASTER] You may pay Body Body as an additional cost to play me. When you play me, if you paid the additional cost, move an enemy gear to your base. You control it until I leave the board. If it's an Equipment, attach it to me."}, {"cid": "SFD-116", "qty": 3, "name": "Yone - Blademaster", "cost": 5, "might": 5, "rarity": "R", "type": "Champion Unit", "domain": "Body", "ability": "[WEAPONMASTER] (When you play me, you may [EQUIP] one of your Equipment to me for Rune less, even if it's already attached.) When I conquer an open battlefield, deal damage equal to my Might to an enemy unit in a base."}, {"cid": "SFD-108", "qty": 3, "name": "Warmog's Armor", "cost": 1, "might": 0, "rarity": "U", "type": "Gear", "domain": "Body", "ability": "[EQUIP Body] (Body: Attach this to a unit you control.) When I conquer, buff me. (If I don't have a buff, I get a +1 Might buff.)+1 Might"}, {"cid": "SFD-102", "qty": 3, "name": "Hexdrinker", "cost": 2, "might": 0, "rarity": "U", "type": "Gear", "domain": "Body", "ability": "[EQUIP Body] (Body: Attach this to a unit you control.) [DEFLECT] (Opponents must pay Rune to choose me with a spell or ability.) +1 Might"}, {"cid": "SFD-106", "qty": 3, "name": "Show of Strength", "cost": 2, "might": 0, "rarity": "U", "type": "Spell", "domain": "Body", "ability": "[REACTION] (Play any time, even before spells and abilities resolve.) Draw 1 for each of your [MIGHTY] units. (A unit is Mighty while it has 5+ Might)"}, {"cid": "SFD-107", "qty": 3, "name": "Strike Down", "cost": 3, "might": 0, "rarity": "U", "type": "Spell", "domain": "Body", "ability": "Choose an equipped friendly unit. It deals damage equal to its Might to an enemy unit. Then detach an Equipment from it."}, {"cid": "SFD-009", "qty": 1, "name": "Serrated Dirk", "cost": 1, "might": 0, "rarity": "C", "type": "Gear", "domain": "Fury", "ability": "[EQUIP Fury] (Fury: Attach this to a unit you control.)  [ASSAULT 2] (+2 Might while I'm attacking.)  Might +0"}, {"cid": "SFD-097", "qty": 3, "name": "Punch First", "cost": 1, "might": 0, "rarity": "C", "type": "Spell", "domain": "Body", "ability": "[ACTION] (Play on your turn or in showdowns.) Give a unit +5 Might this turn."}, {"cid": "SFD-095", "qty": 1, "name": "Doran's Blade", "cost": 2, "might": 2, "rarity": "C", "type": "Gear", "domain": "Body", "ability": "[EQUIP Body] (Body: Attach this to a unit you control.) +2 Might"}, {"cid": "SFD-099", "qty": 3, "name": "Veteran Poro", "cost": 2, "might": 2, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "[WEAPONMASTER] (When you play me, you may [EQUIP] one of your Equipment to me for Rune less, even if it's already attached.)"}, {"cid": "SFD-008", "qty": 3, "name": "Sentinel Adept", "cost": 3, "might": 3, "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "[WEAPONMASTER] (When you play me, you may [Equip] one of your Equipment to me for 1 Rune less, even if it's already attached.)"}, {"cid": "SFD-096", "qty": 3, "name": "Laurent Bladekeeper", "cost": 3, "might": 3, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "[GANKING] (I can move from battlefield to battlefield.)"}, {"cid": "OGN-132", "qty": 1, "name": "First Mate", "cost": 3, "might": 3, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "When you play me, ready another unit."}, {"cid": "SFD-092", "qty": 3, "name": "Combat Chef", "cost": 5, "might": 5, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "[WEAPONMASTER] (When you play me, you may [EQUIP] One of your Equipment to me for Rune less, even if it's already attached.)"}], "sb_cards": [{"cid": "SFD-030", "qty": 1, "name": "Skyfall of Areion", "cost": 3, "might": 0, "rarity": "E", "type": "Gear", "domain": "Fury", "ability": "[EQUIP 1, Fury] (1, Fury: Attach this to a unit you control.) My hold effects are also conquer effects, and vice verse. Might +2"}, {"cid": "OGN-157", "qty": 3, "name": "Udyr - Wildman", "cost": 6, "might": 6, "rarity": "R", "type": "Champion Unit", "domain": "Body", "ability": "Spend my buff: Choose one you've not chosen turn —•Deal 2 to a unit at a battlefield.•Stun a unit at a battlefield•Ready me.•Give me GANKING this turn."}, {"cid": "OGN-022", "qty": 1, "name": "Thermo Beam", "cost": 5, "might": 0, "rarity": "U", "type": "Spell", "domain": "Fury", "ability": "ACTION (Play on your turn or in showdowns.) Kill all gear."}, {"cid": "SFD-005", "qty": 2, "name": "Detonate", "cost": 1, "might": 0, "rarity": "C", "type": "Spell", "domain": "Fury", "ability": "Kill a gear. Its controller draws 2."}, {"cid": "OGN-132", "qty": 1, "name": "First Mate", "cost": 3, "might": 3, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "When you play me, ready another unit."}]}, {"key": "sett", "name": "Sett", "legend_cid": "OGN-269", "legend_name": "Sett - The Boss", "legend_ability": "When a buffed unit you control would die, you may pay rune and exhaust me to spend its buff and recall it exhausted instead. (Send it to base. This isn't a move.) When you conquer, ready me.", "champion_cid": "SFD-110", "champion_name": "Fiora - Peerless", "champion_cost": "3", "champion_might": "3", "champion_ability": "When I attack or defend one on one, double my Might this combat.", "champion_key": "sett", "right_crop": false, "colors": "Body+Order", "style": "The Undying", "tagline": "Units Never Die", "accent": "#8B5CF6", "runes": ["6x Body (Orange)", "6x Order (Yellow)"], "battlefields": [{"cid": "OGN-282", "name": "Monastery of Hirana", "ability": "When you conquer here, you may spend a buff to draw 1."}, {"cid": "OGN-279", "name": "Fortified Position", "ability": "When you defend here, choose a unit. It gains SHIELD 2 this combat. (+2 Might while It's a defender.)"}, {"cid": "OGN-276", "name": "Aspirant's Climb", "ability": "Increase the points needed to win the game by 1"}], "abcdefg": [{"letter": "A", "phase": "A", "desc": "Awaken — All units ready. Sett readies."}, {"letter": "B", "phase": "B", "desc": "Beginning — Score your held fields."}, {"letter": "C", "phase": "C", "desc": "Channel — Draw your runes."}, {"letter": "D", "phase": "D", "desc": "Draw — Pull a card."}, {"letter": "E", "phase": "E", "desc": "Establish — Buff everything."}, {"letter": "F", "phase": "F", "desc": "Field — Let them try to stop you."}, {"letter": "G", "phase": "G", "desc": "Go — Overt Operation. Attack with everything."}], "how_it_plays": "Your units do not die. When a buffed unit would die, pay 1 rune and exhaust Sett — it goes home instead. Opponent wastes removal every turn. Overt Operation readies your entire board at once for a final strike.", "turn_order": "Turns 1-3: Buff every unit. Turns 4-5: Sett saves key units, conquer to ready Sett. Turn 6: Overt Operation, attack with everything.", "main_cards": [{"cid": "SFD-110", "qty": 2, "name": "Fiora - Peerless", "cost": 3, "might": 3, "rarity": "R", "type": "Champion Unit", "domain": "Body", "ability": "When I attack or defend one on one, double my Might this combat."}, {"cid": "OGN-153", "qty": 3, "name": "Overt Operation", "cost": 5, "might": 0, "rarity": "R", "type": "Spell", "domain": "Body", "ability": "ACTION (play on your turn or in showdowns.) For each friendly unit, you may spend its buff to ready it. Then buff all friendly units. (Each one that doesn't have a buff gets a +1 Might buff.)"}, {"cid": "SFD-167", "qty": 3, "name": "Unsung Hero", "cost": 2, "might": 2, "rarity": "U", "type": "Unit", "domain": "Order", "ability": "[DEATHKNELL] — If I was [MIGHTY], draw 2. (When I die, get the effect. I'm Mighty while I have 5+ Might.)"}, {"cid": "OGN-228", "qty": 2, "name": "Vanguard Helm", "cost": 2, "might": 0, "rarity": "U", "type": "Gear", "domain": "Order", "ability": "When a buffed friendly unit dies, buff another friendly unit. (If it doesn't have a buff, it gets a +1 Might buff.)"}, {"cid": "OGN-146", "qty": 2, "name": "Wallop", "cost": 2, "might": 0, "rarity": "U", "type": "Spell", "domain": "Body", "ability": "ACTION (Play on your turn or in showdowns.) As you play this, you may spend a buff as an additional cost. If you do, ignore this spell's cost. Ready a unit."}, {"cid": "OGN-024", "qty": 1, "name": "Void Seeker", "cost": 3, "might": 0, "rarity": "U", "type": "Spell", "domain": "Fury", "ability": "ACTION (Play on your turn or in showdowns.)Deal 4 to a unit at a battlefield. Draw 1."}, {"cid": "OGN-147", "qty": 3, "name": "Wildclaw Shaman", "cost": 4, "might": 3, "rarity": "U", "type": "Unit", "domain": "Body", "ability": "When you play me, you may spend a buff to buff me and ready me. (If I don't have a buff, I get a +1 Might buff.)"}, {"cid": "SFD-101", "qty": 3, "name": "Fae Dragon", "cost": 7, "might": 7, "rarity": "U", "type": "Unit", "domain": "Body", "ability": "When you play me, buff up to four friendly units. (Give each one a +1 Might buff if it doesn't have one.) When you spend a buff, play a Gold gear token exhausted."}, {"cid": "SFD-098", "qty": 3, "name": "Sea Monkey", "cost": 2, "might": 2, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "You may pay 1 as an additional cost to play me. When you play me, if you paid the additional cost, buff me. (Give me a +1 Might Buff if I don't already have one.)"}, {"cid": "SFD-007", "qty": 2, "name": "Gem Jammer", "cost": 2, "might": 2, "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "When you play me, give a unit [GANKING] this turn. (It can move from battlefield to battlefield)"}, {"cid": "OGN-216", "qty": 3, "name": "Soaring Scout", "cost": 2, "might": 1, "rarity": "C", "type": "Unit", "domain": "Order", "ability": "DEATHKNELL - Channel 1 rune exhausted. (When I die, get the effect.)"}, {"cid": "OGN-128", "qty": 1, "name": "Challenge", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Body", "ability": "ACTION (Play on your turn or in showdowns.)Choose a friendly unit and an enemy unit. They deal damage equal to their Mights to each other."}, {"cid": "SFD-091", "qty": 3, "name": "Buhru Captain", "cost": 3, "might": 3, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "When you play me, you may draw 1 or buff me. (To buff a unit, give it a +1 Might buff if it doesn't already have one.)"}, {"cid": "OGN-135", "qty": 2, "name": "Pakaa Cub", "cost": 3, "might": 3, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.)"}, {"cid": "SFD-100", "qty": 3, "name": "Yordle Explorer", "cost": 4, "might": 4, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "When you play a card with Power cost 2 Runes or more, draw 1."}, {"cid": "SFD-103", "qty": 3, "name": "Jaull-Fish", "cost": 7, "might": 6, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "[ACCELERATE] (You may pay 1 Body as an additional cost to have me enter ready.) I cost 2 less for each of your [MIGHTY] units. A unit is Mighty while it has 5+ Might.)"}, {"cid": "OGN-011", "qty": 1, "name": "Magma Wurm", "cost": 8, "might": 8, "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "Other friendly units enter ready."}], "sb_cards": [{"cid": "OGN-154", "qty": 1, "name": "Primal Strength", "cost": 4, "might": 0, "rarity": "R", "type": "Spell", "domain": "Body", "ability": "ACTION (Play on your turn or in showdowns.) Give a unit +7 Might this turn."}, {"cid": "OGN-149", "qty": 1, "name": "Carnivorous Snapvine", "cost": 5, "might": 6, "rarity": "R", "type": "Unit", "domain": "Body", "ability": "When you play me, choose an enemy unit at a battlefield. We deal damage equal to our Mights to each other."}, {"cid": "OGN-151", "qty": 1, "name": "Lee Sin - Centered", "cost": 6, "might": 6, "rarity": "R", "type": "Champion Unit", "domain": "Body", "ability": "ACCELERATE (You may pay 1 body as an additional cost to have me enter ready.)Other buffed friendly units at my battlefield have +2 Might."}, {"cid": "OGN-158", "qty": 1, "name": "Volibear - Imposing", "cost": 12, "might": 10, "rarity": "R", "type": "Champion Unit", "domain": "Body", "ability": "SHIELD 3 (+3 Might while I'm a defender.)TANK (I must be assigned combat damage first.)When an opponent moves to a battlefield other than mine, draw 1. (Bases are not battlefields.)"}, {"cid": "SFD-105", "qty": 1, "name": "Ruin Runner", "cost": 6, "might": 5, "rarity": "U", "type": "Unit", "domain": "Body", "ability": "I can't be chosen by enemy spells and abilities."}, {"cid": "OGN-128", "qty": 1, "name": "Challenge", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Body", "ability": "ACTION (Play on your turn or in showdowns.)Choose a friendly unit and an enemy unit. They deal damage equal to their Mights to each other."}, {"cid": "OGN-137", "qty": 1, "name": "Stormclaw Ursine", "cost": 7, "might": 6, "rarity": "C", "type": "Unit", "domain": "Body", "ability": "TANK (I must be assigned combat damage first.) When you play me, channel 1 rune exhausted."}, {"cid": "OGN-011", "qty": 1, "name": "Magma Wurm", "cost": 8, "might": 8, "rarity": "C", "type": "Unit", "domain": "Fury", "ability": "Other friendly units enter ready."}]}, {"key": "ahri", "name": "Ahri", "legend_cid": "OGN-255", "legend_name": "Ahri - Nine-Tailed Fox", "legend_ability": "When an enemy unit attacks a battlefield you control, give it -1 Might this turn, to a minimum of 1 Might.", "champion_cid": "OGN-119", "champion_name": "Ahri - Inquisitive", "champion_cost": "3", "champion_might": "3", "champion_ability": "When I attack or defend, give an enemy unit here -2 Might this turn, to a minimum of 1 Might.", "champion_key": "ahri", "right_crop": false, "colors": "Calm+Mind", "style": "The Weakener", "tagline": "Debuff Control", "accent": "#FF69B4", "runes": ["6x Calm (Green)", "6x Mind (Blue)"], "battlefields": [{"cid": "SFD-215", "name": "Ravenbloom Conservatory", "ability": "When you defend here, reveal the top card of your Main Deck. If it's a spell, put it in your hand. Otherwise, recycle it."}, {"cid": "OGN-280", "name": "Grove of the God-Willow", "ability": "When you hold here, draw 1."}, {"cid": "SFD-209", "name": "Forgotten Monument", "ability": "Players can't score here until their third turn."}], "abcdefg": [{"letter": "A", "phase": "A", "desc": "Awaken — All units ready. Exhaust tools ready."}, {"letter": "B", "phase": "B", "desc": "Beginning — Score your held fields."}, {"letter": "C", "phase": "C", "desc": "Channel — Draw your runes."}, {"letter": "D", "phase": "D", "desc": "Draw — Pull a card."}, {"letter": "E", "phase": "E", "desc": "Exhaust and Equip — Use your free tools."}, {"letter": "F", "phase": "F", "desc": "Field — Prepare the defense."}, {"letter": "G", "phase": "G", "desc": "Go — React and destroy."}], "how_it_plays": "Every attacker is weakened before combat. Stack -1M (legend) + -2M (Ahri) + -4M (Frigid Touch) = their 9M dragon attacks as 2M. Ravenbloom Student grows from every spell. Breakneck Mech finishes from nowhere.", "turn_order": "Turns 1-3: Deploy exhaust tools, hold reactions. Turn 4: Eager Apprentice at field. Turn 5: Ravenbloom grows. Turn 6+: Breakneck Mech.", "main_cards": [{"cid": "SFD-086", "qty": 3, "name": "World Atlas", "cost": 0, "might": 0, "rarity": "R", "type": "Gear", "domain": "Mind", "ability": "[EQUIP Mind] (Mind: Attach this to a unit you control.) When I hold, play two Gold gear tokens exhausted. +2 Might"}, {"cid": "OGN-103", "qty": 3, "name": "Ravenbloom Student", "cost": 2, "might": 2, "rarity": "U", "type": "Unit", "domain": "Mind", "ability": "When you play a spell, give me +1 Might this turn."}, {"cid": "SFD-071", "qty": 3, "name": "Breakneck Mech", "cost": 8, "might": 7, "rarity": "U", "type": "Unit", "domain": "Calm", "ability": "Your Mechs have [DEFLECT] and [GANKING]. (Opponents must pay 1 Rune to choose us with a spell or ability. We can move from battlefield to battlefield.)  I enter ready if you control another Mech."}, {"cid": "OGN-095", "qty": 3, "name": "Stupefy", "cost": 1, "might": 0, "rarity": "C", "type": "Spell", "domain": "Mind", "ability": "REACTION (Play any time, even before spells and abilities resolve.) Give a unit -1 Might this turn, to a minimum of 1 Might. Draw 1."}, {"cid": "OGN-090", "qty": 1, "name": "Orb of Regret", "cost": 1, "might": 0, "rarity": "C", "type": "Gear", "domain": "Mind", "ability": "Exhaust: Give a unit -1 Might this turn, to a minimum of 1 Might."}, {"cid": "SFD-063", "qty": 3, "name": "Chemtech Cask", "cost": 1, "might": 0, "rarity": "C", "type": "Gear", "domain": "Calm", "ability": "When you play a spell on an opponent's turn, you may exhaust me to play a Gold gear token exhausted."}, {"cid": "SFD-066", "qty": 3, "name": "Frigid Touch", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Mind", "ability": "[REACTION] (Play any time, even before spells and abilities resolve.)  [REPEAT 2] (You may pay the additional cost to repeat this spell's effect.)  Give a unit -2 Might this turn."}, {"cid": "OGN-093", "qty": 3, "name": "Smoke Screen", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Mind", "ability": "Exhaust: Give a unit -1 Might this turn, to a minimum of 1 Might."}, {"cid": "SFD-040", "qty": 3, "name": "Thwonk!", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Calm", "ability": "[ACTION] (Play on your turn or in showdowns.)  [REPEAT]  (You may pay the additional cost to repeat this spell's effect.)  Stun an attacking unit. (It doesn't deal combat damage this turn.)"}, {"cid": "OGN-052", "qty": 3, "name": "Stalwart Poro", "cost": 2, "might": 2, "rarity": "C", "type": "Unit", "domain": "Calm", "ability": "SHIELD (+1 Might while I'm a defender.)"}, {"cid": "OGN-084", "qty": 3, "name": "Eager Apprentice", "cost": 3, "might": 3, "rarity": "C", "type": "Unit", "domain": "Mind", "ability": "While I'm at a battlefield, the Energy costs for spells you play is reduced by 1, to a minimum of 1."}, {"cid": "OGN-055", "qty": 3, "name": "Wielder of Water", "cost": 3, "might": 2, "rarity": "C", "type": "Unit", "domain": "Calm", "ability": "While I'm attacking or defending alone, I have +2 Might."}, {"cid": "SFD-067", "qty": 3, "name": "Frostcoat Cub", "cost": 3, "might": 3, "rarity": "C", "type": "Unit", "domain": "Mind", "ability": "You may pay Mind as an additional cost to play me. When you play me, if you paid the additional cost, give a unit -2 Might this turn."}, {"cid": "OGN-083", "qty": 3, "name": "Consult the Past", "cost": 4, "might": 0, "rarity": "C", "type": "Spell", "domain": "Mind", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.) REACTION (Play any time, even before spells and abilities resolve.) Draw 2."}], "sb_cards": [{"cid": "SFD-045", "qty": 2, "name": "Not So Fast", "cost": 2, "might": 0, "rarity": "U", "type": "Spell", "domain": "Calm", "ability": "[REACTION] (Play any time, even before spells and abilities resolve.) Counter an enemy spell or ability that chooses a friendly unit or gear."}, {"cid": "OGN-065", "qty": 2, "name": "Wizened Elder", "cost": 4, "might": 4, "rarity": "U", "type": "Unit", "domain": "Calm", "ability": "While I'm buffed, I have an additional +1 Might."}, {"cid": "SFD-072", "qty": 1, "name": "Dropboarder", "cost": 4, "might": 4, "rarity": "U", "type": "Unit", "domain": "Mind", "ability": "When you play me, if you control two or more gear, ready me."}, {"cid": "OGN-105", "qty": 1, "name": "Singularity", "cost": 6, "might": 0, "rarity": "U", "type": "Spell", "domain": "Mind", "ability": "Deal 6 to each of up to two units."}, {"cid": "SFD-037", "qty": 2, "name": "Navori Scout", "cost": 4, "might": 4, "rarity": "C", "type": "Unit", "domain": "Calm", "ability": "[DEFLECT] (Opponents must pay Rune to choose me with a spell or ability.)"}]}, {"key": "teemo", "name": "Teemo", "legend_cid": "OGN-263", "legend_name": "Teemo - Swift Scout", "legend_ability": "You may pay 1 to hide a card with HIDDEN instead of rune. 1, Exhaust: Put a Teemo unit you own into your hand from your Champion Zone or the board.", "champion_cid": "OGN-197", "champion_name": "Teemo - Scout", "champion_cost": "2", "champion_might": "1", "champion_ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.)When you play me, give me +3 Might this turn.", "champion_key": "teemo", "right_crop": false, "colors": "Mind+Chaos", "style": "The Thief", "tagline": "Bounce & Steal", "accent": "#00CC66", "runes": ["6x Mind (Blue)", "6x Chaos (Purple)"], "battlefields": [{"cid": "OGN-278", "name": "Bandle Tree", "ability": "You may hide an additional card here."}, {"cid": "OGN-284", "name": "Obelisk of Power", "ability": "Players channel one additional rune during their first Runic Phase this game."}, {"cid": "SFD-220", "name": "Treasure Hoard", "ability": "When you conquer here, you may pay 1 to play a Gold gear token exhausted."}], "abcdefg": [{"letter": "A", "phase": "A", "desc": "Awaken — Everything readies. Mushroom Pouch draws."}, {"letter": "B", "phase": "B", "desc": "Beginning — Score your held fields."}, {"letter": "C", "phase": "C", "desc": "Channel — Draw your runes."}, {"letter": "D", "phase": "D", "desc": "Draw — Pull a card."}, {"letter": "E", "phase": "E", "desc": "Execute — Hide your threat cards."}, {"letter": "F", "phase": "F", "desc": "Field — Play Teemo Scout from hidden."}, {"letter": "G", "phase": "G", "desc": "Go — Switcheroo and steal."}], "how_it_plays": "Never let them build a board. Bounce everything. When they commit their best unit — Switcheroo from hidden swaps its Might with your weakest. Possession permanently steals their best unit.", "turn_order": "Turns 1-3: Bounce threats, build hidden engine. Turn 4: Ember Monk + all hidden plays. Turn 5: Possession steals their best unit.", "main_cards": [{"cid": "OGN-203", "qty": 2, "name": "Possession", "cost": 8, "might": 0, "rarity": "E", "type": "Spell", "domain": "Chaos", "ability": "ACTION (Play on your turn or in showdowns.)Choose an enemy unit at a battlefield. Take control of it and recall it. (Send it to your base. This isn't a move.)"}, {"cid": "SFD-145", "qty": 3, "name": "Switcheroo", "cost": 2, "might": 0, "rarity": "R", "type": "Spell", "domain": "Chaos", "ability": "[HIDDEN] (Hide now for 1 Rune to reach later for 0.) [ACTION] {Play on your turn or in showdowns.) Swap the Might of two units at the same battlefield this turn."}, {"cid": "OGN-195", "qty": 1, "name": "Rhasa the Sunderer", "cost": 10, "might": 6, "rarity": "R", "type": "Unit", "domain": "Chaos", "ability": "I cost 1 less for each card in your trash."}, {"cid": "OGN-183", "qty": 1, "name": "Stacked Deck", "cost": 1, "might": 0, "rarity": "U", "type": "Spell", "domain": "Chaos", "ability": "ACTION (Play on your turn or in showdowns.)Look at the top 3 cards of your Main Deck. Put 1 into your hand and recycle the rest."}, {"cid": "SFD-138", "qty": 3, "name": "Windsinger", "cost": 2, "might": 1, "rarity": "U", "type": "Unit", "domain": "Chaos", "ability": "[HIDDEN]  (Hide now for 1 Rune to reach later for 0.)  When you play me, you may return another unit at a battlefield with 3 Might or less to its owner's hand."}, {"cid": "OGN-097", "qty": 3, "name": "Blastcone Fae", "cost": 2, "might": 2, "rarity": "U", "type": "Unit", "domain": "Mind", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.) When you play me, give a unit -2 Might this turn, to a minimum of 1 Might."}, {"cid": "OGN-101", "qty": 2, "name": "Mushroom Pouch", "cost": 2, "might": 0, "rarity": "U", "type": "Gear", "domain": "Mind", "ability": "At the start of your Beginning Phase, if you control a facedown card at a battlefield, draw 1."}, {"cid": "OGN-188", "qty": 3, "name": "Zaunite Bouncer", "cost": 4, "might": 2, "rarity": "U", "type": "Unit", "domain": "Chaos", "ability": "When you play me, return another unit at a battlefield to its owner's hand."}, {"cid": "OGN-169", "qty": 3, "name": "Gust", "cost": 1, "might": 0, "rarity": "C", "type": "Spell", "domain": "Chaos", "ability": "REACTION (Play any time, even before spells and abilities resolve.) Return a unit at a battlefield with 3 Might or less to its owner's hand."}, {"cid": "OGN-172", "qty": 3, "name": "Rebuke", "cost": 2, "might": 0, "rarity": "C", "type": "Spell", "domain": "Chaos", "ability": "ACTION (Play on your turn or in showdowns.) Return a unit at a battlefield to its owner's hand."}, {"cid": "SFD-069", "qty": 3, "name": "Plundering Poro", "cost": 2, "might": 2, "rarity": "C", "type": "Unit", "domain": "Mind", "ability": "When I conquer, play a Gold gear token exhausted."}, {"cid": "SFD-070", "qty": 3, "name": "Wages of Pain", "cost": 3, "might": 0, "rarity": "C", "type": "Spell", "domain": "Mind", "ability": "[HIDDEN] (Hide now for 1 Rune to react with later for 0.)  [ACTION] (Play on your turn or in showdowns.)  Deal 3 to a unit at a battlefield. Play a Gold gear token exhausted."}, {"cid": "SFD-121", "qty": 2, "name": "Black Market Broker", "cost": 3, "might": 3, "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "When you play a card from face down, play a gold gear token exhausted."}, {"cid": "OGN-165", "qty": 1, "name": "Cemetery Attendant", "cost": 3, "might": 3, "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "When you play me, return a unit from your trash to your hand."}, {"cid": "OGN-167", "qty": 2, "name": "Ember Monk", "cost": 4, "might": 4, "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "When you play a card from HIDDEN, give me +2 Might this turn."}, {"cid": "OGN-178", "qty": 2, "name": "Undercover Agent", "cost": 5, "might": 5, "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "DEATHKNELL - Discard 2, then draw 2. (When I die, get the effect.)"}, {"cid": "SFD-127", "qty": 3, "name": "Master Bingwen", "cost": 6, "might": 6, "rarity": "C", "type": "Unit", "domain": "Chaos", "ability": "[WEAPONMASTER] (When you play me, you may [EQUIP] one of your Equipment to me for 1 Rune less, even if it's already attached.)"}], "sb_cards": [{"cid": "OGN-121", "qty": 1, "name": "Teemo - Strategist", "cost": 2, "might": 2, "rarity": "E", "type": "Champion Unit", "domain": "Mind", "ability": "HIDDEN (Hide now for 1 Rune to react with later for 0.) When I defend or I'm played from HIDDEN, reveal the top 5 cards of your Main Deck. Deal 1 to an enemy unit here for each card with , then recycle them."}, {"cid": "SFD-082", "qty": 1, "name": "Ezreal - Dashing", "cost": 4, "might": 3, "rarity": "R", "type": "Champion Unit", "domain": "Mind", "ability": "When I attack or defend, deal damage equal to my Might to an enemy unit here. I don't deal combat damage. Mind: [ACTION] — Move me to your base."}, {"cid": "OGN-118", "qty": 1, "name": "Wraith of Echoes", "cost": 6, "might": 5, "rarity": "R", "type": "Unit", "domain": "Mind", "ability": "The first time a friendly unit dies each turn, draw 1."}, {"cid": "SFD-136", "qty": 1, "name": "Hard Bargain", "cost": 2, "might": 0, "rarity": "U", "type": "Spell", "domain": "Chaos", "ability": "[REACTION] (Play any time, even before spells and abilities resolve.)  [REPEAT 2] (You may pay the additional cost to repeat this spell's effect.)  Counter a spell unless its controller pays 2."}, {"cid": "OGN-182", "qty": 1, "name": "Scrapheap", "cost": 2, "might": 0, "rarity": "U", "type": "Gear", "domain": "Chaos", "ability": "When this is played, discarded, or killed, draw 1."}, {"cid": "OGN-185", "qty": 1, "name": "Traveling Merchant", "cost": 2, "might": 2, "rarity": "U", "type": "Unit", "domain": "Chaos", "ability": "When I move, discard 1, then draw 1."}, {"cid": "SFD-077", "qty": 2, "name": "Rocket Barrage", "cost": 4, "might": 0, "rarity": "U", "type": "Spell", "domain": "Mind", "ability": "[REPEAT 4 Mind] (You may pay the additional cost to repeat this spell's effect, and may make different choices.) Choose one — • Deal 4 to a unit in a base. • Kill a gear."}]}];
+const IMGS={azir:'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Azir_0.jpg&w=400',volibear:'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Volibear_0.jpg&w=400',missfortune:'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/MissFortune_0.jpg&w=400',draven:'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Draven_0.jpg&w=400',lucian:'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Lucian_0.jpg&w=400',sett:'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Sett_0.jpg&w=400',ahri:'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg&w=400',teemo:'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Teemo_0.jpg&w=400'};
+const CLRS=['#c8a84b','#5b9bd5','#e8404a','#8b5cf6','#2a7a4a','#e07030','#ff69b4'];
+const RSYM={C:'○',U:'◆',R:'★',E:'◈',S:'✦'};
+let active=null,atab='abc';
+function esc(s){return(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/[\r\n]+/g,' ')}
 
-// Champion image URLs via images.weserv.nl proxy from ddragon
-const CHAMP_IMAGES = {
-  azir: 'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Azir_0.jpg&w=400&output=jpg',
-  volibear: 'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Volibear_0.jpg&w=400&output=jpg',
-  missfortune: 'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/MissFortune_0.jpg&w=400&output=jpg',
-  draven: 'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Draven_0.jpg&w=400&output=jpg',
-  lucian: 'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Lucian_0.jpg&w=400&output=jpg',
-  sett: 'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Sett_0.jpg&w=400&output=jpg',
-  ahri: 'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg&w=400&output=jpg',
-  teemo: 'https://images.weserv.nl/?url=ddragon.leagueoflegends.com/cdn/img/champion/splash/Teemo_0.jpg&w=400&output=jpg',
-};
+function renderGrid(){
+  document.getElementById('grid').innerHTML=DECKS.map(d=>`
+    <div class="dcard${d.right_crop?' rc':''}" id="dc-${d.key}" style="--ac:${d.accent}" onclick="pick('${d.key}')">
+      <div class="dcard-bar"></div>
+      <img class="dcard-img" src="${IMGS[d.champion_key]}" alt="${d.name}" onerror="this.style.display='none'" loading="lazy">
+      <div class="dcard-body">
+        <div class="dcard-tag" style="background:${d.accent}22;color:${d.accent};border:1px solid ${d.accent}44">${d.style}</div>
+        <div class="dcard-name">${d.name}</div>
+        <div class="dcard-tagline">${d.tagline}</div>
+        <div class="dcard-colors">${d.colors}</div>
+      </div>
+    </div>`).join('');
+}
 
-// ABC letter colors
-const ABC_COLORS = ['#c8a84b','#5b9bd5','#e8404a','#c87cff','#2a7a4a','#e07030','#ff69b4'];
+function pick(key){
+  document.querySelectorAll('.dcard').forEach(c=>c.classList.remove('on'));
+  if(active===key){active=null;document.getElementById('detail').classList.remove('open');document.getElementById('detail').innerHTML='';return}
+  active=key;document.getElementById('dc-'+key).classList.add('on');
+  renderDetail(key);
+  setTimeout(()=>document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
 
-let activeDeck = null;
-let activeTab = 'abcdefg';
-
-// ============================================================
-// RENDER DECK GRID
-// ============================================================
-function renderGrid() {
-  const grid = document.getElementById('deckGrid');
-  grid.innerHTML = DECK_DATA.map((deck, i) => `
-    <div class="deck-card" id="card-${deck.key}"
-      style="--deck-accent:${deck.accent}; --deck-accent-rgb:${hexToRgb(deck.accent)}"
-      onclick="selectDeck('${deck.key}')">
-      <div class="deck-card-active-bar"></div>
-      <img class="deck-card-img"
-        src="${CHAMP_IMAGES[deck.champion_key]}"
-        alt="${deck.name}"
-        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
-        loading="lazy">
-      <div class="img-placeholder" style="display:none">${deck.name[0]}</div>
-      <div class="deck-card-content">
-        <div class="deck-style-tag" style="background:${deck.accent}22; color:${deck.accent}; border:1px solid ${deck.accent}44">
-          ${deck.style}
-        </div>
-        <div class="deck-name">${deck.name}</div>
-        <div class="deck-tagline">${deck.tagline}</div>
-        <div class="deck-colors">${deck.colors}</div>
+function renderDetail(key){
+  const d=DECKS.find(x=>x.key===key);
+  const det=document.getElementById('detail');
+  det.classList.add('open');
+  det.innerHTML=`
+  <div class="d-wrap" style="--dac:${d.accent}44;--dac-c:${d.accent}">
+    <div class="d-hdr">
+      <img class="d-img${d.right_crop?' rc':''}" src="${IMGS[d.champion_key]}" alt="${d.name}" onerror="this.style.display='none'">
+      <div class="d-hdr-r">
+        <h2>${d.name}</h2>
+        <div class="d-sub">${d.style} &nbsp;·&nbsp; ${d.colors}</div>
+        <div class="d-how">${d.how_it_plays}</div>
       </div>
     </div>
-  `).join('');
+    <div class="d-tabs">
+      <button class="d-tab${atab==='abc'?' on':''}" onclick="switchTab('${key}','abc')">A·B·C·D·E·F·G</button>
+      <button class="d-tab${atab==='strat'?' on':''}" onclick="switchTab('${key}','strat')">Strategy</button>
+      <button class="d-tab${atab==='deck'?' on':''}" onclick="switchTab('${key}','deck')">Full Decklist</button>
+    </div>
+    ${pnlABC(d)}${pnlStrat(d)}${pnlDeck(d)}
+  </div>`;
 }
 
-// ============================================================
-// SELECT DECK
-// ============================================================
-function selectDeck(key) {
-  // Deselect all
-  document.querySelectorAll('.deck-card').forEach(c => c.classList.remove('active'));
-
-  if (activeDeck === key) {
-    // Toggle off
-    activeDeck = null;
-    document.getElementById('deckDetail').classList.remove('visible');
-    document.getElementById('deckDetail').innerHTML = '';
-    return;
-  }
-
-  activeDeck = key;
-  document.getElementById('card-' + key).classList.add('active');
-  renderDetail(key);
-
-  // Scroll to detail
-  setTimeout(() => {
-    document.getElementById('deckDetail').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
+function pnlABC(d){
+  return`<div class="d-pnl${atab==='abc'?' on':''}" id="pa-${d.key}"><div class="abc-grid">${
+    d.abcdefg.map((s,i)=>`<div class="abc-row"><div class="abc-ltr" style="color:${CLRS[i]}">${s.letter}</div><div class="abc-bd"><h4>${s.phase}</h4><p>${s.desc}</p></div></div>`).join('')
+  }</div></div>`;
 }
 
-// ============================================================
-// RENDER DETAIL PANEL
-// ============================================================
-function renderDetail(key) {
-  const deck = DECK_DATA.find(d => d.key === key);
-  const detail = document.getElementById('deckDetail');
-  detail.classList.add('visible');
-
-  const rarityEmoji = { C: '○', U: '◆', R: '★', E: '◈', S: '✦' };
-
-  detail.innerHTML = `
-    <div class="detail-inner" style="--detail-accent:${deck.accent}44; --detail-accent-color:${deck.accent}">
-      <div class="detail-header">
-        <img class="detail-legend-img"
-          src="${CHAMP_IMAGES[deck.champion_key]}"
-          alt="${deck.legend_name}"
-          onerror="this.style.display='none'">
-        <div class="detail-title">
-          <h2>${deck.name}</h2>
-          <div class="detail-subtitle">${deck.style} &nbsp;·&nbsp; ${deck.colors}</div>
-          <div class="detail-how">${deck.how_it_plays}</div>
+function pnlStrat(d){
+  return`<div class="d-pnl${atab==='strat'?' on':''}" id="ps-${d.key}">
+    <div class="s-blk"><h4>How It Plays</h4><p>${d.how_it_plays}</p></div>
+    <div class="s-blk"><h4>Turn-by-Turn Plan</h4><p>${d.turn_order}</p></div>
+    <div class="s-blk"><h4>Legend &amp; Champion</h4>
+      <div class="zone-row">
+        <div class="zcard" onclick="showCard('${esc(d.legend_name)}','Legend Zone','${esc(d.legend_ability)}')">
+          <div class="zcard-lbl">Legend Zone</div><div class="zcard-name">${d.legend_name}</div>
+          <div class="zcard-ab">${d.legend_ability.substring(0,130)}${d.legend_ability.length>130?'…':''}</div>
         </div>
-        <div class="detail-meta">
-          <div class="meta-rank">${deck.rank}</div>
-          <div class="meta-score">SIM ${deck.sim_score}% vs meta</div>
-          <div class="meta-colors">${deck.colors}</div>
-        </div>
-      </div>
-
-      <div class="detail-tabs">
-        <button class="detail-tab ${activeTab === 'abcdefg' ? 'active' : ''}"
-          onclick="switchTab('${key}', 'abcdefg')">A·B·C·D·E·F·G</button>
-        <button class="detail-tab ${activeTab === 'strategy' ? 'active' : ''}"
-          onclick="switchTab('${key}', 'strategy')">Deep Strategy</button>
-        <button class="detail-tab ${activeTab === 'decklist' ? 'active' : ''}"
-          onclick="switchTab('${key}', 'decklist')">Full Decklist</button>
-      </div>
-
-      <div class="detail-tab-content ${activeTab === 'abcdefg' ? 'active' : ''}" id="tab-abcdefg-${key}">
-        <div class="abcdefg-grid">
-          ${deck.abcdefg.map((step, i) => {
-            const parts = step.split(':');
-            const header = parts[0];
-            const body = parts.slice(1).join(':').trim();
-            const letter = header.split('—')[0].trim().split(' ')[0];
-            const phase = header.split('—')[1] ? header.split('—')[1].trim() : header;
-            return `
-            <div class="abc-step">
-              <div class="abc-letter" style="color:${ABC_COLORS[i]}">${letter}</div>
-              <div class="abc-body">
-                <div class="abc-phase">${phase}</div>
-                <div class="abc-desc">${body}</div>
-              </div>
-            </div>`;
-          }).join('')}
-        </div>
-      </div>
-
-      <div class="detail-tab-content ${activeTab === 'strategy' ? 'active' : ''}" id="tab-strategy-${key}">
-        <div class="strategy-block">
-          <h4>How It Plays</h4>
-          <p>${deck.how_it_plays}</p>
-        </div>
-        <div class="strategy-block">
-          <h4>Turn-by-Turn Plan</h4>
-          <p>${deck.turn_order}</p>
-        </div>
-        <div class="strategy-block">
-          <h4>Legend</h4>
-          <div class="zone-cards">
-            <div class="zone-card" onclick="showCardInfo('${deck.legend_name}', 'Legend', '—', '${escStr(deck.legend_ability)}')">
-              <div class="zone-card-label">Legend Zone</div>
-              <div class="zone-card-name">${deck.legend_name}</div>
-              <div class="zone-card-ability">${deck.legend_ability.substring(0,120)}${deck.legend_ability.length > 120 ? '…' : ''}</div>
-            </div>
-            <div class="zone-card" onclick="showCardInfo('${deck.champion_name}', '${deck.champion_cost}/${deck.champion_might}', 'Champion', '${escStr(deck.champion_ability)}')">
-              <div class="zone-card-label">Champion Zone</div>
-              <div class="zone-card-name">${deck.champion_name} (${deck.champion_cost}/${deck.champion_might})</div>
-              <div class="zone-card-ability">${deck.champion_ability.substring(0,120)}${deck.champion_ability.length > 120 ? '…' : ''}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="detail-tab-content ${activeTab === 'decklist' ? 'active' : ''}" id="tab-decklist-${key}">
-        <div class="decklist-section">
-          <h4>Main Deck — 40 Cards</h4>
-          <div class="card-list">
-            ${deck.main_cards.map(card => `
-              <div class="card-row"
-                onmouseenter="showTooltip(event, '${escStr(card.name)}', '${card.cost}/${card.might} · ${card.domain}', '${escStr(card.ability)}')"
-                onmouseleave="hideTooltip()"
-                onclick="showCardInfo('${escStr(card.name)}', '${card.cost}/${card.might}', '${card.domain}', '${escStr(card.ability)}')">
-                <span class="card-qty">x${card.qty}</span>
-                <span class="card-rar rar-${card.rarity}">${rarityEmoji[card.rarity] || '·'}</span>
-                <span class="card-name">${card.name}</span>
-                <span class="card-cost">${card.cost}/${card.might}</span>
-              </div>
-            `).join('')}
-          </div>
-          <h4>Sideboard — 8 Cards</h4>
-          <div class="card-list">
-            ${deck.sb_cards.map(card => `
-              <div class="card-row"
-                onmouseenter="showTooltip(event, '${escStr(card.name)}', '${card.cost}/${card.might}', '${escStr(card.ability)}')"
-                onmouseleave="hideTooltip()"
-                onclick="showCardInfo('${escStr(card.name)}', '${card.cost}/${card.might}', '', '${escStr(card.ability)}')">
-                <span class="card-qty">x${card.qty}</span>
-                <span class="card-rar rar-${card.rarity}">${rarityEmoji[card.rarity] || '·'}</span>
-                <span class="card-name">${card.name}</span>
-                <span class="card-cost">${card.cost}/${card.might}</span>
-              </div>
-            `).join('')}
-          </div>
+        <div class="zcard" onclick="showCard('${esc(d.champion_name)}','${d.champion_cost}/${d.champion_might} Champion','${esc(d.champion_ability)}')">
+          <div class="zcard-lbl">Champion Zone</div><div class="zcard-name">${d.champion_name} (${d.champion_cost}/${d.champion_might})</div>
+          <div class="zcard-ab">${d.champion_ability.substring(0,130)}${d.champion_ability.length>130?'…':''}</div>
         </div>
       </div>
     </div>
-  `;
+  </div>`;
 }
 
-function switchTab(key, tab) {
-  activeTab = tab;
-  renderDetail(key);
+function pnlDeck(d){
+  const bfR=d.battlefields.map(bf=>`<div class="bf-row" onclick="showCard('${esc(bf.name)}','Battlefield','${esc(bf.ability)}')"><div class="bf-name">${bf.name}</div><div class="bf-ab">${bf.ability}</div></div>`).join('');
+  const mR=d.main_cards.map(c=>`<div class="crow" onmouseenter="showTT(event,'${esc(c.name)}','Cost ${c.cost} / ${c.might}M','${esc(c.ability)}')" onmouseleave="hideTT()" onclick="showCard('${esc(c.name)}','${c.cost}/${c.might} · ${c.domain}','${esc(c.ability)}')"><span class="c-qty">x${c.qty}</span><span class="c-rar r${c.rarity}">${RSYM[c.rarity]||'·'}</span><span class="c-name">${c.name}</span><span class="c-cost">${c.cost}/${c.might}</span></div>`).join('');
+  const sR=d.sb_cards.map(c=>`<div class="crow" onmouseenter="showTT(event,'${esc(c.name)}','Cost ${c.cost} / ${c.might}M','${esc(c.ability)}')" onmouseleave="hideTT()" onclick="showCard('${esc(c.name)}','${c.cost}/${c.might}','${esc(c.ability)}')"><span class="c-qty">x${c.qty}</span><span class="c-rar r${c.rarity}">${RSYM[c.rarity]||'·'}</span><span class="c-name">${c.name}</span><span class="c-cost">${c.cost}/${c.might}</span></div>`).join('');
+  return`<div class="d-pnl${atab==='deck'?' on':''}" id="pd-${d.key}">
+    <div class="dl-sec"><div class="dl-hdr">Battlefields — Choose 2 of These 3 Each Game</div><div class="bf-list">${bfR}</div></div>
+    <div class="dl-sec"><div class="dl-hdr">Legend &amp; Champion Zone</div>
+      <div class="zone-row" style="margin-bottom:0">
+        <div class="zcard" onclick="showCard('${esc(d.legend_name)}','Legend Zone','${esc(d.legend_ability)}')"><div class="zcard-lbl">Legend — Always Active</div><div class="zcard-name">${d.legend_name}</div><div class="zcard-ab">${d.legend_ability.substring(0,120)}…</div></div>
+        <div class="zcard" onclick="showCard('${esc(d.champion_name)}','Champion','${esc(d.champion_ability)}')"><div class="zcard-lbl">Champion — In Deck x3</div><div class="zcard-name">${d.champion_name} (${d.champion_cost}/${d.champion_might})</div><div class="zcard-ab">${d.champion_ability.substring(0,120)}…</div></div>
+      </div>
+    </div>
+    <div class="dl-sec"><div class="dl-hdr">Rune Deck — 12 Cards</div><div class="rune-row">${d.runes.map(r=>`<div class="rune-pill">${r}</div>`).join('')}</div></div>
+    <div class="dl-sec"><div class="dl-hdr">Main Deck — 40 Cards</div><div class="dl-sub">✦ Signature &nbsp;◈ Epic &nbsp;★ Rare &nbsp;◆ Uncommon &nbsp;○ Common — Premium cards shown first</div><div class="card-list">${mR}</div></div>
+    <div class="dl-sec"><div class="dl-hdr">Sideboard — 8 Cards (swap in for Game 2)</div><div class="card-list">${sR}</div></div>
+  </div>`;
 }
 
-// ============================================================
-// CARD TOOLTIP
-// ============================================================
-function showTooltip(e, name, stats, ability) {
-  const tt = document.getElementById('cardTooltip');
-  document.getElementById('ttName').textContent = name;
-  document.getElementById('ttStats').textContent = stats;
-  document.getElementById('ttAbility').textContent = ability;
-  tt.classList.add('visible');
-  positionTooltip(e);
+function switchTab(key,tab){atab=tab;renderDetail(key)}
+
+function showTT(ev,name,stats,ab){
+  document.getElementById('ttN').textContent=name;
+  document.getElementById('ttS').textContent=stats;
+  document.getElementById('ttA').textContent=ab;
+  document.getElementById('tt').classList.add('on');
+  posTT(ev);
 }
+function hideTT(){document.getElementById('tt').classList.remove('on')}
+function posTT(ev){const tt=document.getElementById('tt');tt.style.left=Math.min(ev.clientX+14,window.innerWidth-285)+'px';tt.style.top=Math.min(ev.clientY+8,window.innerHeight-180)+'px'}
+document.addEventListener('mousemove',ev=>{if(document.getElementById('tt').classList.contains('on'))posTT(ev)});
+function showCard(name,stats,ab){if(window.innerWidth>768)return;alert(name+'\n'+stats+'\n\n'+ab)}
+function toggleHTP(){document.getElementById('htpBody').classList.toggle('open');document.getElementById('htpBtn').classList.toggle('open')}
 
-function hideTooltip() {
-  document.getElementById('cardTooltip').classList.remove('visible');
-}
-
-function positionTooltip(e) {
-  const tt = document.getElementById('cardTooltip');
-  const x = e.clientX + 15;
-  const y = e.clientY + 10;
-  const maxX = window.innerWidth - 300;
-  const maxY = window.innerHeight - 200;
-  tt.style.left = Math.min(x, maxX) + 'px';
-  tt.style.top = Math.min(y, maxY) + 'px';
-}
-
-document.addEventListener('mousemove', e => {
-  const tt = document.getElementById('cardTooltip');
-  if (tt.classList.contains('visible')) positionTooltip(e);
-});
-
-// Card info modal for mobile
-function showCardInfo(name, stats, domain, ability) {
-  if (window.innerWidth > 768) return;
-  alert(`${name}\n${stats} · ${domain}\n\n${ability}`);
-}
-
-// ============================================================
-// HOW TO PLAY TOGGLE
-// ============================================================
-function toggleHTP() {
-  const content = document.getElementById('htpContent');
-  const toggle = document.getElementById('htpToggle');
-  content.classList.toggle('visible');
-  toggle.classList.toggle('expanded');
-}
-
-// ============================================================
-// UTILS
-// ============================================================
-function hexToRgb(hex) {
-  const r = parseInt(hex.slice(1,3),16);
-  const g = parseInt(hex.slice(3,5),16);
-  const b = parseInt(hex.slice(5,7),16);
-  return `${r},${g},${b}`;
-}
-
-function escStr(str) {
-  return (str || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/\n/g,' ').replace(/\r/g,'');
-}
-
-// ============================================================
-// INIT
-// ============================================================
 renderGrid();
 </script>
 </body>
