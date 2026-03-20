@@ -439,16 +439,13 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--txt);ove
 <section class="wrap">
 <div class="john-section">
 
-  <div class="style-toggle">
-    <button class="sty-btn on" onclick="setStyle('clean')">Clean</button>
-    <button class="sty-btn" onclick="setStyle('sketch')">Sketch</button>
-  </div>
+  
 
   <!-- JOHN FACES -->
   <div class="john-faces">
 
     <!-- CLEAN VERSION -->
-    <div class="john-face john-clean" id="face-clean">
+    <div class="john-face">
       <svg width="180" height="220" viewBox="0 0 180 220" xmlns="http://www.w3.org/2000/svg">
         <!-- Body / shirt -->
         <rect x="40" y="155" width="100" height="65" rx="8" fill="#1a2035"/>
@@ -502,50 +499,7 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--txt);ove
       </svg>
     </div>
 
-    <!-- SKETCH VERSION -->
-    <div class="john-face john-sketch hide" id="face-sketch">
-      <svg width="180" height="220" viewBox="0 0 180 220" xmlns="http://www.w3.org/2000/svg"
-        style="filter:drop-shadow(0 0 1px rgba(200,168,75,.3))">
-        <!-- Sketchy body -->
-        <path d="M42,158 Q40,155 38,220 L142,220 Q140,155 138,158" stroke="#c8a84b" stroke-width="1.5" fill="rgba(200,168,75,.06)" stroke-dasharray="4,2"/>
-        <!-- Neck -->
-        <path d="M76,140 Q76,155 76,160 L104,160 Q104,155 104,140" stroke="#c8a84b" stroke-width="1.5" fill="rgba(200,168,75,.1)" stroke-dasharray="3,1"/>
-        <!-- Head - slightly wobbly -->
-        <path d="M42,110 Q38,72 52,62 Q66,52 90,50 Q114,50 128,62 Q142,72 138,110 Q136,148 118,155 Q104,160 90,160 Q76,160 62,155 Q44,148 42,110" stroke="#c8a84b" stroke-width="1.8" fill="rgba(200,168,75,.12)" stroke-dasharray="5,2"/>
-        <!-- Cap -->
-        <path d="M34,78 Q36,55 90,52 Q144,55 146,78 Q145,92 90,94 Q35,92 34,78 Z" stroke="#c8a84b" stroke-width="1.5" fill="rgba(26,26,46,.8)" stroke-dasharray="4,2"/>
-        <!-- Cap brim sketchy -->
-        <path d="M22,82 Q26,86 72,88 Q72,96 26,94 Z" stroke="#c8a84b" stroke-width="1.5" fill="rgba(20,20,40,.9)" stroke-dasharray="3,2"/>
-        <!-- R on cap -->
-        <text x="78" y="79" font-family="serif" font-size="8" fill="#c8a84b" opacity=".8" font-weight="bold">JOHN</text>
-        <!-- Ears -->
-        <ellipse cx="40" cy="112" rx="9" ry="13" stroke="#c8a84b" stroke-width="1.5" fill="rgba(200,168,75,.1)" stroke-dasharray="3,1"/>
-        <ellipse cx="140" cy="112" rx="9" ry="13" stroke="#c8a84b" stroke-width="1.5" fill="rgba(200,168,75,.1)" stroke-dasharray="3,1"/>
-        <!-- Square glasses - sketchy -->
-        <rect x="53" y="100" width="28" height="20" rx="2" stroke="#c8a84b" stroke-width="2" fill="rgba(255,255,255,.05)" stroke-dasharray="0"/>
-        <rect x="99" y="100" width="28" height="20" rx="2" stroke="#c8a84b" stroke-width="2" fill="rgba(255,255,255,.05)" stroke-dasharray="0"/>
-        <line x1="81" y1="110" x2="99" y2="110" stroke="#c8a84b" stroke-width="1.5"/>
-        <!-- Eyes - dots -->
-        <circle cx="67" cy="110" r="4" fill="rgba(200,168,75,.3)"/>
-        <circle cx="68" cy="110" r="2.5" fill="#1a0e00"/>
-        <circle cx="113" cy="110" r="4" fill="rgba(200,168,75,.3)"/>
-        <circle cx="114" cy="110" r="2.5" fill="#1a0e00"/>
-        <!-- Eyebrows -->
-        <path d="M55,97 Q67,92 79,96" stroke="#c8a84b" stroke-width="2" fill="none" stroke-dasharray="3,1"/>
-        <path d="M101,96 Q113,92 125,97" stroke="#c8a84b" stroke-width="2" fill="none" stroke-dasharray="3,1"/>
-        <!-- Beard sketchy -->
-        <path d="M56,140 Q58,158 90,162 Q122,158 124,140 Q110,148 90,150 Q70,148 56,140 Z" stroke="#c8a84b" stroke-width="1.5" fill="rgba(58,48,40,.6)" stroke-dasharray="4,2"/>
-        <!-- Mustache -->
-        <path d="M74,132 Q82,138 90,134 Q98,138 106,132" stroke="#c8a84b" stroke-width="2.5" fill="none" stroke-dasharray="3,1"/>
-        <!-- Mouth serious -->
-        <path d="M78,143 Q90,146 102,143" stroke="#c8a84b" stroke-width="1.5" fill="none" stroke-dasharray="3,1"/>
-        <!-- Pizza hint -->
-        <path d="M152,188 L168,168 L180,200 Z" stroke="#c8a84b" stroke-width="1.5" fill="rgba(200,168,75,.15)" stroke-dasharray="3,2"/>
-        <circle cx="162" cy="183" r="2.5" stroke="#e84040" stroke-width="1" fill="rgba(232,64,64,.3)"/>
-      </svg>
-    </div>
-
-  </div><!-- /john-faces -->
+    </div><!-- /john-faces -->
 
   <p class="pizza-hint">📍 There is definitely a slice of pizza nearby</p>
 
@@ -915,13 +869,6 @@ body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--txt);ove
 
 </div><!-- /page -->
 
-<script>
-function setStyle(s){
-  document.getElementById('face-clean').classList.toggle('hide', s!=='clean');
-  document.getElementById('face-sketch').classList.toggle('hide', s!=='sketch');
-  document.querySelectorAll('.sty-btn').forEach(b=>b.classList.remove('on'));
-  document.querySelector(`.sty-btn[onclick="setStyle('${s}')"]`).classList.add('on');
-}
-</script>
+
 </body>
 </html>
