@@ -256,21 +256,49 @@ function hideAbcd(){ document.getElementById('abcd').classList.remove('on'); }
 
 function scoreAnimate(){
   const ids=['s1','s2','s3','s4','s5','s6','s7','s8'];
-  // Reset all first
+  // Reset all
   ids.forEach(id=>{
     const el=document.getElementById(id);
     el.classList.remove('hi','scored');
     el.style.borderColor='';el.style.color='';el.style.background='';el.style.boxShadow='';
   });
-  // Light up one by one
-  ids.forEach((id,i)=>{
+
+  // Highlight battlefield zone
+  document.getElementById('z-bf').classList.add('hi');
+
+  // Animate a unit moving to battlefield at score 1
+  setTimeout(()=>{
+    setText('Conquering','Move a unit to the battlefield.\nNobody there — you take it.\n+1 point.');
+    // Add a unit token to base then bf
+    const bu = document.getElementById('base-units');
+    bu.innerHTML = '<div class="cb unit" style="transition:all .5s"></div>';
+  }, 400);
+
+  // Score 1-4 with conquering message
+  ids.slice(0,4).forEach((id,i)=>{
     setTimeout(()=>{
       const el=document.getElementById(id);
       el.style.borderColor='#c8a84b';
       el.style.color='#c8a84b';
       el.style.background='rgba(200,168,75,.15)';
       el.style.boxShadow='0 0 10px rgba(200,168,75,.4)';
-    }, i*1800);
+    }, 400 + i*1800);
+  });
+
+  // Switch to holding message at score 5
+  setTimeout(()=>{
+    setText('Holding','Unit still there next turn?\nScore again during upkeep.\n+1 point every turn you hold.');
+  }, 400 + 4*1800);
+
+  // Score 5-8 with holding message
+  ids.slice(4).forEach((id,i)=>{
+    setTimeout(()=>{
+      const el=document.getElementById(id);
+      el.style.borderColor='#22c55e';
+      el.style.color='#22c55e';
+      el.style.background='rgba(34,197,94,.12)';
+      el.style.boxShadow='0 0 10px rgba(34,197,94,.3)';
+    }, 400 + (4+i)*1800);
   });
 }
 
